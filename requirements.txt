@@ -1,0 +1,9 @@
+Django==1.8.2
+argparse==1.2.1
+distribute==0.6.24
+djangorestframework==2.4.5
+-e git+https://github.com/joshuaduffy/dota2api.git@f5714d565725f610fe93313f3e7af25b16643fb0#egg=dota2api-dev
+huey==0.4.8
+psycopg2==2.6.1
+requests==2.7.0
+wsgiref==0.1.2
