@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$scope', '$routeParams', 'Profile']
+    ProfileController.$inject = ['$routeParams', 'Profile'];
 
-    function ProfileController($scope, $routeParams, Profile) {
+    function ProfileController($routeParams, Profile) {
         var vm = this;
 
         active();
@@ -16,6 +16,7 @@
             var accountId = $routeParams.accountId;
             Profile.get(accountId).then(function(result) {
                 vm.account = result.data;
+
             });
         }
     }

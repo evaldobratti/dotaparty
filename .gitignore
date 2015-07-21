@@ -3,3 +3,4 @@ secret.sh
 env
 .idea
 db.sqlite3
+*.pyc

@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    angular
-        .module('dotaparty.routes')
-        .config(config);
+    var app = angular
+        .module('dotaparty.routes');
+    app.config(config);
 
     config.$inject = ['$routeProvider'];
 
@@ -17,6 +17,10 @@
             controller: 'ProfileController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/profile.html'
+        }).when('/friends/:accountIds*', {
+                controller: 'FriendsController',
+                controllerAs: 'vm',
+                templateUrl: 'static/templates/friends.html'
         }).otherwise('/');
     }
 })();

@@ -36,13 +36,13 @@
     <tr ng-repeat="p in vm.match.players" >
 
         <th class="col-lg-1">
-            <a href="#" ng-if="p.player_account != null">{{ p.player_account.current_update.persona_name }}</a>
+            <a href="profiles/{{ p.account_id }}" ng-if="p.player_account != null">{{ p.player_account.current_update.persona_name }}</a>
             <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
         </th>
 
         <th class="col-lg-1">{{ p.player_slot }}</th>
 
-        <th class="col-lg-1"><img width="105" height="55" src="{{ p.hero.url_large_portrait }}"></th>
+        <th class="col-lg-1"><img width="105" height="55" ng-src="{{ p.hero.url_large_portrait }}"></th>
         <th class="col-lg-1">{{ p.kills }}</th>
         <th class="col-lg-1">{{ p.deaths }}</th>
         <th class="col-lg-1">{{ p.assists }}</th>
@@ -57,7 +57,7 @@
         <th class="col-lg-1">{{ p.level }}</th>
         <th class="col-lg-1">
             <div ng-repeat="item in p.items">
-                <img height="30" width="40" src="{{ item.item.url_image }}">
+                <img height="30" width="40" ng-src="{{ item.item.url_image }}">
             </div>
         </th>
 

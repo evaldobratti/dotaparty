@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('DetailMatchController', DetailMatchController);
 
-    DetailMatchController.$inject = ['$scope', '$routeParams', 'DetailMatch']
+    DetailMatchController.$inject = ['$routeParams', 'DetailMatch'];
 
-    function DetailMatchController($scope, $routeParams, DetailMatch) {
+    function DetailMatchController($routeParams, DetailMatch) {
         var vm = this;
 
         active();
@@ -15,9 +15,8 @@
         function active() {
             var matchId = $routeParams.matchId;
             DetailMatch.get(matchId).then(function(result) {
-                console.log(result.data);
                 vm.match = result.data;
-            });
+            })
         }
     }
 })();

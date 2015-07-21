@@ -71,7 +71,7 @@ class DetailMatchSerializer(serializers.ModelSerializer):
 
 class FriendSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
-        return {'id': account.id,
+        return {'account_id': account.account_id,
                 'persona_name': account.current_update().persona_name,
                 'qtd': account.qtd
                 }

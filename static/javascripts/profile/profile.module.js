@@ -2,14 +2,14 @@
     'use strict';
 
     angular
-        .module('dotaparty.detailmatch', [
-            'dotaparty.detailmatch.controllers',
-            'dotaparty.detailmatch.services'
+        .module('dotaparty.profile', [
+            'dotaparty.profile.controllers',
+            'dotaparty.profile.services'
         ]);
 
     angular
-        .module('dotaparty.detailmatch.controllers', []);
+        .module('dotaparty.profile.controllers', []);
 
     angular
-        .module('dotaparty.detailmatch.services', []);
+        .module('dotaparty.profile.services', []);
 })();
