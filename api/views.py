@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from core import utils
 from core.models import Account
-from serializers import DetailMatchSerializer, ProfileSerializer
+from serializers import DetailMatchSerializer, ProfileSerializer, AccountSerializer
 # Create your views here.
 
 @api_view(['GET'])
@@ -13,3 +13,7 @@ def get_details_match(request, match_id):
 @api_view(['GET'])
 def get_profile(request, account_id):
     return Response(ProfileSerializer(Account.objects.get(account_id=account_id)).data)
+
+@api_view(['GET'])
+def get_account(request, account_id):
+    return Response(AccountSerializer(Account.objects.get(account_id=account_id)).data)

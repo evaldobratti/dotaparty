@@ -16,7 +16,7 @@
 
         function get(matchId) {
             console.warn("doing get")
-            return $http.get('/api/detailmatch/' + matchId);
+            return $http.get('/api/detailmatches/' + matchId);
         /*.then(registerSuccessFn, registerErrorFn);
 
             function registerSuccessFn(data, status, headers, config) {

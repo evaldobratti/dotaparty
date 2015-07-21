@@ -9,13 +9,18 @@
 
     function Profile($http) {
         var Profile = {
-            get: get
+            get: get,
+            getAccount: getAccount
         };
 
         return Profile;
 
         function get(accountId) {
-            return $http.get('/api/profile/' + accountId);
+            return $http.get('/api/profiles/' + accountId);
+        }
+
+        function getAccount(accountId) {
+            return $http.get("/api/accounts/" + accountId);
         }
     }
 })();

@@ -1,2 +1,3 @@
-hoho haha
-{{ vm.teste }}
+<div ng-repeat="acc in vm.accounts">
+    <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
+</div>

@@ -10,7 +10,8 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'dotaparty.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url('^api/detailmatch/(?P<match_id>[0-9]+)$', views.get_details_match),
-    url('^api/profile/(?P<account_id>[0-9]+)$', views.get_profile),
+    url('^api/detailmatches/(?P<match_id>[0-9]+)$', views.get_details_match),
+    url('^api/profiles/(?P<account_id>[0-9]+)$', views.get_profile),
+    url('^api/accounts/(?P<account_id>[0-9]+)$', views.get_account),
     url('^.*$', IndexView.as_view(), name='index')
 ]

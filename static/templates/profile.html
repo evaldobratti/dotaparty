@@ -1,6 +1,9 @@
 {{ vm.account.persona_name }}
 <img ng-src="{{ vm.account.url_avatar }}">
 <div ng-repeat="f in vm.account.friends">
-    <div><a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a> {{ f.qtd }}</div>
+    <div>
+        <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
+        <a href="friends/{{ vm.account.account_id + '/' + f.account_id }}">{{ f.qtd }}</a>
+        </div>
 
 </div>

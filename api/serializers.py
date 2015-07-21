@@ -81,6 +81,7 @@ class ProfileSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
         friends = get_friends(account)
         return {
+            'account_id': account.account_id,
             'persona_name': account.current_update().persona_name,
             'url_avatar': account.current_update().url_avatar,
             'friends': FriendSerializer(friends, many=True).data
