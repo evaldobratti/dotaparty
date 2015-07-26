@@ -9,9 +9,8 @@ class Account(models.Model):
     time_created = models.BigIntegerField(null=True)
     persona_state = models.IntegerField(null=True)
     profile_state = models.IntegerField(null=True)
+    current_update = models.ForeignKey('AccountUpdate', related_name='current_update', null=True)
 
-    def current_update(self):
-        return self.updates.all().order_by('-sequential')[0]
 
 class AccountUpdate(models.Model):
     account = models.ForeignKey(Account, null=False, related_name='updates')
@@ -93,7 +92,7 @@ class ItemOwner(models.Model):
 
 class LeaverStatus(models.Model):
     leaver_id = models.IntegerField(null=False)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     description = models.CharField(max_length=50)
 
 class DetailMatchPlayer(ItemOwner):

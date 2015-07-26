@@ -12,6 +12,9 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url('^api/detailmatches/(?P<match_id>[0-9]+)$', views.get_details_match),
     url('^api/profiles/(?P<account_id>[0-9]+)$', views.get_profile),
+    url('^api/friends/(?P<accounts_ids>([0-9]+)(,[0-9]+)*)$', views.get_friends_matches_details),
     url('^api/accounts/(?P<account_id>[0-9]+)$', views.get_account),
+    url('^api/accounts/(?P<account_id>[0-9]+)/download$', views.download_games),
+
     url('^.*$', IndexView.as_view(), name='index')
 ]

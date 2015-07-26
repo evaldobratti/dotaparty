@@ -17,7 +17,7 @@
             controller: 'ProfileController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/profile.html'
-        }).when('/friends/:accountIds*', {
+        }).when('/friends/:accountIds', {
                 controller: 'FriendsController',
                 controllerAs: 'vm',
                 templateUrl: 'static/templates/friends.html'

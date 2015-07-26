@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import DetailMatch, DetailMatchPlayer, Hero, Account, Item, DetailMatchAbilityUpgrade, DetailMatchOwnerItem, Cluster, LobbyType, GameMode, AccountUpdate
-from core.utils import get_friends
+from core.utils import get_friends_number_matches
 
 class ClusterSerialiazer(serializers.ModelSerializer):
     class Meta:
@@ -72,17 +72,17 @@ class DetailMatchSerializer(serializers.ModelSerializer):
 class FriendSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
         return {'account_id': account.account_id,
-                'persona_name': account.current_update().persona_name,
+                'persona_name': account.persona_name,
                 'qtd': account.qtd
                 }
 
 
 class ProfileSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
-        friends = get_friends(account)
+        friends = get_friends_number_matches(account)
         return {
             'account_id': account.account_id,
-            'persona_name': account.current_update().persona_name,
-            'url_avatar': account.current_update().url_avatar,
+            'persona_name': account.current_update.persona_name,
+            'url_avatar': account.current_update.url_avatar,
             'friends': FriendSerializer(friends, many=True).data
         }

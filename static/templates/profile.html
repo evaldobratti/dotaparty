@@ -1,9 +1,32 @@
-{{ vm.account.persona_name }}
-<img ng-src="{{ vm.account.url_avatar }}">
-<div ng-repeat="f in vm.account.friends">
-    <div>
-        <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
-        <a href="friends/{{ vm.account.account_id + '/' + f.account_id }}">{{ f.qtd }}</a>
-        </div>
+{{ vm.account.current_update.persona_name }}
+<img ng-src="{{ vm.account.current_update.url_avatar }}">
+<form ng-submit="vm.downloadGames()">
+    <button type="submit" class="btn btn-primary">Download games</button>
+</form>
+
+
+<div>
+    <table>
+        <thead>
+        <tr>
+            <td>
+                Friend
+            </td>
+            <td>
+                #matches
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="f in vm.games.friends">
+            <td>
+                <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
+            </td>
+            <td>
+                <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 </div>

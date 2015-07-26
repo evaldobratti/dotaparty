@@ -10,7 +10,9 @@
     function Profile($http) {
         var Profile = {
             get: get,
-            getAccount: getAccount
+            getAccount: getAccount,
+            downloadGames: downloadGames
+
         };
 
         return Profile;
@@ -21,6 +23,11 @@
 
         function getAccount(accountId) {
             return $http.get("/api/accounts/" + accountId);
+        }
+
+        function downloadGames(accountId) {
+            console.log("lol");
+            $http.post("api/accounts/" + accountId + "/download");
         }
     }
 })();

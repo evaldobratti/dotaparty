@@ -37,9 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
+    'debug_panel',
+    'huey.djhuey',
     'rest_framework',
     'compressor',
     'core'
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -51,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'debug_panel.middleware.DebugPanelMiddleware',
 )
 
 ROOT_URLCONF = 'dotaparty.urls'
@@ -79,8 +84,12 @@ WSGI_APPLICATION = 'dotaparty.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dotaparty',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -116,3 +125,33 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
+
+HUEY = {
+    'backend': 'huey.backends.sqlite_backend',
+    'name': 'downloader',
+    'connection': {'location': 'huey.sqlite3'},
+    'always_eager': False,
+    'consumer_options': {'workers': 4},
+}
+
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
+
+"""LOGGING = {
+    'disable_existing_loggers': False,
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',  # message level to be written to console
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.db': {},
+    },
+}"""

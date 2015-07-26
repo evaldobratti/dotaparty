@@ -28,7 +28,7 @@ def load_team(match, players):
                                              url_full_portrait=player_response.hero.url_full_portrait,
                                              url_vertical_portrait=player_response.hero.url_vertical_portrait)
 
-        if player_response.account_id != 4294967295:
+        if player_response.account_id != 4294967295 and player_response.account_id != -1:
             updated_acc = [ua for ua in updated_accounts
                            if str(ua.steam_id) == str(api.convert_to_64_bit(player_response.account_id))][0]
 
@@ -40,7 +40,6 @@ def load_team(match, players):
             account.time_created = updated_acc.time_created
             account.persona_state = updated_acc.persona_state
             account.profile_state = updated_acc.profile_state
-            account.save()
             update, created = account.updates.get_or_create(account=account,
                                                             persona_name=updated_acc.persona_name,
                                                             url_avatar=updated_acc.url_avatar,
@@ -48,6 +47,8 @@ def load_team(match, players):
                                                             url_avatar_full=updated_acc.url_avatar_full,
                                                             primary_clan_id=updated_acc.primary_clan_id,
                                                             persona_state_flags=updated_acc.persona_state_flags)
+            account.current_update = update
+            account.save()
             if created:
                 update.sequential = len(account.updates.all())
                 update.save()
@@ -149,14 +150,43 @@ def get_details_match(match_id):
         return parse_from_details_match(details)
 
 
-def get_friends(account):
+def get_friends_number_matches(account):
     raw = Account.objects.raw(
-        'SELECT dmp2.player_account_id as id,  count(*) as qtd FROM core_account acc JOIN core_detailmatchplayer dmp1 ON acc.id = dmp1.player_account_id   JOIN core_detailmatchplayer dmp2 ON dmp1.match_id = dmp2.match_id WHERE dmp1.player_account_id = ' +
-        str(account.id) + ' and dmp2.player_account_id <> ' +
-        str(account.id) + ' GROUP BY dmp1.player_account_id,dmp2.player_account_id HAVING count(*) > 1 ORDER BY count(*)   DESC'
+
+        'SELECT dmp2.player_account_id AS id, ' +
+        '       acc2.account_id as account_id, ' +
+        '       accup2.persona_name, ' +
+        '       count(*) AS qtd ' +
+        'FROM core_account acc ' +
+        'JOIN core_detailmatchplayer dmp1 ON acc.id = dmp1.player_account_id ' +
+        'JOIN core_detailmatchplayer dmp2 ON dmp1.match_id = dmp2.match_id ' +
+        'JOIN core_account acc2 ON dmp2.player_account_id = acc2.id ' +
+        'JOIN core_accountupdate accup2 ON acc2.current_update_id = accup2.id ' +
+        'WHERE dmp1.player_account_id = ' + str(account.id) + ' ' +
+        '  AND dmp2.player_account_id <> ' + str(account.id) + ' ' +
+        'GROUP BY dmp1.player_account_id, ' +
+        '         acc2.account_id, ' +
+        '         accup2.persona_name, ' +
+        '         dmp2.player_account_id HAVING count(*) > 1 ' +
+        'ORDER BY count(*) DESC '
+
     )
 
     return raw
 
 
+def get_friends_matches_details(accounts_ids):
+    query = DetailMatch.objects.distinct()
+    query = query.select_related("cluster")
+    query = query.select_related("lobby_type")
+    query = query.select_related("game_mode")
+    query = query.prefetch_related("players__player_account__current_update")
+    query = query.prefetch_related("players__hero")
+    query = query.prefetch_related("players__abilities__ability")
+    query = query.prefetch_related("players__items__item")
+    query = query.order_by('-start_time')
 
+    for account_id in accounts_ids:
+        query = query.filter(players__player_account__account_id=account_id)
+
+    return query[:20]

@@ -137,7 +137,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('leaver_id', models.IntegerField()),
-                ('name', models.CharField(max_length=20)),
+                ('name', models.CharField(max_length=50)),
                 ('description', models.CharField(max_length=50)),
             ],
         ),
@@ -200,6 +200,11 @@ class Migration(migrations.Migration):
             model_name='detailmatch',
             name='lobby_type',
             field=models.ForeignKey(to='core.LobbyType'),
+        ),
+        migrations.AddField(
+            model_name='account',
+            name='current_update',
+            field=models.ForeignKey(related_name='current_update', to='core.AccountUpdate'),
         ),
         migrations.AddField(
             model_name='detailmatchplayer',

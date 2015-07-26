@@ -14,8 +14,8 @@
 
         return Friends;
 
-        function get(accountId) {
-            return $http.get('/api/profile/' + accountId);
+        function get(accountsIds) {
+            return $http.get('/api/friends/' + accountsIds);
         }
     }
 })();
