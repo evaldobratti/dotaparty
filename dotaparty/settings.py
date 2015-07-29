@@ -37,8 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
-    'debug_panel',
+    #'debug_toolbar',
+    #'debug_panel',
     'huey.djhuey',
     'rest_framework',
     'compressor',
@@ -133,25 +133,3 @@ HUEY = {
     'always_eager': False,
     'consumer_options': {'workers': 4},
 }
-
-import logging
-logging.getLogger("requests").setLevel(logging.WARNING)
-
-"""LOGGING = {
-    'disable_existing_loggers': False,
-    'version': 1,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'level': 'DEBUG',  # message level to be written to console
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'django.db': {},
-    },
-}"""

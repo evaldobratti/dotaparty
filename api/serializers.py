@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
 from core.models import DetailMatch, DetailMatchPlayer, Hero, Account, Item, DetailMatchAbilityUpgrade, DetailMatchOwnerItem, Cluster, LobbyType, GameMode, AccountUpdate
 from core.utils import get_friends_number_matches
 
@@ -57,6 +58,12 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DetailMatchPlayer
+
+
+class DefaultPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class DetailMatchSerializer(serializers.ModelSerializer):

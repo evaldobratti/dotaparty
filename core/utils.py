@@ -1,5 +1,6 @@
 from models import *
 from dota2api import api
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 d2api = api.Initialise()
 
@@ -17,6 +18,47 @@ def get_until_success(get_function):
             logging.exception(e)
 
 
+def get_account(account_id):
+
+    account = Account.objects.filter(account_id=account_id)
+    print account
+    if account:
+        return account[0]
+    else:
+        print 'will get ' + account_id
+        acc = get_until_success(lambda: d2api.get_player_summaries(*[int(account_id)]))
+
+        print acc
+        if acc:
+            return load_account(account_id, acc[0])
+        return None
+
+
+def load_account(account_id, updated_acc):
+    account, _ = Account.objects.get_or_create(account_id=account_id)
+    account.steam_id = updated_acc.steam_id
+    account.last_logoff = updated_acc.last_logoff
+    account.profile_url = updated_acc.profile_url
+    account.community_visibility_state = updated_acc.community_visibility_state
+    account.time_created = updated_acc.time_created
+    account.persona_state = updated_acc.persona_state
+    account.profile_state = updated_acc.profile_state
+    update, created = account.updates.get_or_create(account=account,
+                                                    persona_name=updated_acc.persona_name,
+                                                    url_avatar=updated_acc.url_avatar,
+                                                    url_avatar_medium=updated_acc.url_avatar_medium,
+                                                    url_avatar_full=updated_acc.url_avatar_full,
+                                                    primary_clan_id=updated_acc.primary_clan_id,
+                                                    persona_state_flags=updated_acc.persona_state_flags)
+    account.current_update = update
+    account.save()
+    if created:
+        update.sequential = len(account.updates.all())
+        update.save()
+
+    return account
+
+
 def load_team(match, players):
     updated_accounts = get_until_success(lambda: d2api.get_player_summaries(*[p.account_id for p in players]))
     for player_response in players:
@@ -31,27 +73,7 @@ def load_team(match, players):
         if player_response.account_id != 4294967295 and player_response.account_id != -1:
             updated_acc = [ua for ua in updated_accounts
                            if str(ua.steam_id) == str(api.convert_to_64_bit(player_response.account_id))][0]
-
-            account, _ = Account.objects.get_or_create(account_id=player_response.account_id)
-            account.steam_id = updated_acc.steam_id
-            account.last_logoff = updated_acc.last_logoff
-            account.profile_url = updated_acc.profile_url
-            account.community_visibility_state = updated_acc.community_visibility_state
-            account.time_created = updated_acc.time_created
-            account.persona_state = updated_acc.persona_state
-            account.profile_state = updated_acc.profile_state
-            update, created = account.updates.get_or_create(account=account,
-                                                            persona_name=updated_acc.persona_name,
-                                                            url_avatar=updated_acc.url_avatar,
-                                                            url_avatar_medium=updated_acc.url_avatar_medium,
-                                                            url_avatar_full=updated_acc.url_avatar_full,
-                                                            primary_clan_id=updated_acc.primary_clan_id,
-                                                            persona_state_flags=updated_acc.persona_state_flags)
-            account.current_update = update
-            account.save()
-            if created:
-                update.sequential = len(account.updates.all())
-                update.save()
+            account = load_account(player_response.account_id, updated_acc)
         else:
             account = None
 
@@ -175,7 +197,7 @@ def get_friends_number_matches(account):
     return raw
 
 
-def get_friends_matches_details(accounts_ids):
+def get_friends_matches_details(accounts_ids, page):
     query = DetailMatch.objects.distinct()
     query = query.select_related("cluster")
     query = query.select_related("lobby_type")
@@ -185,8 +207,13 @@ def get_friends_matches_details(accounts_ids):
     query = query.prefetch_related("players__abilities__ability")
     query = query.prefetch_related("players__items__item")
     query = query.order_by('-start_time')
-
     for account_id in accounts_ids:
         query = query.filter(players__player_account__account_id=account_id)
 
-    return query[:20]
+    paginator = Paginator(query, 25)
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
