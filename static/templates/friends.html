@@ -1,44 +1,46 @@
 <div ng-repeat="acc in vm.accounts">
     <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
 </div>
+<div infinite-scroll="getNextPage()" infinite-scroll-distance="3">
+    <div ng-repeat="match in vm.matches">
 
-<div ng-repeat="match in vm.matches.results">
+        <div class="row">
+            <div class="col-md-2">
+                <a href="/matches/{{ match.match_id }}">{{ match.match_id }}</a>
+            </div>
+            <div class="col-md-2">
+                <div ng-if="match.is_radiant_win">Victory: Radiant</div>
+                <div ng-if="!match.is_radiant_win">Victory: Dire</div>
+            </div>
+            <div class="col-md-2">
+                Duration: {{ match.duration }}
+            </div>
+            <div class="col-md-2">
+                Game mode: {{ match.game_mode.name }}
+            </div>
+            <div class="col-md-2">
+                Start: {{ match.start_time }}
+            </div>
 
-    <div class="row">
-        <div class="col-md-2">
-            <a href="#">{{ match.match_id }}</a>
         </div>
-        <div class="col-md-2">
-            <div ng-if="match.is_radiant_win">Victory: Radiant</div>
-            <div ng-if="!match.is_radiant_win">Victory: Dire</div>
-        </div>
-        <div class="col-md-2">
-            Duration: {{ match.duration }}
-        </div>
-        <div class="col-md-2">
-            Game mode: {{ match.game_mode.name }}
-        </div>
-        <div class="col-md-2">
-            Start: {{ match.start_time }}
+        <div class="row" ng-repeat="player in match.playersFiltered">
+            <div class="col-md-1" ng-if="player.player_slot < 5">Radiant</div>
+            <div class="col-md-1" ng-if="player.player_slot > 5">Dire</div>
+            <div class="col-md-1">
+                <img width="105" height="55" src="{{ player.hero.url_full_portrait }}">
+            </div>
+            <div class="col-md-1"><a
+                    href="/profiles/{{ player.player_account.account_id }}">{{ player.player_account.current_update.persona_name }}</a>
+                {{ player.player_account.account_id }}
+            </div>
+            <div class="col-md-2">K: {{ player.kills }} D:{{ player.deaths }} A:{{ player.assists }} </div>
+            <div class="col-md-1"></div>
         </div>
 
     </div>
-    <div class="row" ng-repeat="player in match.playersFiltered">
-        <div class="col-md-1" ng-if="player.player_slot < 5">Radiant</div>
-        <div class="col-md-1" ng-if="player.player_slot > 5">Dire</div>
-        <div class="col-md-1">
-            <img width="105" height="55" src="{{ player.hero.url_full_portrait }}">
-        </div>
-        <div class="col-md-1"><a
-                href="#">{{ player.player_account.current_update.persona_name }}</a>
-            {{ player.player_account.account_id }}
-        </div>
-        <div class="col-md-2">K: {{ player.kills }} D:{{ player.deaths }} A:{{ player.assists }} </div>
-        <div class="col-md-1"></div>
+    <div ng-if="vm.currentPage < vm.totalPages">
+        {{ vm.currentPage }} of {{ vm.totalPages }}
+        <a ng-href="#" ng-click="vm.getNextPage()">Next</a>
     </div>
-
-</div>
-<div ng-if="vm.currentPage < vm.totalPages">
-{{ vm.currentPage }} of {{ vm.totalPages }}
-<a ng-href="#" ng-click="vm.getNextPage()">Next</a>
+    {{ vm.loadingMessage }}
 </div>

@@ -3,6 +3,7 @@
 
     angular
         .module('dotaparty', [
+            'infinite-scroll',
             'dotaparty.routes',
             'dotaparty.config',
             'dotaparty.detailmatch',
