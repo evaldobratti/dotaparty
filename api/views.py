@@ -51,3 +51,18 @@ def get_friends_matches_details(request, accounts_ids):
 def download_games(request, account_id):
     tasks.download_games(account_id)
     return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def find(request, search):
+    accounts = Account.objects.filter(current_update__persona_name=search)
+    if search.isdigit():
+        accounts = accounts | Account.objects.filter(account_id=int(search))
+
+    if accounts:
+        return Response({
+            'type': 'Account',
+            'result': AccountSerializer(accounts[0]).data
+        })
+
+    return Response(status=status.HTTP_200_OK)

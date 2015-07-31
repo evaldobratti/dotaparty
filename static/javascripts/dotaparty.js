@@ -7,7 +7,8 @@
             'dotaparty.config',
             'dotaparty.detailmatch',
             'dotaparty.profile',
-            'dotaparty.friends'
+            'dotaparty.friends',
+            'dotaparty.home'
         ]);
 
     angular.module('dotaparty.routes', ['ngRoute']);

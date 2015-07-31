@@ -9,18 +9,21 @@
 
     function config($routeProvider) {
         $routeProvider.when('/matches/:matchId', {
-                controller: 'DetailMatchController',
-                controllerAs: 'vm',
-                templateUrl: 'static/templates/detailmatch.html'
-            }
-        ).when('/profiles/:accountId', {
+            controller: 'DetailMatchController',
+            controllerAs: 'vm',
+            templateUrl: 'static/templates/detailmatch.html'
+        }).when('/profiles/:accountId', {
             controller: 'ProfileController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/profile.html'
         }).when('/friends/:accountIds', {
-                controller: 'FriendsController',
-                controllerAs: 'vm',
-                templateUrl: 'static/templates/friends.html'
+            controller: 'FriendsController',
+            controllerAs: 'vm',
+            templateUrl: 'static/templates/friends.html'
+        }).when('/', {
+            controller: 'HomeController',
+            controllerAs: 'vm',
+            templateUrl: 'static/templates/home.html'
         }).otherwise('/');
     }
 })();
