@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from core import utils
 from core import tasks
-from core.models import Account
+from core.models import Account, DetailMatch
 from serializers import DetailMatchSerializer, ProfileSerializer, AccountSerializer
 from django.db import transaction
 # Create your views here.
@@ -20,7 +20,6 @@ def get_details_match(request, match_id):
 @transaction.atomic()
 def get_profile(request, account_id):
     account = utils.get_account(account_id)
-    print account
     return Response(ProfileSerializer(account).data)
 
 
@@ -55,14 +54,29 @@ def download_games(request, account_id):
 
 @api_view(['GET'])
 def find(request, search):
-    accounts = Account.objects.filter(current_update__persona_name=search)
+    accounts = Account.objects.filter(current_update__persona_name__icontains=search)
+    matches = []
     if search.isdigit():
         accounts = accounts | Account.objects.filter(account_id=int(search))
+        matches = DetailMatch.objects.filter(match_id=int(search))
 
-    if accounts:
-        return Response({
-            'type': 'Account',
-            'result': AccountSerializer(accounts[0]).data
-        })
+    return Response({
+        'accounts': AccountSerializer(accounts, many=True).data,
+        'matches': DetailMatchSerializer(matches, many=True).data
+    })
 
-    return Response(status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_matches(request, account_id):
+    page = request.GET.get('page')
+    matches_page = utils.get_matches(account_id, page)
+
+    return Response({
+        'links': {
+            'next': matches_page.has_next() and matches_page.next_page_number() or None,
+            'previous': matches_page.has_previous() and matches_page.previous_page_number() or None
+        },
+        'current': matches_page.number,
+        'total': matches_page.paginator.num_pages,
+        'results': DetailMatchSerializer(matches_page, many=True).data
+    })

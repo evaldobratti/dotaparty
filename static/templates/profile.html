@@ -4,8 +4,30 @@
     <button type="submit" class="btn btn-primary">Download games</button>
 </form>
 
+<div class="col-lg-6">
+    matches
+    <div ng-repeat="match in vm.matches">
+        <a ng-href="matches/{{ match.match_id }}">
+            <div ng-repeat="player in match.players" ng-if="player.account_id == vm.accountId">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <img ng-src="{{ player.hero.url_small_portrait }}">
+                    </div>
+                    <div class="col-lg-2">
+                        {{ player.hero.localized_name }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ player.kills + '/' + player.deaths + '/' + player.assists }}
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 
-<div>
+</div>
+
+
+<div style="overflow: scroll; height: 500px" class="col-lg-6">
     <table>
         <thead>
         <tr>

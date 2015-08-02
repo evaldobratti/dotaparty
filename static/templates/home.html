@@ -1,6 +1,27 @@
 <form ng-submit="vm.find()">
-    <label>Search</label> <input ng-model="vm.searchTxt" type="text" />
-    <br />
-    <input type="submit" value="Go" />
-
+    <label>Search</label> <input ng-model="vm.searchTxt" type="text"/>
+    <br/>
+    <input type="submit" value="Go"/>
 </form>
+
+<div ng-if="vm.accounts.length > 0">
+    <span>accounts</span>
+
+    <div ng-repeat="acc in vm.accounts">
+        <div>
+            <img ng-src="{{ acc.current_update.url_avatar }}">
+            <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
+        </div>
+    </div>
+</div>
+
+
+<div ng-if="vm.matches.length > 0">
+    <span>matches</span>
+
+    <div ng-repeat="match in vm.matches">
+        <div>
+            <a href="matches/{{ match.match_id}}">{{ match.match_id }}</a>
+        </div>
+    </div>
+</div>

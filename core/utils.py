@@ -21,14 +21,11 @@ def get_until_success(get_function):
 def get_account(account_id):
 
     account = Account.objects.filter(account_id=account_id)
-    print account
     if account:
         return account[0]
     else:
-        print 'will get ' + account_id
         acc = get_until_success(lambda: d2api.get_player_summaries(*[int(account_id)]))
 
-        print acc
         if acc:
             return load_account(account_id, acc[0])
         return None
@@ -209,6 +206,27 @@ def get_friends_matches_details(accounts_ids, page):
     query = query.order_by('-start_time')
     for account_id in accounts_ids:
         query = query.filter(players__player_account__account_id=account_id)
+
+    paginator = Paginator(query, 25)
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
+
+
+def get_matches(account_id, page):
+    query = DetailMatch.objects.distinct()
+    query = query.select_related("cluster")
+    query = query.select_related("lobby_type")
+    query = query.select_related("game_mode")
+    query = query.prefetch_related("players__player_account__current_update")
+    query = query.prefetch_related("players__hero")
+    query = query.prefetch_related("players__abilities__ability")
+    query = query.prefetch_related("players__items__item")
+    query = query.order_by('-start_time')
+    query = query.filter(players__player_account__account_id=account_id)
 
     paginator = Paginator(query, 25)
     try:

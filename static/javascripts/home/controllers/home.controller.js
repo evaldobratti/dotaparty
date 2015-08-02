@@ -20,11 +20,8 @@
 
         function find() {
             Home.find(vm.searchTxt).then(function (result) {
-                if (result.data.type == 'Account') {
-                    console.log('ok, is acc');
-                    $location.path('/profiles/' + result.data.result.account_id);
-                }
-
+                vm.accounts = result.data.accounts;
+                vm.matches = result.data.matches;
             });
         }
     }

@@ -1,7 +1,12 @@
 <div ng-repeat="acc in vm.accounts">
+    <img ng-src="{{ acc.current_update.url_avatar }}">
     <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
 </div>
-<div infinite-scroll="getNextPage()" infinite-scroll-distance="3">
+
+<div infinite-scroll="vm.getNextPage()"
+     infinite-scroll-distance="1"
+     infinite-scroll-disabled="vm.evaluating">
+
     <div ng-repeat="match in vm.matches">
 
         <div class="row">
@@ -40,7 +45,9 @@
     </div>
     <div ng-if="vm.currentPage < vm.totalPages">
         {{ vm.currentPage }} of {{ vm.totalPages }}
-        <a ng-href="#" ng-click="vm.getNextPage()">Next</a>
     </div>
-    {{ vm.loadingMessage }}
+    <div ng-if="vm.currentPage == vm.totalPages">
+        All matches loaded
+    </div>
+    <div ng-if="vm.evaluating"> Loading more matches</div>
 </div>

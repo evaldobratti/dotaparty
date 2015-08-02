@@ -5,16 +5,15 @@
         .module('dotaparty.friends.controllers')
         .controller('FriendsController', FriendsController);
 
-    FriendsController.$inject = ['$routeParams', '$rootScope', 'Friends', 'Profile'];
+    FriendsController.$inject = ['$routeParams', 'Friends', 'Profile'];
 
-    function FriendsController($routeParams, $scope, Friends, Profile) {
+    function FriendsController($routeParams, Friends, Profile) {
         var vm = this;
         vm.accountsIds = $routeParams.accountIds.split(",").filter(function (e) {
             return e.length > 3;
         });
         vm.accountsIds = vm.accountsIds.map(parseFloat);
 
-        $scope.getNextPage = getNextPage;
         vm.evaluating = false;
         vm.teste = 'a';
         vm.accounts = [];
@@ -50,19 +49,16 @@
                 return;
             }
 
-
-            if (vm.evaluating)
-                return;
+            if (vm.evaluating) return;
 
             vm.evaluating = true;
-            vm.loadingMessage = 'Loading more matches';
             Friends.getPage(vm.accountsIds, vm.currentPage + 1).then(function (data) {
                 vm.currentPage = data.data.current;
                 vm.totalPages = data.data.total;
                 filterPlayers(data.data.results);
+
                 vm.matches = vm.matches.concat(data.data.results);
                 vm.evaluating = false;
-                vm.loadingMessage = '';
             });
         }
 

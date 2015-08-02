@@ -10,56 +10,58 @@
 <div>Tower status dire: {{ vm.match.tower_status_dire }}</div>
 <table class="table">
     <thead>
-    <tr>
-        <th class="col-lg-1">id</th>
-        <th class="col-lg-1">slot</th>
-        <th class="col-lg-1">hero</th>
-        <th class="col-lg-1">kills</th>
-        <th class="col-lg-1">deaths</th>
-        <th class="col-lg-1">assists</th>
-        <th class="col-lg-1">gold</th>
-        <th class="col-lg-1">last_hits</th>
-        <th class="col-lg-1">denies</th>
-        <th class="col-lg-1">gold_per_min</th>
-        <th class="col-lg-1">xp_per_min</th>
-        <th class="col-lg-1">gold_spent</th>
-        <th class="col-lg-1">hero_damage</th>
-        <th class="col-lg-1">hero_healing</th>
-        <th class="col-lg-1">level</th>
-        <th class="col-lg-1">items</th>
+    <tr class="row">
+        <td class="col-md-1">id</td>
+        <td class="col-md-1">slot</td>
+        <td class="col-md-1">hero</td>
+        <td class="col-md-1">kills</td>
+        <td class="col-md-1">deaths</td>
+        <td class="col-md-1">assists</td>
+        <td class="col-md-1">gold</td>
+        <td class="col-md-1">last_hits</td>
+        <td class="col-md-1">denies</td>
+        <td class="col-md-1">gold_per_min</td>
+        <td class="col-md-1">xp_per_min</td>
+        <td class="col-md-1">gold_spent</td>
+        <td class="col-md-1">hero_damage</td>
+        <td class="col-md-1">hero_healing</td>
+        <td class="col-md-1">level</td>
+        <td class="col-md-1">items</td>
 
 
     </tr>
     </thead>
 
     <tbody>
-    <tr ng-repeat="p in vm.match.players" >
+    <tr ng-repeat="p in vm.match.players" class="row">
 
-        <th class="col-lg-1">
-            <a href="profiles/{{ p.account_id }}" ng-if="p.player_account != null">{{ p.player_account.current_update.persona_name }}</a>
+        <td class="col-md-1">
+            <a href="profiles/{{ p.account_id }}"
+               ng-if="p.player_account != null">{{ p.player_account.current_update.persona_name }}</a>
+
             <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
-        </th>
+        </td>
 
-        <th class="col-lg-1">{{ p.player_slot }}</th>
+        <td class="col-md-1">{{ p.player_slot }}</td>
 
-        <th class="col-lg-1"><img width="105" height="55" ng-src="{{ p.hero.url_large_portrait }}"></th>
-        <th class="col-lg-1">{{ p.kills }}</th>
-        <th class="col-lg-1">{{ p.deaths }}</th>
-        <th class="col-lg-1">{{ p.assists }}</th>
-        <th class="col-lg-1">{{ p.gold }}</th>
-        <th class="col-lg-1">{{ p.last_hits }}</th>
-        <th class="col-lg-1">{{ p.denies }}</th>
-        <th class="col-lg-1">{{ p.gold_per_min }}</th>
-        <th class="col-lg-1">{{ p.xp_per_min }}</th>
-        <th class="col-lg-1">{{ p.gold_spent }}</th>
-        <th class="col-lg-1">{{ p.hero_damage }}</th>
-        <th class="col-lg-1">{{ p.hero_healing }}</th>
-        <th class="col-lg-1">{{ p.level }}</th>
-        <th class="col-lg-1">
-            <div ng-repeat="item in p.items">
-                <img height="30" width="40" ng-src="{{ item.item.url_image }}">
+        <td class="col-md-1"><img width="105" height="55" ng-src="{{ p.hero.url_large_portrait }}"></td>
+        <td class="col-md-1">{{ p.kills }}</td>
+        <td class="col-md-1">{{ p.deaths }}</td>
+        <td class="col-md-1">{{ p.assists }}</td>
+        <td class="col-md-1">{{ p.gold }}</td>
+        <td class="col-md-1">{{ p.last_hits }}</td>
+        <td class="col-md-1">{{ p.denies }}</td>
+        <td class="col-md-1">{{ p.gold_per_min }}</td>
+        <td class="col-md-1">{{ p.xp_per_min }}</td>
+        <td class="col-md-1">{{ p.gold_spent }}</td>
+        <td class="col-md-1">{{ p.hero_damage }}</td>
+        <td class="col-md-1">{{ p.hero_healing }}</td>
+        <td class="col-md-1">{{ p.level }}</td>
+        <td class="col-md-1">
+            <div class="row">
+                <img ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
             </div>
-        </th>
+        </td>
 
     </tr>
 

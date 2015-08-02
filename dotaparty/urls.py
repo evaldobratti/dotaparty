@@ -15,6 +15,7 @@ urlpatterns = [
     url('^api/friends/(?P<accounts_ids>([0-9]+)(,[0-9]+)*)$', views.get_friends_matches_details),
     url('^api/accounts/(?P<account_id>[0-9]+)$', views.get_account),
     url('^api/accounts/(?P<account_id>[0-9]+)/download$', views.download_games),
+    url('^api/detailmatches/account/(?P<account_id>[0-9]+)$', views.get_matches),
     url('^api/find/(?P<search>\w+)$', views.find),
 
     url('^.*$', IndexView.as_view(), name='index')
