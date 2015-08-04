@@ -35,5 +35,9 @@ def download_games(account_id):
 
                 last_match_id = match.match_id
 
+            if count_hits == 100:
+                log.info("acc: {} 100 matches already parsed. Finishing.".format(account_id))
+                return
+
         except Exception, e:
             log.exception(e)

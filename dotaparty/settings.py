@@ -133,3 +133,6 @@ HUEY = {
     'always_eager': False,
     'consumer_options': {'workers': 4},
 }
+
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
