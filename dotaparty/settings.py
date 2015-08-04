@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'dotaparty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dotaparty',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': os.environ['PS_DB_NAME'],
+        'USER': os.environ['PS_DB_USER'],
+        'PASSWORD': os.environ['PS_DB_PW'],
+        'HOST': os.environ['PS_DB_HOST'],
+        'PORT': os.environ['PS_DB_PORT']
     }
 }
 

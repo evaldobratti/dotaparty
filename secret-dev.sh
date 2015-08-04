@@ -1,0 +1,7 @@
+export DJANGO_KEY='DJANGO_KEY_HERE'
+export D2_API_KEY='STEAM_KEY_HERE'
+export PS_DB_NAME='dotaparty'
+export PS_DB_USER='postgres'
+export PS_DB_PW='postgres'
+export PS_DB_HOST='localhost'
+export PS_DB_PORT='5432'
