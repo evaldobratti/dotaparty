@@ -127,10 +127,9 @@ STATICFILES_FINDERS = (
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 HUEY = {
-    'backend': 'huey.backends.sqlite_backend',
-    'name': 'downloader',
-    'connection': {'location': 'huey.sqlite3'},
-    'always_eager': False,
+    'backend': 'huey.backends.redis_backend',
+    'name': 'dotaparty',
+    'connection': {'host': 'localhost', 'port': 6379},
     'consumer_options': {'workers': 4},
 }
 
