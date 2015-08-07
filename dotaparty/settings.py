@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import secret
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['DJANGO_KEY']
+SECRET_KEY = secret.DJANGO_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -85,11 +86,11 @@ WSGI_APPLICATION = 'dotaparty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['PS_DB_NAME'],
-        'USER': os.environ['PS_DB_USER'],
-        'PASSWORD': os.environ['PS_DB_PW'],
-        'HOST': os.environ['PS_DB_HOST'],
-        'PORT': os.environ['PS_DB_PORT']
+        'NAME': secret.PS_DB_NAME,
+        'USER': secret.PS_DB_USER,
+        'PASSWORD': secret.PS_DB_PW,
+        'HOST': secret.PS_DB_HOST,
+        'PORT': secret.PS_DB_PORT
     }
 }
 

@@ -1,8 +1,8 @@
 from models import *
 from dota2api import api
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-d2api = api.Initialise()
+from dotaparty import secret
+d2api = api.Initialise(secret.D2_API_KEY)
 
 
 def get_until_success(get_function):
