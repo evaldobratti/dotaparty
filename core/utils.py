@@ -161,9 +161,16 @@ def parse_from_details_match(match_details):
 
 
 def get_details_match(match_id):
-    match = DetailMatch.objects.filter(match_id=match_id)
-    if match:
-        return match[0]
+    query = DetailMatch.objects.filter(match_id=match_id)
+    query = query.select_related("cluster")
+    query = query.select_related("lobby_type")
+    query = query.select_related("game_mode")
+    query = query.prefetch_related("players__player_account__current_update")
+    query = query.prefetch_related("players__hero")
+    query = query.prefetch_related("players__abilities__ability")
+    query = query.prefetch_related("players__items__item")
+    if query:
+        return query[0]
     else:
         details = get_until_success(lambda: d2api.get_match_details(match_id))
         return parse_from_details_match(details)

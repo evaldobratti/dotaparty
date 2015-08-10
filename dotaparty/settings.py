@@ -134,5 +134,8 @@ HUEY = {
     'consumer_options': {'workers': 4},
 }
 
+CACHE_MACHINE_USE_REDIS = True
+REDIS_BACKEND = 'redis://localhost:6379'
+
 import logging
 logging.getLogger("requests").setLevel(logging.WARNING)

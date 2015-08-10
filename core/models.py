@@ -1,4 +1,6 @@
 from django.db import models
+from caching.base import CachingMixin, CachingManager
+
 
 class Account(models.Model):
     account_id = models.BigIntegerField(unique=True)
@@ -22,7 +24,7 @@ class AccountUpdate(models.Model):
     primary_clan_id = models.BigIntegerField(null=True)
     persona_state_flags = models.BigIntegerField(null=True)
 
-class Hero(models.Model):
+class Hero(CachingMixin, models.Model):
     hero_id = models.SmallIntegerField()
     localized_name = models.CharField(max_length=50)
     name = models.CharField(max_length=50, unique=True)
@@ -31,8 +33,10 @@ class Hero(models.Model):
     url_full_portrait = models.CharField(max_length=300)
     url_vertical_portrait = models.CharField(max_length=300)
 
+    objects = CachingManager()
 
-class Item(models.Model):
+
+class Item(CachingMixin, models.Model):
     item_id = models.SmallIntegerField(unique=True)
     localized_name = models.CharField(max_length=40)
     name = models.CharField(max_length=40)
@@ -42,10 +46,14 @@ class Item(models.Model):
     in_side_shop = models.BooleanField()
     url_image = models.CharField(max_length=400)
 
+    objects = CachingManager()
 
-class Ability(models.Model):
+
+class Ability(CachingMixin, models.Model):
     ability_id = models.SmallIntegerField()
     name = models.CharField(max_length=100)
+
+    objects = CachingManager()
 
 
 class Cluster(models.Model):
@@ -85,6 +93,7 @@ class DetailMatch(models.Model):
 
     def dire_team(self):
         return self.players.all().filter(player_slot__gt=10)
+
 
 class ItemOwner(models.Model):
     pass
