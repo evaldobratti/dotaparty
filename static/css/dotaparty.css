@@ -1,0 +1,19 @@
+.detail-match-item {
+    width: 30px;
+    float: left;
+}
+
+.detail-match-hero {
+    width: 40px;
+}
+
+.detail-match-profile-img{
+    width: 30px;
+    float: right;
+}
+
+.detail-match-column {
+    margin: auto 5px;
+    width: 40px;
+    float: left;
+}

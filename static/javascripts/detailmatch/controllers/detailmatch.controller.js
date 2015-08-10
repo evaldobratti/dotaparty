@@ -9,7 +9,7 @@
 
     function DetailMatchController($routeParams, DetailMatch) {
         var vm = this;
-
+        vm.IMG_WIDTH = 30;
         active();
 
         function active() {

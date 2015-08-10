@@ -8,65 +8,50 @@
 <div>Mode: {{ vm.match.game_mode_name }}</div>
 <div>Tower status radiant: {{ vm.match.tower_status_radiant }}</div>
 <div>Tower status dire: {{ vm.match.tower_status_dire }}</div>
-<table class="table">
-    <thead>
-    <tr class="row">
-        <td class="col-md-1">id</td>
-        <td class="col-md-1">slot</td>
-        <td class="col-md-1">hero</td>
-        <td class="col-md-1">kills</td>
-        <td class="col-md-1">deaths</td>
-        <td class="col-md-1">assists</td>
-        <td class="col-md-1">gold</td>
-        <td class="col-md-1">last_hits</td>
-        <td class="col-md-1">denies</td>
-        <td class="col-md-1">gold_per_min</td>
-        <td class="col-md-1">xp_per_min</td>
-        <td class="col-md-1">gold_spent</td>
-        <td class="col-md-1">hero_damage</td>
-        <td class="col-md-1">hero_healing</td>
-        <td class="col-md-1">level</td>
-        <td class="col-md-1">items</td>
+<div class="row">
+    <div class="detail-match-column" style="width: 200px">Player</div>
+    <div class="detail-match-column">hero</div>
+    <div class="detail-match-column">LVL</div>
+    <div class="detail-match-column">K</div>
+    <div class="detail-match-column">D</div>
+    <div class="detail-match-column">A</div>
+    <div class="detail-match-column">LH</div>
+    <div class="detail-match-column">Denies</div>
+    <div class="detail-match-column">GPM</div>
+    <div class="detail-match-column">XPM</div>
+    <div class="detail-match-column">Gold</div>
+    <div class="detail-match-column">HD</div>
+    <div class="detail-match-column">HH</div>
+    <div class="detail-match-column">Items</div>
+</div>
+<div ng-repeat="p in vm.match.players" class="row">
 
-
-    </tr>
-    </thead>
-
-    <tbody>
-    <tr ng-repeat="p in vm.match.players" class="row">
-
-        <td class="col-md-1">
+    <div class="detail-match-column" style="width: 200px">
+        <div ng-if="p.player_account != null">
             <a href="profiles/{{ p.account_id }}"
-               ng-if="p.player_account != null">{{ p.player_account.current_update.persona_name }}</a>
+                    >{{ p.player_account.current_update.persona_name }}</a>
+            <img class="detail-match-profile-img" ng-src="{{ p.player_account.current_update.url_avatar }}">
+        </div>
+        <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
+    </div>
 
-            <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
-        </td>
+    <div class="detail-match-column">
+        <img class="detail-match-hero" ng-src="{{ p.hero.url_large_portrait }}">
+    </div>
+    <div class="detail-match-column">{{ p.level }}</div>
+    <div class="detail-match-column">{{ p.kills }}</div>
+    <div class="detail-match-column">{{ p.deaths }}</div>
+    <div class="detail-match-column">{{ p.assists }}</div>
+    <div class="detail-match-column">{{ p.last_hits }}</div>
+    <div class="detail-match-column">{{ p.denies }}</div>
+    <div class="detail-match-column">{{ p.gold_per_min }}</div>
+    <div class="detail-match-column">{{ p.xp_per_min }}</div>
+    <div class="detail-match-column">{{ p.gold_spent + p.gold }}</div>
+    <div class="detail-match-column">{{ p.hero_damage }}</div>
+    <div class="detail-match-column">{{ p.hero_healing }}</div>
+    <div class="detail-match-column" style="width: 200px">
+        <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
+    </div>
 
-        <td class="col-md-1">{{ p.player_slot }}</td>
-
-        <td class="col-md-1"><img width="105" height="55" ng-src="{{ p.hero.url_large_portrait }}"></td>
-        <td class="col-md-1">{{ p.kills }}</td>
-        <td class="col-md-1">{{ p.deaths }}</td>
-        <td class="col-md-1">{{ p.assists }}</td>
-        <td class="col-md-1">{{ p.gold }}</td>
-        <td class="col-md-1">{{ p.last_hits }}</td>
-        <td class="col-md-1">{{ p.denies }}</td>
-        <td class="col-md-1">{{ p.gold_per_min }}</td>
-        <td class="col-md-1">{{ p.xp_per_min }}</td>
-        <td class="col-md-1">{{ p.gold_spent }}</td>
-        <td class="col-md-1">{{ p.hero_damage }}</td>
-        <td class="col-md-1">{{ p.hero_healing }}</td>
-        <td class="col-md-1">{{ p.level }}</td>
-        <td class="col-md-1">
-            <div class="row">
-                <img ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
-            </div>
-        </td>
-
-    </tr>
-
-
-    </tbody>
-</table>
-
+</div>
 
