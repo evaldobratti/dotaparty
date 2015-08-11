@@ -13,7 +13,8 @@
 }
 
 .detail-match-column {
-    margin: auto 5px;
+    margin: auto;
     width: 40px;
+    text-align: center;
     float: left;
 }
