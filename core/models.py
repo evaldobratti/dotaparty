@@ -56,18 +56,23 @@ class Ability(CachingMixin, models.Model):
     objects = CachingManager()
 
 
-class Cluster(models.Model):
+class Cluster(CachingMixin, models.Model):
     cluster_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
-class LobbyType(models.Model):
+    objects = CachingManager()
+
+class LobbyType(CachingMixin, models.Model):
     lobby_type_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
-class GameMode(models.Model):
+    objects = CachingManager()
+
+class GameMode(CachingMixin, models.Model):
     game_mode_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
+    objects = CachingManager()
 
 class DetailMatch(models.Model):
     is_radiant_win = models.BooleanField()
@@ -99,10 +104,12 @@ class ItemOwner(models.Model):
     pass
 
 
-class LeaverStatus(models.Model):
+class LeaverStatus(CachingMixin, models.Model):
     leaver_id = models.IntegerField(null=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50)
+
+    objects = CachingManager()
 
 class DetailMatchPlayer(ItemOwner):
     player_account = models.ForeignKey(Account, null=True, related_name='match_players')
