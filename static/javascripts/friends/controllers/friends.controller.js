@@ -65,12 +65,17 @@
         function filterPlayers(matches) {
             matches.forEach(function (match) {
                 match.playersFiltered = [];
-                match.players.forEach(function (player) {
+                match.radiant_team.forEach(function (player) {
                     if (vm.accountsIds.indexOf(player.account_id) >= 0) {
-
                         match.playersFiltered.push(player);
+                        match.wereOnRadiant = true;
                     }
-
+                });
+                match.dire_team.forEach(function (player) {
+                    if (vm.accountsIds.indexOf(player.account_id) >= 0) {
+                        match.playersFiltered.push(player);
+                        match.wereOnRadiant = false;
+                    }
                 });
 
             });

@@ -94,10 +94,10 @@ class DetailMatch(models.Model):
     game_mode = models.ForeignKey(GameMode)
 
     def radiant_team(self):
-        return self.players.all().filter(player_slot__lt=10)
+        return self.players.all().filter(player_slot__lt=10).order_by('player_slot')
 
     def dire_team(self):
-        return self.players.all().filter(player_slot__gt=10)
+        return self.players.all().filter(player_slot__gt=10).order_by('player_slot')
 
 
 class ItemOwner(models.Model):

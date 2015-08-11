@@ -67,7 +67,8 @@ class DefaultPagination(PageNumberPagination):
 
 
 class DetailMatchSerializer(serializers.ModelSerializer):
-    players = PlayerSerializer(many=True)
+    radiant_team = PlayerSerializer(many=True)
+    dire_team = PlayerSerializer(many=True)
     lobby_type = LobbyTypeSerialiazer()
     game_mode = GameModeSerialiazer()
     cluster = ClusterSerialiazer()

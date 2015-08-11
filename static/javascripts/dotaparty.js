@@ -9,9 +9,11 @@
             'dotaparty.detailmatch',
             'dotaparty.profile',
             'dotaparty.friends',
-            'dotaparty.home'
+            'dotaparty.home',
+            'dotaparty.filter'
         ]);
 
     angular.module('dotaparty.routes', ['ngRoute']);
-    angular.module('dotaparty.config', [])
+    angular.module('dotaparty.config', []);
+    angular.module('dotaparty.filter', []);
 })();

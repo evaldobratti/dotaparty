@@ -1,57 +1,135 @@
 <a href="#">{{ vm.match.vm.match_id }}</a>
 
-<div ng-if="vm.match.is_radiant_win">Radiant win!</div>
-<div ng-if="!vm.match.is_radiant_win">Dire win!</div>
-
-<div>Duration: {{ vm.match.duration }}</div>
-<div>Region: {{ vm.match.cluster_name }}</div>
-<div>Mode: {{ vm.match.game_mode_name }}</div>
-<div>Tower status radiant: {{ vm.match.tower_status_radiant }}</div>
-<div>Tower status dire: {{ vm.match.tower_status_dire }}</div>
+<div style="text-align: center">
+    <h2 ng-if="vm.match.is_radiant_win">Radiant win!</h2>
+    <h2 ng-if="!vm.match.is_radiant_win">Dire win!</h2>
+</div>
 <div class="row">
-    <div class="detail-match-column" style="width: 200px">Player</div>
-    <div class="detail-match-column">hero</div>
-    <div class="detail-match-column">LVL</div>
-    <div class="detail-match-column">K</div>
-    <div class="detail-match-column">D</div>
-    <div class="detail-match-column">A</div>
-    <div class="detail-match-column">LH/DN</div>
-    <div class="detail-match-column">GPM</div>
-    <div class="detail-match-column">XPM</div>
-    <div class="detail-match-column">Gold</div>
-    <div class="detail-match-column">TD</div>
-    <div class="detail-match-column">HD</div>
-    <div class="detail-match-column">HH</div>
-    <div class="detail-match-column">Items</div>
-</div>
-<div ng-repeat="p in vm.match.players" class="row">
-
-    <div class="detail-match-column" style="width: 200px">
-        <div ng-if="p.player_account != null">
-            <a href="profiles/{{ p.account_id }}"
-                    >{{ p.player_account.current_update.persona_name }}</a>
-            <img class="detail-match-profile-img" ng-src="{{ p.player_account.current_update.url_avatar }}">
-        </div>
-        <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
+    <div class="col-md-2">
+        <p>Match</p><h4><b>{{ vm.match.match_id }}</b></h4>
     </div>
-
-    <div class="detail-match-column">
-        <img class="detail-match-hero" ng-src="{{ p.hero.url_large_portrait }}">
+    <div class="col-md-2">
+        <p>Date</p><h4>{{ vm.match.start_time | secondsToDateTime | date:'dd/MM/yyyy' }}</h4>
     </div>
-    <div class="detail-match-column">{{ p.level }}</div>
-    <div class="detail-match-column">{{ p.kills }}</div>
-    <div class="detail-match-column">{{ p.deaths }}</div>
-    <div class="detail-match-column">{{ p.assists }}</div>
-    <div class="detail-match-column">{{ p.last_hits }} / {{ p.denies }}</div>
-    <div class="detail-match-column">{{ p.gold_per_min }}</div>
-    <div class="detail-match-column">{{ p.xp_per_min }}</div>
-    <div class="detail-match-column">{{ p.gold_spent + p.gold }}</div>
-    <div class="detail-match-column">{{ p.tower_damage }}</div>
-    <div class="detail-match-column">{{ p.hero_damage }}</div>
-    <div class="detail-match-column">{{ p.hero_healing }}</div>
-    <div class="detail-match-column" style="width: 200px">
-        <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
+    <div class="col-md-2">
+        <p>Duration</p><h4>{{ vm.match.duration | secondsToDateTime | date:'mm:ss' }}</h4>
     </div>
-
+    <div class="col-md-2">
+        <p>First Blood</p><h4>{{ vm.match.first_blood_time | secondsToDateTime | date:'mm:ss' }}</h4>
+    </div>
+    <div class="col-md-4">
+        <p>Lobby Type</p><h4>{{ vm.match.lobby_type.name }}</h4>
+    </div>
+    <div class="col-md-2">
+        <p>Game Mode</p><h4>{{ vm.match.game_mode.name }}</h4>
+    </div>
+    <div class="col-md-4">
+        <p>Region</p><h4>{{ vm.match.cluster.name }}</h4>
+    </div>
 </div>
 
+<h3>Radiant</h3>
+<table class="table table-striped table-condensed">
+    <thead>
+    <tr>
+        <th class="text-align-center">Hero</th>
+        <th>Player</th>
+        <th class="text-align-center">LVL</th>
+        <th class="text-align-center">K</th>
+        <th class="text-align-center">D</th>
+        <th class="text-align-center">A</th>
+        <th class="text-align-center">LH/DN</th>
+        <th class="text-align-center">GPM</th>
+        <th class="text-align-center">XPM</th>
+        <th class="text-align-center">Gold</th>
+        <th class="text-align-center">TD</th>
+        <th class="text-align-center">HD</th>
+        <th class="text-align-center">HH</th>
+        <th>Items</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="p in vm.match.radiant_team">
+        <td class="text-align-center">
+            <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
+        </td>
+
+        <td>
+            <div ng-if="p.player_account != null">
+                <a href="profiles/{{ p.account_id }}"
+                        >{{ p.player_account.current_update.persona_name }}</a>
+                <img style="float: right" ng-src="{{ p.player_account.current_update.url_avatar }}">
+            </div>
+            <div ng-if="p.player_account == null"> {{ 'Private profile' }} </div>
+        </td>
+
+        <td class="text-align-center">{{ p.level }}</td>
+        <td class="text-align-center">{{ p.kills }}</td>
+        <td class="text-align-center">{{ p.deaths }}</td>
+        <td class="text-align-center">{{ p.assists }}</td>
+        <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
+        <td class="text-align-center">{{ p.gold_per_min }}</td>
+        <td class="text-align-center">{{ p.xp_per_min }}</td>
+        <td class="text-align-center">{{ p.gold_spent + p.gold }}</td>
+        <td class="text-align-center">{{ p.tower_damage }}</td>
+        <td class="text-align-center">{{ p.hero_damage }}</td>
+        <td class="text-align-center">{{ p.hero_healing }}</td>
+        <td>
+            <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Dire</h3>
+<table class="table table-striped table-condensed">
+    <thead>
+    <tr>
+        <th class="text-align-center">Hero</th>
+        <th>Player</th>
+        <th class="text-align-center">LVL</th>
+        <th class="text-align-center">K</th>
+        <th class="text-align-center">D</th>
+        <th class="text-align-center">A</th>
+        <th class="text-align-center">LH/DN</th>
+        <th class="text-align-center">GPM</th>
+        <th class="text-align-center">XPM</th>
+        <th class="text-align-center">Gold</th>
+        <th class="text-align-center">TD</th>
+        <th class="text-align-center">HD</th>
+        <th class="text-align-center">HH</th>
+        <th>Items</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="p in vm.match.dire_team">
+        <td class="text-align-center">
+            <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
+        </td>
+
+        <td>
+            <div ng-if="p.player_account != null">
+                <a href="profiles/{{ p.account_id }}"
+                        >{{ p.player_account.current_update.persona_name }}</a>
+                <img style="float: right" ng-src="{{ p.player_account.current_update.url_avatar }}">
+            </div>
+            <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
+        </td>
+
+        <td class="text-align-center">{{ p.level }}</td>
+        <td class="text-align-center">{{ p.kills }}</td>
+        <td class="text-align-center">{{ p.deaths }}</td>
+        <td class="text-align-center">{{ p.assists }}</td>
+        <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
+        <td class="text-align-center">{{ p.gold_per_min }}</td>
+        <td class="text-align-center">{{ p.xp_per_min }}</td>
+        <td class="text-align-center">{{ p.gold_spent + p.gold }}</td>
+        <td class="text-align-center">{{ p.tower_damage }}</td>
+        <td class="text-align-center">{{ p.hero_damage }}</td>
+        <td class="text-align-center">{{ p.hero_healing }}</td>
+        <td>
+            <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
+        </td>
+    </tr>
+    </tbody>
+</table>

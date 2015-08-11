@@ -12,9 +12,6 @@
     float: right;
 }
 
-.detail-match-column {
-    margin: auto;
-    width: 40px;
+.text-align-center {
     text-align: center;
-    float: left;
 }
