@@ -38,8 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
-    'debug_panel',
+    #'debug_toolbar',
+    #'debug_panel',
     'huey.djhuey',
     'rest_framework',
     'compressor',
@@ -56,7 +56,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'debug_panel.middleware.DebugPanelMiddleware',
+    #'debug_panel.middleware.DebugPanelMiddleware',
 )
 
 ROOT_URLCONF = 'dotaparty.urls'
