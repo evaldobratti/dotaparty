@@ -5,7 +5,6 @@ from django.db import models
 items = {}
 def get_item(item_id):
     if item_id in items:
-        print 'cache hit item ' + str(item_id)
         return items[item_id]
     else:
         items[item_id] = Item.objects.get(item_id=item_id)
@@ -14,7 +13,6 @@ def get_item(item_id):
 heroes = {}
 def get_hero(hero_id):
     if hero_id in heroes:
-        print 'cache hit hero ' + str(hero_id)
         return heroes[hero_id]
     else:
         heroes[hero_id] = Hero.objects.get(hero_id=hero_id)
@@ -23,7 +21,6 @@ def get_hero(hero_id):
 abilities = {}
 def get_ability(ability_id):
     if ability_id in abilities:
-        print 'cache hit ability ' + str(ability_id)
         return abilities[ability_id]
     else:
         abilities[ability_id] = Ability.objects.get(ability_id=ability_id)
