@@ -5,3 +5,4 @@ env
 db.sqlite3
 *.pyc
 *sqlite3*
+dotaparty/secret.py

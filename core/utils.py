@@ -81,7 +81,7 @@ def load_team(match, players):
         player = DetailMatchPlayer.objects.create(match=match, player_account=account,
                                                   account_id=player_response.account_id,
                                                   player_slot=player_response.player_slot,
-                                                  hero=hero, kills=player_response.kills,
+                                                  hero_id=hero.hero_id, kills=player_response.kills,
                                                   deaths=player_response.deaths, assists=player_response.assists,
                                                   leaver_status=leaver_status,
                                                   gold=player_response.gold,
@@ -107,7 +107,7 @@ def load_team(match, players):
                                                      in_side_shop=item_response.in_side_shop,
                                                      url_image=item_response.url_image)
 
-                DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item=item)
+                DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item.item_id)
 
         for index, item_response in enumerate(player_response.items):
             item, _ = Item.objects.get_or_create(item_id=item_response.id,
@@ -119,13 +119,13 @@ def load_team(match, players):
                                                  in_side_shop=item_response.in_side_shop,
                                                  url_image=item_response.url_image)
 
-            DetailMatchOwnerItem.objects.create(owner=player, slot=index, item=item)
+            DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item.item_id)
 
         for upgrade in player_response.ability_upgrades:
             ability, _ = Ability.objects.get_or_create(ability_id=upgrade.ability,
                                                        name=upgrade.ability_name)
             DetailMatchAbilityUpgrade.objects.create(player=player,
-                                                     ability=ability,
+                                                     ability_id=ability.ability_id,
                                                      time=upgrade.time,
                                                      upgraded_lvl=upgrade.level)
 
@@ -166,9 +166,8 @@ def get_details_match(match_id):
     query = query.select_related("lobby_type")
     query = query.select_related("game_mode")
     query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__hero")
-    query = query.prefetch_related("players__abilities__ability")
-    query = query.prefetch_related("players__items__item")
+    query = query.prefetch_related("players__abilities")
+    query = query.prefetch_related("players__items")
     if query:
         return query[0]
     else:
@@ -207,9 +206,8 @@ def get_friends_matches_details(accounts_ids, page):
     query = query.select_related("lobby_type")
     query = query.select_related("game_mode")
     query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__hero")
-    query = query.prefetch_related("players__abilities__ability")
-    query = query.prefetch_related("players__items__item")
+    query = query.prefetch_related("players__abilities")
+    query = query.prefetch_related("players__items")
     query = query.order_by('-start_time')
     for account_id in accounts_ids:
         query = query.filter(players__player_account__account_id=account_id)
@@ -229,9 +227,8 @@ def get_matches(account_id, page):
     query = query.select_related("lobby_type")
     query = query.select_related("game_mode")
     query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__hero")
-    query = query.prefetch_related("players__abilities__ability")
-    query = query.prefetch_related("players__items__item")
+    query = query.prefetch_related("players__abilities")
+    query = query.prefetch_related("players__items")
     query = query.order_by('-start_time')
     query = query.filter(players__player_account__account_id=account_id)
 

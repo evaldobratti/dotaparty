@@ -1,5 +1,33 @@
 from django.db import models
-from caching.base import CachingMixin, CachingManager
+
+
+
+items = {}
+def get_item(item_id):
+    if item_id in items:
+        print 'cache hit item ' + str(item_id)
+        return items[item_id]
+    else:
+        items[item_id] = Item.objects.get(item_id=item_id)
+        return items[item_id]
+
+heroes = {}
+def get_hero(hero_id):
+    if hero_id in heroes:
+        print 'cache hit hero ' + str(hero_id)
+        return heroes[hero_id]
+    else:
+        heroes[hero_id] = Hero.objects.get(hero_id=hero_id)
+        return heroes[hero_id]
+
+abilities = {}
+def get_ability(ability_id):
+    if ability_id in abilities:
+        print 'cache hit ability ' + str(ability_id)
+        return abilities[ability_id]
+    else:
+        abilities[ability_id] = Ability.objects.get(ability_id=ability_id)
+        return abilities[ability_id]
 
 
 class Account(models.Model):
@@ -24,7 +52,7 @@ class AccountUpdate(models.Model):
     primary_clan_id = models.BigIntegerField(null=True)
     persona_state_flags = models.BigIntegerField(null=True)
 
-class Hero(CachingMixin, models.Model):
+class Hero(models.Model):
     hero_id = models.SmallIntegerField()
     localized_name = models.CharField(max_length=50)
     name = models.CharField(max_length=50, unique=True)
@@ -33,10 +61,8 @@ class Hero(CachingMixin, models.Model):
     url_full_portrait = models.CharField(max_length=300)
     url_vertical_portrait = models.CharField(max_length=300)
 
-    objects = CachingManager()
 
-
-class Item(CachingMixin, models.Model):
+class Item(models.Model):
     item_id = models.SmallIntegerField(unique=True)
     localized_name = models.CharField(max_length=40)
     name = models.CharField(max_length=40)
@@ -46,33 +72,26 @@ class Item(CachingMixin, models.Model):
     in_side_shop = models.BooleanField()
     url_image = models.CharField(max_length=400)
 
-    objects = CachingManager()
 
-
-class Ability(CachingMixin, models.Model):
+class Ability(models.Model):
     ability_id = models.SmallIntegerField()
     name = models.CharField(max_length=100)
 
-    objects = CachingManager()
 
-
-class Cluster(CachingMixin, models.Model):
+class Cluster(models.Model):
     cluster_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
-    objects = CachingManager()
 
-class LobbyType(CachingMixin, models.Model):
+class LobbyType(models.Model):
     lobby_type_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
-    objects = CachingManager()
 
-class GameMode(CachingMixin, models.Model):
+class GameMode(models.Model):
     game_mode_id = models.IntegerField()
     name = models.CharField(max_length=30)
 
-    objects = CachingManager()
 
 class DetailMatch(models.Model):
     is_radiant_win = models.BooleanField()
@@ -104,12 +123,11 @@ class ItemOwner(models.Model):
     pass
 
 
-class LeaverStatus(CachingMixin, models.Model):
+class LeaverStatus(models.Model):
     leaver_id = models.IntegerField(null=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50)
 
-    objects = CachingManager()
 
 class DetailMatchPlayer(ItemOwner):
     player_account = models.ForeignKey(Account, null=True, related_name='match_players')
@@ -117,7 +135,7 @@ class DetailMatchPlayer(ItemOwner):
     account_id = models.BigIntegerField()
     player_slot = models.SmallIntegerField()
 
-    hero = models.ForeignKey(Hero)
+    hero_id = models.PositiveIntegerField(null=False)
 
     kills = models.SmallIntegerField()
     deaths = models.SmallIntegerField()
@@ -135,6 +153,9 @@ class DetailMatchPlayer(ItemOwner):
     hero_healing = models.IntegerField()
     level = models.IntegerField()
 
+    def hero(self):
+        return get_hero(self.hero_id)
+
 
 class AdditionalUnit(ItemOwner):
     unit_name = models.CharField(max_length=50)
@@ -144,11 +165,17 @@ class AdditionalUnit(ItemOwner):
 class DetailMatchOwnerItem(models.Model):
     slot = models.SmallIntegerField()
     owner = models.ForeignKey(ItemOwner, related_name="items")
-    item = models.ForeignKey(Item)
+    item_id = models.PositiveIntegerField(null=False)
+
+    def item(self):
+        return get_item(self.item_id)
 
 
 class DetailMatchAbilityUpgrade(models.Model):
     player = models.ForeignKey(DetailMatchPlayer, related_name='abilities')
-    ability = models.ForeignKey(Ability)
+    ability_id = models.PositiveIntegerField(null=False)
     time = models.IntegerField()
     upgraded_lvl = models.SmallIntegerField()
+
+    def ability(self):
+        return get_ability(self.ability_id)
