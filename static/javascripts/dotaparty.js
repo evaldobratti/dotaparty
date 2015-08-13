@@ -6,6 +6,7 @@
         .module('dotaparty', [
             'infinite-scroll',
             'ui.bootstrap',
+            'chart.js',
             'dotaparty.routes',
             'dotaparty.config',
             'dotaparty.detailmatch',
