@@ -212,7 +212,7 @@ def get_friends_matches_details(accounts_ids, page):
     for account_id in accounts_ids:
         query = query.filter(players__player_account__account_id=account_id)
 
-    paginator = Paginator(query, 25)
+    paginator = Paginator(query, 10)
     try:
         return paginator.page(page)
     except PageNotAnInteger:
