@@ -16,7 +16,7 @@
         return DetailMatch;
 
         function get(matchId) {
-            return $http.get('/api/detailmatches/' + matchId);
+            return $http.get('/api/matches/' + matchId);
         }
 
         function getMatchesByAccountsIds(accountsIds, page) {
