@@ -31,9 +31,10 @@ def get_account(request, account_id):
 
 @api_view(['GET'])
 @transaction.atomic()
-def get_friends_matches_details(request, accounts_ids):
+def get_accounts_matches(request, accounts_ids):
     page = request.GET.get('page')
-    matches_page = utils.get_friends_matches_details(accounts_ids.split(','), page)
+    accounts = map(int, accounts_ids.split(','))
+    matches_page = utils.get_friends_matches_details(accounts, page)
 
     return Response({
         'links': {
@@ -42,7 +43,7 @@ def get_friends_matches_details(request, accounts_ids):
         },
         'current': matches_page.number,
         'total': matches_page.paginator.num_pages,
-        'results': DetailMatchSerializer(matches_page, many=True).data
+        'results': DetailMatchSerializer(matches_page, many=True, accounts=accounts).data
     })
 
 

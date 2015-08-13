@@ -67,14 +67,30 @@ class DefaultPagination(PageNumberPagination):
 
 
 class DetailMatchSerializer(serializers.ModelSerializer):
-    radiant_team = PlayerSerializer(many=True)
-    dire_team = PlayerSerializer(many=True)
+    radiant_team = serializers.SerializerMethodField('get_players_radiant')
+    dire_team = serializers.SerializerMethodField('get_players_dire')
     lobby_type = LobbyTypeSerialiazer()
     game_mode = GameModeSerialiazer()
     cluster = ClusterSerialiazer()
 
     class Meta:
         model = DetailMatch
+
+    def __init__(self, instance, accounts=None, **kwargs):
+        super(DetailMatchSerializer, self).__init__(instance, **kwargs)
+        self.accounts = accounts
+
+    def get_players_radiant(self, match):
+        return PlayerSerializer(self._filter(match.radiant_team()), many=True).data
+
+    def get_players_dire(self, match):
+        return PlayerSerializer(self._filter(match.dire_team()), many=True).data
+
+    def _filter(self, team):
+        if self.accounts:
+            return team.filter(player_account__account_id__in=self.accounts)
+        else:
+            return team
 
 
 class FriendSerializer(serializers.BaseSerializer):
