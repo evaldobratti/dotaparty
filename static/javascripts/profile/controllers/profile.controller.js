@@ -24,10 +24,9 @@
                 vm.games = result.data;
             });
 
-            DetailMatch.getMatchesByAccountId(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {
+            DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {
                 vm.currentDetailMatchesPage += 1;
                 vm.matches = vm.matches.concat(data.data.results);
-                console.log(data.data.results);
             });
         }
 

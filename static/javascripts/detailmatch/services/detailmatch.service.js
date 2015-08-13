@@ -10,7 +10,7 @@
     function DetailMatch($http) {
         var DetailMatch = {
             get: get,
-            getMatchesByAccountId: getMatchesByAccountId
+            getMatchesByAccountsIds: getMatchesByAccountsIds
         };
 
         return DetailMatch;
@@ -19,8 +19,8 @@
             return $http.get('/api/detailmatches/' + matchId);
         }
 
-        function getMatchesByAccountId(accountId, page) {
-            return $http.get('/api/detailmatches/account/' + accountId + "?page=" + page);
+        function getMatchesByAccountsIds(accountsIds, page) {
+            return $http.get('/api/matches/accounts/' + accountsIds + "?page=" + page);
         }
     }
 })();

@@ -5,9 +5,9 @@
         .module('dotaparty.friends.controllers')
         .controller('FriendsController', FriendsController);
 
-    FriendsController.$inject = ['$routeParams', 'Friends', 'Profile'];
+    FriendsController.$inject = ['$routeParams', 'DetailMatch', 'Profile'];
 
-    function FriendsController($routeParams, Friends, Profile) {
+    function FriendsController($routeParams, DetailMatch, Profile) {
         var vm = this;
         vm.accountsIds = $routeParams.accountIds.split(",").filter(function (e) {
             return e.length > 3;
@@ -52,7 +52,7 @@
             if (vm.evaluating) return;
 
             vm.evaluating = true;
-            Friends.getPage(vm.accountsIds, vm.currentPage + 1).then(function (data) {
+            DetailMatch.getMatchesByAccountsIds(vm.accountsIds, vm.currentPage + 1).then(function (data) {
                 vm.currentPage = data.data.current;
                 vm.totalPages = data.data.total;
                 filterPlayers(data.data.results);

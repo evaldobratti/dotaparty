@@ -220,22 +220,3 @@ def get_friends_matches_details(accounts_ids, page):
     except EmptyPage:
         return paginator.page(paginator.num_pages)
 
-
-def get_matches(account_id, page):
-    query = DetailMatch.objects.distinct()
-    query = query.select_related("cluster")
-    query = query.select_related("lobby_type")
-    query = query.select_related("game_mode")
-    query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__abilities")
-    query = query.prefetch_related("players__items")
-    query = query.order_by('-start_time')
-    query = query.filter(players__player_account__account_id=account_id)
-
-    paginator = Paginator(query, 25)
-    try:
-        return paginator.page(page)
-    except PageNotAnInteger:
-        return paginator.page(1)
-    except EmptyPage:
-        return paginator.page(paginator.num_pages)

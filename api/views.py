@@ -64,19 +64,3 @@ def find(request, search):
         'accounts': AccountSerializer(accounts, many=True).data,
         'matches': DetailMatchSerializer(matches, many=True).data
     })
-
-
-@api_view(['GET'])
-def get_matches(request, account_id):
-    page = request.GET.get('page')
-    matches_page = utils.get_matches(account_id, page)
-
-    return Response({
-        'links': {
-            'next': matches_page.has_next() and matches_page.next_page_number() or None,
-            'previous': matches_page.has_previous() and matches_page.previous_page_number() or None
-        },
-        'current': matches_page.number,
-        'total': matches_page.paginator.num_pages,
-        'results': DetailMatchSerializer(matches_page, many=True).data
-    })
