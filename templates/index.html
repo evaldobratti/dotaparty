@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html ng-app="dotaparty">
 <head>
-  <title>Dota party</title>
+    <title>Dota party</title>
 
-  <base href="/" />
+    <base href="/"/>
 
-  {% include 'stylesheets.html' %}
+    {% include 'stylesheets.html' %}
 </head>
 
 <body>
-  {% include 'navbar.html' %}
+{% include 'navbar.html' %}
+<div class="container-fluid ">
 
-  <div class="container-fluid ">
     <div class="row">
-      <div class="col-xs-24 ng-view"></div>
+        <div class="col-xs-24 ng-view"></div>
     </div>
-  </div>
+    {% include 'javascripts.html' %}
+</div>
 
-  {% include 'javascripts.html' %}
 </body>
 </html>

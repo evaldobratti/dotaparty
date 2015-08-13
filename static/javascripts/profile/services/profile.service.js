@@ -26,8 +26,7 @@
         }
 
         function downloadGames(accountId) {
-            console.log("lol");
-            $http.post("api/accounts/" + accountId + "/download");
+            return $http.post("api/accounts/" + accountId + "/download");
         }
     }
 })();

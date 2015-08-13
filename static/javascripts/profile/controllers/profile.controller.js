@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$routeParams', 'Profile', 'DetailMatch'];
+    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch'];
 
-    function ProfileController($routeParams, Profile, DetailMatch) {
+    function ProfileController($rootScope, $routeParams, Profile, DetailMatch) {
         var vm = this;
         vm.accountId = $routeParams.accountId;
         vm.currentDetailMatchesPage = 1;
@@ -31,7 +31,14 @@
         }
 
         function downloadGames() {
-            Profile.downloadGames(vm.account.account_id);
+            Profile.downloadGames(vm.account.account_id).
+                success(function () {
+                    $rootScope.alerts.push({type: 'success', msg: 'It will start to download your games'});
+                }).
+                error(function () {
+                    $rootScope.alerts.push({type: 'danger', msg: 'It was not possible to download your games due to an internal error.'});
+                });
+
         }
     }
 })();
