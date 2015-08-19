@@ -2,6 +2,7 @@ from models import *
 from dota2api import api
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
+
 d2api = api.Initialise(secret.D2_API_KEY)
 
 
@@ -19,7 +20,6 @@ def get_until_success(get_function):
 
 
 def get_account(account_id):
-
     account = Account.objects.filter(account_id=account_id)
     if account:
         return account[0]
@@ -175,26 +175,31 @@ def get_details_match(match_id):
         return parse_from_details_match(details)
 
 
-def get_friends_number_matches(account):
+def get_friends_number_matches(account, compared_to=[]):
+    friends_query = len(compared_to) > 0 \
+                    and ' AND dmp2.account_id IN (' + ','.join(compared_to) + ')' \
+                    or ''
+
+    query = 'SELECT dmp2.player_account_id AS id, ' + \
+            '       acc2.account_id as account_id, ' + \
+            '       accup2.persona_name, ' + \
+            '       count(*) AS qtd ' + \
+            'FROM core_account acc ' + \
+            'JOIN core_detailmatchplayer dmp1 ON acc.id = dmp1.player_account_id ' + \
+            'JOIN core_detailmatchplayer dmp2 ON dmp1.match_id = dmp2.match_id ' + \
+            'JOIN core_account acc2 ON dmp2.player_account_id = acc2.id ' + \
+            'JOIN core_accountupdate accup2 ON acc2.current_update_id = accup2.id ' + \
+            'WHERE dmp1.player_account_id = ' + str(account.id) + ' ' + \
+            '  AND (dmp2.player_account_id <> ' + str(account.id) + friends_query + ')' + \
+            'GROUP BY dmp1.player_account_id, ' + '         acc2.account_id, ' + '         accup2.persona_name, ' + \
+            '         dmp2.player_account_id '
+
+    if not len(compared_to):
+        query += 'HAVING count(*) > 1 '
+
+    query += 'ORDER BY count(*) DESC '
     raw = Account.objects.raw(
-
-        'SELECT dmp2.player_account_id AS id, ' +
-        '       acc2.account_id as account_id, ' +
-        '       accup2.persona_name, ' +
-        '       count(*) AS qtd ' +
-        'FROM core_account acc ' +
-        'JOIN core_detailmatchplayer dmp1 ON acc.id = dmp1.player_account_id ' +
-        'JOIN core_detailmatchplayer dmp2 ON dmp1.match_id = dmp2.match_id ' +
-        'JOIN core_account acc2 ON dmp2.player_account_id = acc2.id ' +
-        'JOIN core_accountupdate accup2 ON acc2.current_update_id = accup2.id ' +
-        'WHERE dmp1.player_account_id = ' + str(account.id) + ' ' +
-        '  AND dmp2.player_account_id <> ' + str(account.id) + ' ' +
-        'GROUP BY dmp1.player_account_id, ' +
-        '         acc2.account_id, ' +
-        '         accup2.persona_name, ' +
-        '         dmp2.player_account_id HAVING count(*) > 1 ' +
-        'ORDER BY count(*) DESC '
-
+        query
     )
 
     return raw
@@ -219,4 +224,3 @@ def get_friends_matches_details(accounts_ids, page):
         return paginator.page(1)
     except EmptyPage:
         return paginator.page(paginator.num_pages)
-

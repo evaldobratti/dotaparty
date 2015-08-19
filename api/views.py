@@ -19,8 +19,9 @@ def get_details_match(request, match_id):
 @api_view(['GET'])
 @transaction.atomic()
 def get_profile(request, account_id):
+    others = request.GET.get('others', '')
     account = utils.get_account(account_id)
-    return Response(ProfileSerializer(account).data)
+    return Response(ProfileSerializer(account, others.split(',')).data)
 
 
 @api_view(['GET'])

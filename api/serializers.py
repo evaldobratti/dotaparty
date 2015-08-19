@@ -102,8 +102,13 @@ class FriendSerializer(serializers.BaseSerializer):
 
 
 class ProfileSerializer(serializers.BaseSerializer):
+
+    def __init__(self, instance, others_accounts_ids, **kwargs):
+        super(ProfileSerializer, self).__init__(instance, **kwargs)
+        self.others_accounts_ids = others_accounts_ids
+
     def to_representation(self, account):
-        friends = get_friends_number_matches(account)
+        friends = get_friends_number_matches(account, self.others_accounts_ids)
         return {
             'account_id': account.account_id,
             'persona_name': account.current_update.persona_name,

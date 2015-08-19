@@ -46,10 +46,11 @@
         <th class="text-align-center">HD</th>
         <th class="text-align-center">HH</th>
         <th>Items</th>
+        <th>Matches with</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="p in vm.match.radiant_team">
+    <tr ng-repeat="p in vm.match.radiant_team" ng-click="vm.friendsMatches(p)" ng-class="{info: p == vm.current_selected }">
         <td class="text-align-center">
             <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
         </td>
@@ -77,6 +78,7 @@
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>
+        <td>{{ p.matches_with }}</td>
     </tr>
     </tbody>
 </table>
@@ -99,10 +101,11 @@
         <th class="text-align-center">HD</th>
         <th class="text-align-center">HH</th>
         <th>Items</th>
+        <th>Matches with</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="p in vm.match.dire_team">
+    <tr ng-repeat="p in vm.match.dire_team" ng-click="vm.friendsMatches(p)" ng-class="{info: p == vm.current_selected }">
         <td class="text-align-center">
             <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
         </td>
@@ -130,6 +133,7 @@
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>
+        <td>{{ p.matches_with }}</td>
     </tr>
     </tbody>
 </table>
