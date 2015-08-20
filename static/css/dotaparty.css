@@ -1,3 +1,17 @@
+#loading-bar .bar {
+  background: #2c3e50;
+    z-index: 9999;
+}
+#loading-bar .peg {
+  box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50;
+    z-index: 9999;
+}
+#loading-bar-spinner .spinner-icon {
+  border-top-color:  #2c3e50;
+  border-left-color: #2c3e50;
+    z-index: 9999;
+}
+
 .detail-match-item {
     width: 30px;
     float: left;

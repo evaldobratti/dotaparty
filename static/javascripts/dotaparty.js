@@ -7,6 +7,7 @@
             'infinite-scroll',
             'ui.bootstrap',
             'chart.js',
+            'angular-loading-bar',
             'dotaparty.routes',
             'dotaparty.config',
             'dotaparty.detailmatch',
