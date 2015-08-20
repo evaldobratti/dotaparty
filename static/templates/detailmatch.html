@@ -33,7 +33,7 @@
     <thead>
     <tr>
         <th class="text-align-center">Hero</th>
-        <th>Player</th>
+        <th class="col-md-4">Player</th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -65,16 +65,16 @@
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center">{{ p.kills }}</td>
-        <td class="text-align-center">{{ p.deaths }}</td>
-        <td class="text-align-center">{{ p.assists }}</td>
+        <td class="text-align-center color-kills">{{ p.kills }}</td>
+        <td class="text-align-center color-deaths">{{ p.deaths }}</td>
+        <td class="text-align-center color-assists">{{ p.assists }}</td>
         <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
-        <td class="text-align-center">{{ p.gold_per_min }}</td>
-        <td class="text-align-center">{{ p.xp_per_min }}</td>
-        <td class="text-align-center">{{ p.gold_spent + p.gold }}</td>
-        <td class="text-align-center">{{ p.tower_damage }}</td>
-        <td class="text-align-center">{{ p.hero_damage }}</td>
-        <td class="text-align-center">{{ p.hero_healing }}</td>
+        <td class="text-align-center">{{ p.gold_per_min | abbreviate}}</td>
+        <td class="text-align-center">{{ p.xp_per_min | abbreviate}}</td>
+        <td class="text-align-center">{{ (p.gold_spent + p.gold) | abbreviate }}</td>
+        <td class="text-align-center">{{ p.tower_damage | abbreviate }}</td>
+        <td class="text-align-center">{{ p.hero_damage | abbreviate}}</td>
+        <td class="text-align-center">{{ p.hero_healing | abbreviate}}</td>
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>
@@ -88,7 +88,7 @@
     <thead>
     <tr>
         <th class="text-align-center">Hero</th>
-        <th>Player</th>
+        <th class="col-md-4">Player</th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -120,16 +120,16 @@
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center">{{ p.kills }}</td>
-        <td class="text-align-center">{{ p.deaths }}</td>
-        <td class="text-align-center">{{ p.assists }}</td>
+        <td class="text-align-center color-kills">{{ p.kills }}</td>
+        <td class="text-align-center color-deaths">{{ p.deaths }}</td>
+        <td class="text-align-center color-assists">{{ p.assists }}</td>
         <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
-        <td class="text-align-center">{{ p.gold_per_min }}</td>
-        <td class="text-align-center">{{ p.xp_per_min }}</td>
-        <td class="text-align-center">{{ p.gold_spent + p.gold }}</td>
-        <td class="text-align-center">{{ p.tower_damage }}</td>
-        <td class="text-align-center">{{ p.hero_damage }}</td>
-        <td class="text-align-center">{{ p.hero_healing }}</td>
+        <td class="text-align-center">{{ p.gold_per_min | abbreviate}}</td>
+        <td class="text-align-center">{{ p.xp_per_min | abbreviate }}</td>
+        <td class="text-align-center">{{ (p.gold_spent + p.gold)  | abbreviate }}</td>
+        <td class="text-align-center">{{ p.tower_damage  | abbreviate }}</td>
+        <td class="text-align-center">{{ p.hero_damage | abbreviate}}</td>
+        <td class="text-align-center">{{ p.hero_healing | abbreviate}}</td>
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>

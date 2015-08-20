@@ -29,3 +29,15 @@
 .text-align-center {
     text-align: center;
 }
+
+.color-kills {
+    color: #007020;
+}
+
+.color-deaths {
+    color: #990000;
+}
+
+.color-assists {
+    color: #002070;
+}
