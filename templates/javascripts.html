@@ -1,21 +1,19 @@
 {% load compress %}
 {% load staticfiles %}
 
+<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/angular/angular.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/underscore/underscore-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'charts/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/angular-route/angular-route.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/angular-cookies/angular-cookies.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'charts/angular-chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'angular-ui/ui-bootstrap-tpls-0.13.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/ngDialog/js/ngDialog.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'angular-loading-bar/loading-bar.js' %}"></script>
+
 {% compress js %}
-    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/underscore/underscore.js' %}"></script>
-    <script type="text/javascript" src="{% static 'charts/Chart.min.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'bower_components/angular/angular.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/angular-route/angular-route.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/angular-cookies/angular-cookies.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'charts/angular-chart.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'angular-ui/ui-bootstrap-tpls-0.13.3.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/ngDialog/js/ngDialog.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'javascripts/ng-infinite-scroll.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/dotaparty.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/dotaparty.routes.js' %}"></script>
@@ -37,4 +35,6 @@
     <script type="text/javascript" src="{% static 'javascripts/home/home.module.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/home/controllers/home.controller.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/home/services/home.service.js' %}"></script>
+    <script type="text/coffeescript" charset="utf-8" src="{% static 'javascripts/bah.coffee' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/bah.js' %}"></script>
 {% endcompress %}
