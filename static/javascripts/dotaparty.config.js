@@ -7,11 +7,13 @@
         .run(run);
 
     run.$inject = ['$http'];
-    config.$inject = ['$locationProvider'];
+    config.$inject = ['$locationProvider', 'cfpLoadingBarProvider'];
 
-    function config($locationProvider) {
+    function config($locationProvider, cfpLoadingBarProvider) {
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');
+
+        cfpLoadingBarProvider.includeSpinner = false;
     }
 
     function run($http) {
