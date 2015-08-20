@@ -12,6 +12,7 @@
         vm.friendsMatches = friendsMatches;
         vm.matches_with = [];
         vm.current_selected = null;
+        vm.played_with = {};
 
         active();
 
@@ -39,20 +40,28 @@
         function friendsMatches(player) {
             if (player.player_account == null)
                 return;
-            vm.current_selected = player;
-            Profile.getPlayersMatches(player.account_id, othersRealPlayers(player)).then(function (result) {
-                vm.matches_with.push(result.data);
+            if (vm.played_with[player.account_id.toString()] != null) {
+                loadPlayedWithForPlayerFrom(player, vm.played_with[player.account_id.toString()]);
+            } else {
+                Profile.getPlayersMatches(player.account_id, othersRealPlayers(player)).then(function (result) {
+                    loadPlayedWithForPlayerFrom(player, result.data);
+                });
+            }
 
-                vm.match.players.forEach(function(player) {
+        }
+
+        function loadPlayedWithForPlayerFrom(player, matches_with) {
+            vm.current_selected = player;
+            vm.played_with[player.account_id.toString()] = matches_with;
+
+            vm.match.players.forEach(function(player) {
                     player.matches_with = null;
-                    result.data.friends.forEach(function(friend) {
+                    matches_with.friends.forEach(function(friend) {
                        if (player.account_id == friend.account_id) {
                            player.matches_with = friend.qtd;
                        }
                     });
                 });
-
-            });
         }
 
         function othersRealPlayers(subject) {
