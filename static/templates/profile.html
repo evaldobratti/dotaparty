@@ -38,13 +38,14 @@
                 Friend
             </td>
             <td>
-                #matches
+                Matches
             </td>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="f in vm.games.friends">
             <td>
+                <img ng-src="{{ f.url_avatar }}">
                 <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
             </td>
             <td>

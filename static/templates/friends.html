@@ -21,10 +21,10 @@
                         </div>
 
                         <div class="col-md-4">
-                            <h5 ng-if="(match.is_radiant_win && match.wereOnRadiant) || (!match.is_radiant_win && !match.wereOnRadiant)">
+                            <h5 class="color-green" ng-if="(match.is_radiant_win && match.wereOnRadiant) || (!match.is_radiant_win && !match.wereOnRadiant)">
                                 Won match
                             </h5>
-                            <h5 ng-if="(!match.is_radiant_win && match.wereOnRadiant) || (match.is_radiant_win && !match.wereOnRadiant)">
+                            <h5 class="color-red" ng-if="(!match.is_radiant_win && match.wereOnRadiant) || (match.is_radiant_win && !match.wereOnRadiant)">
                                 Lost match
                             </h5>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="col-md-4">
                             <a href="/profiles/{{ player.player_account.account_id }}">{{ player.player_account.current_update.persona_name }}</a>
                         </div>
-                        <div class="col-md-4">{{ player.kills }}/{{ player.deaths }}/{{ player.assists }} </div>
+                        <div class="col-md-4"><span class="color-green">{{ player.kills }}</span>/<span class="color-red">{{ player.deaths }}</span>/<span class="color-blue">{{ player.assists }}</span> </div>
                     </div>
                 </div>
 

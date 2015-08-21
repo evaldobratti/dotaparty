@@ -97,6 +97,7 @@ class FriendSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
         return {'account_id': account.account_id,
                 'persona_name': account.persona_name,
+                'url_avatar': account.url_avatar,
                 'qtd': account.qtd
                 }
 

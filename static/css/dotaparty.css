@@ -16,14 +16,14 @@
     text-align: center;
 }
 
-.color-kills {
+.color-green {
     color: #007020;
 }
 
-.color-deaths {
+.color-red {
     color: #990000;
 }
 
-.color-assists {
+.color-blue {
     color: #002070;
 }

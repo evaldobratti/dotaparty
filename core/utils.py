@@ -182,6 +182,7 @@ def get_friends_number_matches(account, compared_to=[]):
 
     query = 'SELECT dmp2.player_account_id AS id, ' + \
             '       acc2.account_id as account_id, ' + \
+            '       accup2.url_avatar as url_avatar, ' + \
             '       accup2.persona_name, ' + \
             '       count(*) AS qtd ' + \
             'FROM core_account acc ' + \
@@ -191,7 +192,8 @@ def get_friends_number_matches(account, compared_to=[]):
             'JOIN core_accountupdate accup2 ON acc2.current_update_id = accup2.id ' + \
             'WHERE dmp1.player_account_id = ' + str(account.id) + ' ' + \
             '  AND (dmp2.player_account_id <> ' + str(account.id) + friends_query + ')' + \
-            'GROUP BY dmp1.player_account_id, ' + '         acc2.account_id, ' + '         accup2.persona_name, ' + \
+            'GROUP BY dmp1.player_account_id, ' + '         acc2.account_id, ' + 'accup2.url_avatar' \
+                                                                                 ', accup2.persona_name, ' + \
             '         dmp2.player_account_id '
 
     if not len(compared_to):

@@ -1,3 +1,5 @@
+<div ng-show="vm.match != undefined">
+
 <a href="#">{{ vm.match.vm.match_id }}</a>
 
 <div style="text-align: center">
@@ -33,7 +35,7 @@
     <thead>
     <tr>
         <th class="text-align-center">Hero</th>
-        <th class="col-md-4">Player</th>
+        <th class="col-md-5">Player</th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -65,9 +67,9 @@
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center color-kills">{{ p.kills }}</td>
-        <td class="text-align-center color-deaths">{{ p.deaths }}</td>
-        <td class="text-align-center color-assists">{{ p.assists }}</td>
+        <td class="text-align-center color-green">{{ p.kills }}</td>
+        <td class="text-align-center color-red">{{ p.deaths }}</td>
+        <td class="text-align-center color-blue">{{ p.assists }}</td>
         <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
         <td class="text-align-center">{{ p.gold_per_min | abbreviate}}</td>
         <td class="text-align-center">{{ p.xp_per_min | abbreviate}}</td>
@@ -78,7 +80,7 @@
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>
-        <td>{{ p.matches_with }}</td>
+        <td><a href="friends/{{ vm.current_selected.account_id + ',' + p.account_id }}">{{ p.matches_with }}</a></td>
     </tr>
     </tbody>
 </table>
@@ -88,7 +90,7 @@
     <thead>
     <tr>
         <th class="text-align-center">Hero</th>
-        <th class="col-md-4">Player</th>
+        <th class="col-md-5">Player</th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -120,9 +122,9 @@
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center color-kills">{{ p.kills }}</td>
-        <td class="text-align-center color-deaths">{{ p.deaths }}</td>
-        <td class="text-align-center color-assists">{{ p.assists }}</td>
+        <td class="text-align-center color-green">{{ p.kills }}</td>
+        <td class="text-align-center color-red">{{ p.deaths }}</td>
+        <td class="text-align-center color-blue">{{ p.assists }}</td>
         <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
         <td class="text-align-center">{{ p.gold_per_min | abbreviate}}</td>
         <td class="text-align-center">{{ p.xp_per_min | abbreviate }}</td>
@@ -133,7 +135,7 @@
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.item.url_image }}">
         </td>
-        <td>{{ p.matches_with }}</td>
+        <td><a href="friends/{{ vm.current_selected.account_id + ',' + p.account_id }}">{{ p.matches_with }}</a></td>
     </tr>
     </tbody>
 </table>
@@ -141,4 +143,4 @@
 <canvas class="chart chart-line" data="vm.data"
   labels="vm.labels" legend="true" series="vm.series">
 </canvas>
-    </div>
+    </div></div>
