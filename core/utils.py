@@ -1,22 +1,7 @@
 from models import *
-from dota2api import api
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
-
-d2api = api.Initialise(secret.D2_API_KEY)
-
-
-def get_until_success(get_function):
-    while True:
-        try:
-            import time
-
-            time.sleep(1)
-            return get_function()
-        except Exception as e:
-            import logging
-
-            logging.exception(e)
+from core import d2api
 
 
 def get_account(account_id):
@@ -24,7 +9,7 @@ def get_account(account_id):
     if account:
         return account[0]
     else:
-        acc = get_until_success(lambda: d2api.get_player_summaries(*[int(account_id)]))
+        acc = d2api.get_player_summaries(*[int(account_id)])
 
         if acc:
             return load_account(account_id, acc[0])
@@ -57,7 +42,7 @@ def load_account(account_id, updated_acc):
 
 
 def load_team(match, players):
-    updated_accounts = get_until_success(lambda: d2api.get_player_summaries(*[p.account_id for p in players]))
+    updated_accounts = d2api.get_player_summaries(*[p.account_id for p in players])
     for player_response in players:
         hero, _ = Hero.objects.get_or_create(hero_id=player_response.hero.id,
                                              localized_name=player_response.hero.localized_name,
@@ -69,7 +54,7 @@ def load_team(match, players):
 
         if player_response.account_id != 4294967295 and player_response.account_id != -1:
             updated_acc = [ua for ua in updated_accounts
-                           if str(ua.steam_id) == str(api.convert_to_64_bit(player_response.account_id))][0]
+                           if str(ua.steam_id) == str(d2api.convert_to_64_bit(player_response.account_id))][0]
             account = load_account(player_response.account_id, updated_acc)
         else:
             account = None
@@ -171,7 +156,7 @@ def get_details_match(match_id):
     if query:
         return query[0]
     else:
-        details = get_until_success(lambda: d2api.get_match_details(match_id))
+        details = d2api.get_match_details(match_id)
         return parse_from_details_match(details)
 
 
@@ -226,3 +211,53 @@ def get_friends_matches_details(accounts_ids, page):
         return paginator.page(1)
     except EmptyPage:
         return paginator.page(paginator.num_pages)
+
+
+def accounts_to_download_matches():
+    import parameters
+    return eval(Parameter.objects.get(name=parameters.INTERESTED_ACCOUNTS_IDS).value)
+
+def set_last_match_of_skill(skill, match_id):
+    import parameters
+
+    if skill == 0:
+        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED)
+    elif skill == 1:
+        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL)
+    elif skill == 2:
+        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH)
+    elif skill == 3:
+        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH)
+
+    parameter.value = str(match_id)
+    parameter.save()
+
+def last_match_of_skill(skill):
+    import parameters
+
+    if skill == 0:
+        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED).value
+    elif skill == 1:
+        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL).value
+    elif skill == 2:
+        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH).value
+    elif skill == 3:
+        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH).value
+
+    if not value:
+        return None
+    else:
+        return int(value)
+
+
+def reset_parameters():
+    import parameters
+
+    def nullify(parameter):
+        parameter.value = None
+        parameter.save()
+
+    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED))
+    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL))
+    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH))
+    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH))

@@ -108,6 +108,7 @@ class DetailMatch(models.Model):
     positive_votes = models.IntegerField()
     negative_votes = models.IntegerField()
     game_mode = models.ForeignKey(GameMode)
+    skill = models.PositiveIntegerField(null=True)
 
     def radiant_team(self):
         return self.players.filter(player_slot__lt=10).order_by('player_slot')
@@ -176,3 +177,8 @@ class DetailMatchAbilityUpgrade(models.Model):
 
     def ability(self):
         return get_ability(self.ability_id)
+
+
+class Parameter(models.Model):
+    name = models.CharField(max_length=40)
+    value = models.CharField(max_length=500, null=True)

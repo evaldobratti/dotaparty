@@ -122,7 +122,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+    'compressor.finders''.CompressorFinder',
 )
 
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
@@ -136,3 +136,10 @@ HUEY = {
 
 import logging
 logging.getLogger("requests").setLevel(logging.WARNING)
+task_logger = logging.getLogger('pwm_logger')
+handler = logging.FileHandler('tasks.log')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+task_logger.addHandler(handler)
+
+
