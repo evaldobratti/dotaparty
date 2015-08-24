@@ -27,5 +27,6 @@ def get_match_details(match_id):
 def convert_to_64_bit(number):
     return api.convert_to_64_bit(number)
 
-def get_matches_of_skill(last_match_id, skill):
-    return get_until_success(lambda: __d2api.get_match_history(None, start_at_match_id=last_match_id, skill=skill))
+def get_matches_of_skill(last_match_id, skill, hero_id):
+    return get_until_success(lambda: __d2api.get_match_history(None, start_at_match_id=last_match_id, skill=skill,
+                                                               hero_id=hero_id))
