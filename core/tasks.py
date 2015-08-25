@@ -1,6 +1,6 @@
 from django.db import transaction
 import utils
-from huey.djhuey import db_task, db_periodic_task
+from huey.djhuey import db_task, db_periodic_task, crontab
 import logging
 import models
 
@@ -23,63 +23,69 @@ def download_games(account_id):
 def always_execute(x):
     return True
 
-@db_periodic_task(always_execute)
-def download_matches_skill_very_high():
-    _download_games_skill(3)
+
+@db_task()
+def download_by_seq_num():
+    _download_games_skill()
 
 
 @db_periodic_task(always_execute)
-def download_matches_skill_high():
-    _download_games_skill(2)
+def games_skill_setter():
+    matches = models.DetailMatch.objects.filter(skill__isnull=True)
+    for match in matches:
+        _define_skill_match(match)
 
 
-@db_periodic_task(always_execute)
-def download_matches_skill_normal():
-    _download_games_skill(1)
+def _define_skill_match(match):
+    log.info("match: {} will be ranked".format(match.match_id))
+    for player in match.players.all():
+        if _define_if_skill(match, player.hero(), 1):
+            return
+        elif _define_if_skill(match, player.hero(), 2):
+            return
+        elif _define_if_skill(match, player.hero(), 3):
+            return
 
-@db_periodic_task(always_execute)
-def download_matches_skill_undefined():
-    _download_games_skill(0)
+    log.info("match: {} skill not determined".format(match.match_id))
+    match.skill = 4
+    match.save()
 
-#fazer download hero a hero
-def _download_games_skill(skill):
-    last_match = last_match_of_skill(skill)
+def _define_if_skill(match, hero, skill_lvl):
+    skill = d2api.get_matches_of_skill(match.match_id,
+                                       skill=skill_lvl,
+                                       matches_requested=1,
+                                       hero_id=hero.hero_id)
 
-    if last_match is None:
-        matches = d2api.get_matches_of_skill(None, skill)
-        log.info("no game downloaded of skill: {} setting to: {}".format(skill, matches.matches[0].match_id))
-        set_last_match_of_skill(skill, matches.matches[0].match_id)
-        return
-    else:
-        first_downloaded = None
-        last_match_id = None
-        while True:
-            try:
-                matches = d2api.get_matches_of_skill(last_match_id, skill)
-                for match in matches.matches:
-                    log.info("skill: {} analysing match_id : {}".format(skill, match.match_id))
-                    if not first_downloaded:
-                        first_downloaded = match.match_id
+    if skill.matches and skill.matches[0].match_id == match.match_id:
+        log.info("match: {} skill: {}".format(match.match_id, skill_lvl))
+        match.skill = skill_lvl
+        match.save()
+        return True
 
-                    accs = accounts_to_download_matches()
+    return False
 
-                    log.info("skill: {} accs in match: {}".format(skill, [p.account_id for p in match.players]))
-                    if [p for p in match.players if p.account_id in accs]:
-                        log.info("skill: {} will download match_id : {}".format(skill, match.match_id))
-                        match = _download_match('Worker on skill ' + str(skill), match)
-                        match.skill = skill
-                        match.save()
-                    else:
-                        log.info("skill: {} match_id : {} not downloaded!".format(skill, match.match_id))
 
-                    if last_match == match.match_id:
-                        log.info("skill: {} updating last match match_id : {}".format(skill, first_downloaded))
-                        set_last_match_of_skill(skill, first_downloaded)
-                        return
+def _download_games_skill():
+    last_match_seq_num = 1552584004
+    while True:
+        try:
+            matches = d2api.get_matches_seq(last_match_seq_num)
+            for match in matches.matches:
+                log.info("analysing match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
 
-                    last_match_id = match.match_id
-            except Exception, e:
-                log.exception(e)
+                accs = accounts_to_download_matches()
+
+                log.info("match_id : {} seq_num: {} accs in match: {} ".format(match.match_id, match.match_seq_num,
+                                                                               [p.account_id for p in match.players]))
+                if [p for p in match.players if p.account_id in accs]:
+                    log.info("will download match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
+                    match = _download_match('worker on downloads', match)
+                else:
+                    log.info("match_id : {} not downloaded!".format(match.match_id))
+
+                last_match_seq_num = match.match_seq_num
+        except Exception, e:
+            log.exception(e)
 
 
 def _download_games(account_id):
