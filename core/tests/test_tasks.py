@@ -44,72 +44,110 @@ class DownloadGamesFromUserTest(TestCase):
         self.assertEqual(mock.call(1, start_at_match_id=321), d2api.get_match_history.call_args_list[1])
 
 
-@mock.patch('core.tasks.get_details_match')
-@mock.patch('core.tasks.accounts_to_download_matches')
-@mock.patch('core.tasks.last_match_of_skill')
-@mock.patch('core.tasks.set_last_match_of_skill')
-@mock.patch('core.tasks.d2api')
 class AutoDownloadGamesTest(TestCase):
-    def test_set_last_match_downloaded_if_none_is_downloaded(self, d2api, set_last_match_of_skill, last_match_of_skill, accounts_to_download_matches, get_details_match):
-        last_match_of_skill.return_value = None
 
-        match = mock.Mock()
-        match.match_id = 321
+    def setUp(self):
+        self.get_details_match = tasks.get_details_match = mock.Mock()
+        self.accounts_to_download_matches = tasks.accounts_to_download_matches = mock.Mock()
+        self.last_match_seq = tasks.last_match_seq = mock.Mock()
+        self.set_last_match_seq = tasks.set_last_match_seq = mock.Mock()
+        self.d2api = tasks.d2api = mock.Mock()
+        self.d2api.get_match_history = mock.Mock()
+        self.d2api.get_matches_seq = mock.Mock()
+
+    def test_set_last_match_downloaded_if_none_is_downloaded(self):
+        self.last_match_seq.return_value = None
+        match = build_match_mock(321)
 
         request = mock.Mock()
         request.matches = [match]
 
-        d2api.get_matches_of_skill.return_value = request
+        self.d2api.get_match_history.return_value = request
 
-        tasks._download_games_skill(0)
+        self.d2api.get_matches_seq.return_value = request
 
-        set_last_match_of_skill.assert_called_with(0, 321)
-        self.assertFalse(get_details_match.called)
+        tasks._download_by_seq_num()
 
-    def test_does_not_download_game_if_there_is_no_interested_player_in_it(self, d2api, set_last_match_of_skill, last_match_of_skill, accounts_to_download_matches, get_details_match):
-        last_match_of_skill.return_value = 0
-        accounts_to_download_matches.return_value = [9]
+        self.set_last_match_seq.assert_called_with(321)
+        self.d2api.get_match_history.assert_called_with(None)
 
-        match1 = build_match_mock(4, [1])
-        match0 = build_match_mock(0)
+        self.assertFalse(self.get_details_match.called)
+
+    def test_does_not_download_game_if_there_is_no_interested_player_in_it(self):
+        self.last_match_seq.return_value = 0
+        self.accounts_to_download_matches.return_value = [9]
+
+        match0 = build_match_mock(4, [3])
+        match1 = build_match_mock(5, [1])
 
         request = mock.Mock()
-        request.matches = [match1, match0]
+        request.matches = [match0, match1]
 
-        d2api.get_matches_of_skill.return_value = request
+        self.d2api.get_matches_seq.return_value = request
 
-        tasks._download_games_skill(0)
+        tasks._download_by_seq_num()
 
-        set_last_match_of_skill.assert_called_with(0, 4)
-        self.assertFalse(get_details_match.called)
+        self.d2api.get_matches_seq.assert_called_with(0)
+        self.set_last_match_seq.assert_called_with(5)
+        self.assertFalse(self.get_details_match.called)
 
-    def test_do_download_game_if_there_is_interested_player_in_it(self, d2api, set_last_match_of_skill, last_match_of_skill, accounts_to_download_matches, get_details_match):
-        last_match_of_skill.return_value = 0
-        accounts_to_download_matches.return_value = [9]
+    def test_do_download_game_if_there_is_interested_player_in_it(self):
+        self.last_match_seq.return_value = 1
+        self.accounts_to_download_matches.return_value = [9]
 
+        match0 = build_match_mock(1)
         match1 = build_match_mock(4, [9])
-        match0 = build_match_mock(0)
+        match2 = build_match_mock(5)
 
         request = mock.Mock()
-        request.matches = [match1, match0]
+        request.matches = [match0, match1, match2]
 
-        d2api.get_matches_of_skill.return_value = request
+        self.d2api.get_matches_seq.return_value = request
 
-        tasks._download_games_skill(0)
+        tasks._download_by_seq_num()
 
-        set_last_match_of_skill.assert_called_with(0, 4)
-        get_details_match.assert_called_with(4)
+        self.d2api.get_matches_seq.assert_called_with(1)
+        self.set_last_match_seq.assert_called_with(5)
+        self.get_details_match.assert_called_with(4)
+
+
+class DefineSkillTest(TestCase):
+
+    def setUp(self):
+        self.get_matches_of_skill = tasks.d2api.get_matches_of_skill = mock.Mock()
+
+    def test_define_skill(self):
+        request = mock.Mock()
+        request.matches = [build_match_mock(22)]
+
+        self.get_matches_of_skill.return_value = request
+
+        tasks._define_skill_match(build_match_mock(22, [44, 55]))
+
+        self.get_matches_of_skill.assert_called_with(22, skill=1, matches_requested=1, hero_id=44)
 
 
 def build_match_mock(match_id=None, players_accounts_ids=[]):
+    class MockList(list):
+        pass
+
     match = mock.Mock()
     match.match_id = match_id
-    match.players = []
+    match.match_seq_num = match_id
+    match.players = MockList()
 
     for account_id in players_accounts_ids:
         player = mock.Mock()
         player.account_id = account_id
 
+        hero = mock.Mock()
+        hero.hero_id = account_id
+
+        player.hero = hero
+
         match.players.append(player)
 
+    match.players.all = lambda: match.players
+
     return match
+

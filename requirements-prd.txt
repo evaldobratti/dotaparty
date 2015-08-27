@@ -5,7 +5,7 @@ django-appconf==1.0.1
 django-cache-machine==0.9
 django-compressor==1.5
 djangorestframework==3.1.3
--e git+https://github.com/joshuaduffy/dota2api.git@f5714d565725f610fe93313f3e7af25b16643fb0#egg=dota2api-dev
+-e git+https://github.com/joshuaduffy/dota2api.git@f96bb8a0799704ebc2bd058c18f373750001b878#egg=dota2api-dev
 drf-nested-routers==0.9.0
 huey==0.4.8
 psycopg2==2.6.1

@@ -59,9 +59,12 @@ def load_team(match, players):
         else:
             account = None
 
-        leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=player_response.leaver_status.id,
-                                                              name=player_response.leaver_status.name,
-                                                              description=player_response.leaver_status.description)
+        if player_response.leaver_status:
+            leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=player_response.leaver_status.id,
+                                                                  name=player_response.leaver_status.name,
+                                                                  description=player_response.leaver_status.description)
+        else:
+            leaver_status = None
 
         player = DetailMatchPlayer.objects.create(match=match, player_account=account,
                                                   account_id=player_response.account_id,
@@ -217,47 +220,23 @@ def accounts_to_download_matches():
     import parameters
     return eval(Parameter.objects.get(name=parameters.INTERESTED_ACCOUNTS_IDS).value)
 
-def set_last_match_of_skill(skill, match_id):
-    import parameters
-
-    if skill == 0:
-        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED)
-    elif skill == 1:
-        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL)
-    elif skill == 2:
-        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH)
-    elif skill == 3:
-        parameter = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH)
-
-    parameter.value = str(match_id)
+def set_last_match_seq(seq_num):
+    parameter = _get_last_match_seq_parameter()
+    parameter.value = str(seq_num)
     parameter.save()
 
-def last_match_of_skill(skill):
+def last_match_seq():
+    return _get_last_match_seq_parameter().value
+
+def _get_last_match_seq_parameter():
     import parameters
-
-    if skill == 0:
-        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED).value
-    elif skill == 1:
-        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL).value
-    elif skill == 2:
-        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH).value
-    elif skill == 3:
-        value = Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH).value
-
-    if not value:
-        return None
-    else:
-        return int(value)
-
+    import django.db.models
+    try:
+        return Parameter.objects.get(name=parameters.LAST_MATCH_SEQ_NUM)
+    except Exception, e:
+        return Parameter.objects.create(name=parameters.LAST_MATCH_SEQ_NUM)
 
 def reset_parameters():
-    import parameters
-
-    def nullify(parameter):
-        parameter.value = None
-        parameter.save()
-
-    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_UNDEFINED))
-    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_NORMAL))
-    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_HIGH))
-    nullify(Parameter.objects.get(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH))
+    parameter = _get_last_match_seq_parameter()
+    parameter.value = None
+    parameter.save()

@@ -1,5 +1,2 @@
-LAST_MATCH_ID_SKILL_VERY_HIGH = 'LastMatchIdSkillVeryHigh'
-LAST_MATCH_ID_SKILL_HIGH = 'LastMatchIdSkillHigh'
-LAST_MATCH_ID_SKILL_NORMAL = 'LastMatchIdSkillNormal'
-LAST_MATCH_ID_SKILL_UNDEFINED = 'LastMatchIdSkillUndefined'
 INTERESTED_ACCOUNTS_IDS = 'InterestedAccountsIds'
+LAST_MATCH_SEQ_NUM = 'LastMatchSeqNum'

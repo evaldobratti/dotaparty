@@ -131,7 +131,7 @@ HUEY = {
     'backend': 'huey.backends.redis_backend',
     'name': 'dotaparty',
     'connection': {'host': 'localhost', 'port': 6379},
-    'consumer_options': {'workers': 4},
+    'consumer_options': {'workers': 4, 'periodic_task_interval': 3},
 }
 
 import logging

@@ -138,7 +138,7 @@ class DetailMatchPlayer(ItemOwner):
     kills = models.SmallIntegerField()
     deaths = models.SmallIntegerField()
     assists = models.SmallIntegerField()
-    leaver_status = models.ForeignKey(LeaverStatus, null=False)
+    leaver_status = models.ForeignKey(LeaverStatus, null=True)
 
     gold = models.IntegerField()
     last_hits = models.SmallIntegerField()
@@ -151,6 +151,7 @@ class DetailMatchPlayer(ItemOwner):
     hero_healing = models.IntegerField()
     level = models.IntegerField()
 
+    @property
     def hero(self):
         return get_hero(self.hero_id)
 
