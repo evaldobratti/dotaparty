@@ -7,10 +7,11 @@ from core import parameters
 def create_parameters(apps, schema_editor):
     Parameter = apps.get_model("core", "Parameter")
 
-    Parameter.objects.create(name=parameters.LAST_MATCH_ID_SKILL_VERY_HIGH, value=None)
-    Parameter.objects.create(name=parameters.LAST_MATCH_ID_SKILL_HIGH, value=None)
-    Parameter.objects.create(name=parameters.LAST_MATCH_ID_SKILL_NORMAL, value=None)
-    Parameter.objects.create(name=parameters.INTERESTED_ACCOUNTS_IDS, value='[88738111]')
+    if Parameter.objects.filter(name=parameters.INTERESTED_ACCOUNTS_IDS):
+        Parameter.objects.create(name=parameters.INTERESTED_ACCOUNTS_IDS, value='[]')
+
+    if Parameter.objects.filter(name=parameters.LAST_MATCH_SEQ_NUM):
+        Parameter.objects.create(name=parameters.LAST_MATCH_SEQ_NUM, value=None)
 
 
 class Migration(migrations.Migration):

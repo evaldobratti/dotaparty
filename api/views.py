@@ -50,7 +50,9 @@ def get_accounts_matches(request, accounts_ids):
 
 @api_view(['POST'])
 def download_games(request, account_id):
+
     tasks.download_games(account_id)
+    utils.add_account_to_interested(int(account_id))
     return Response(status=status.HTTP_200_OK)
 
 

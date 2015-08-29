@@ -136,10 +136,5 @@ HUEY = {
 
 import logging
 logging.getLogger("requests").setLevel(logging.WARNING)
-task_logger = logging.getLogger('pwm_logger')
-handler = logging.FileHandler('tasks.log')
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-task_logger.addHandler(handler)
 
 

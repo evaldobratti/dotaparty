@@ -217,8 +217,13 @@ def get_friends_matches_details(accounts_ids, page):
 
 
 def accounts_to_download_matches():
+    return eval(_get_interested_accounts_ids_parameter().value)
+
+
+def _get_interested_accounts_ids_parameter():
     import parameters
-    return eval(Parameter.objects.get(name=parameters.INTERESTED_ACCOUNTS_IDS).value)
+    return Parameter.objects.get(name=parameters.INTERESTED_ACCOUNTS_IDS)
+
 
 def set_last_match_seq(seq_num):
     parameter = _get_last_match_seq_parameter()
@@ -230,7 +235,6 @@ def last_match_seq():
 
 def _get_last_match_seq_parameter():
     import parameters
-    import django.db.models
     try:
         return Parameter.objects.get(name=parameters.LAST_MATCH_SEQ_NUM)
     except Exception, e:
@@ -240,3 +244,14 @@ def reset_parameters():
     parameter = _get_last_match_seq_parameter()
     parameter.value = None
     parameter.save()
+
+def add_account_to_interested(account_id):
+    value = accounts_to_download_matches()
+    if account_id in value:
+        return
+
+    value.append(account_id)
+
+    accs = _get_interested_accounts_ids_parameter()
+    accs.value = str(value)
+    accs.save()
