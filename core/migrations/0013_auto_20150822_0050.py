@@ -7,10 +7,10 @@ from core import parameters
 def create_parameters(apps, schema_editor):
     Parameter = apps.get_model("core", "Parameter")
 
-    if Parameter.objects.filter(name=parameters.INTERESTED_ACCOUNTS_IDS):
+    if len(Parameter.objects.filter(name=parameters.INTERESTED_ACCOUNTS_IDS)) == 0:
         Parameter.objects.create(name=parameters.INTERESTED_ACCOUNTS_IDS, value='[]')
 
-    if Parameter.objects.filter(name=parameters.LAST_MATCH_SEQ_NUM):
+    if len(Parameter.objects.filter(name=parameters.LAST_MATCH_SEQ_NUM)) == 0:
         Parameter.objects.create(name=parameters.LAST_MATCH_SEQ_NUM, value=None)
 
 

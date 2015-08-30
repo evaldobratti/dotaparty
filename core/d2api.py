@@ -12,12 +12,6 @@ def get_until_success(get_function):
 
             time.sleep(1)
             return get_function()
-        except APITimeoutError as e:
-            import logging
-
-            logging.info('timeout, waiting 10s')
-            time.sleep(10)
-
         except Exception as e:
             import logging
 
