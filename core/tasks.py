@@ -29,11 +29,14 @@ def download_by_seq_num():
     _download_by_seq_num()
 
 
-@db_periodic_task(always_execute)
+@db_task()
 def games_skill_setter():
-    matches = models.DetailMatch.objects.filter(skill__isnull=True)
-    for match in matches:
-        _define_skill_match(match)
+    while True:
+        import time
+        time.sleep(30)
+        matches = models.DetailMatch.objects.filter(skill__isnull=True)
+        for match in matches:
+            _define_skill_match(match)
 
 
 def _define_skill_match(match):
