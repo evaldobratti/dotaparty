@@ -24,7 +24,7 @@ def always_execute(x):
     return True
 
 
-@db_periodic_task(always_execute)
+@db_task()
 def download_by_seq_num():
     _download_by_seq_num()
 
@@ -67,26 +67,29 @@ def _define_if_skill(match, hero, skill_lvl):
 
 
 def _download_by_seq_num():
-    last_match_seq_num = last_match_seq()
-
-    if last_match_seq_num is None:
-        set_last_match_seq(d2api.get_match_history(None).matches[0].match_seq_num)
+    while True:
+        import time
+        time.sleep(5)
         last_match_seq_num = last_match_seq()
 
-    try:
-        matches = d2api.get_matches_seq(last_match_seq_num)
-        for match in matches.matches:
-            log.info("analysing match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
+        if last_match_seq_num is None:
+            set_last_match_seq(d2api.get_match_history(None).matches[0].match_seq_num)
+            last_match_seq_num = last_match_seq()
 
-            accs = accounts_to_download_matches()
+        try:
+            matches = d2api.get_matches_seq(last_match_seq_num)
+            for match in matches.matches:
+                log.info("analysing match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
 
-            if [p for p in match.players if p.account_id in accs]:
-                log.info("will download match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
-                match = _download_match('worker on downloads', match)
+                accs = accounts_to_download_matches()
 
-            set_last_match_seq(match.match_seq_num)
-    except Exception, e:
-        log.exception(e)
+                if [p for p in match.players if p.account_id in accs]:
+                    log.info("will download match_id : {} seq_num: {}".format(match.match_id, match.match_seq_num))
+                    match = _download_match('worker on downloads', match)
+
+                set_last_match_seq(match.match_seq_num)
+        except Exception, e:
+            log.exception(e)
 
 
 def _download_games(account_id):
