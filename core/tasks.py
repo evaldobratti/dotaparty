@@ -71,8 +71,6 @@ def _define_if_skill(match, hero, skill_lvl):
 
 def _download_by_seq_num():
     while True:
-        import time
-        time.sleep(5)
         last_match_seq_num = last_match_seq()
 
         if last_match_seq_num is None:
