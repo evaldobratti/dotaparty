@@ -35,6 +35,7 @@ def games_skill_setter():
         import time
         time.sleep(30)
         matches = models.DetailMatch.objects.filter(skill__isnull=True)
+        log.info("matches to set skill: {} ".format(len(matches)))
         for match in matches:
             _define_skill_match(match)
 
@@ -61,13 +62,13 @@ def _define_if_skill(match, hero, skill_lvl):
                                     hero_id=hero.hero_id)
 
     if skill.matches and skill.matches[0].match_id == match.match_id:
-        log.info("match: {} skill: {}".format(match.match_id, skill_lvl))
+        log.info("match: {} IS skill: {}".format(match.match_id, skill_lvl))
         match.skill = skill_lvl
         match.save()
         return True
 
+    log.info("match: {} is NOT skill: {}".format(match.match_id, skill_lvl))
     return False
-
 
 def _download_by_seq_num():
     while True:
