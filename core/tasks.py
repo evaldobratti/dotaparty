@@ -110,7 +110,9 @@ def _download_games(account_id):
                                                                          matches.results_remaining))
 
                 for match in matches.matches:
-                    _download_match(account_id, match)
+                    detail_match = _download_match(account_id, match)
+                    detail_match.skill = 4
+                    detail_match.save()
 
                     last_match_id = match.match_id
 
