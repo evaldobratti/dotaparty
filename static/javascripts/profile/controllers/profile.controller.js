@@ -22,6 +22,7 @@
 
             Profile.get(vm.accountId).then(function (result) {
                 vm.games = result.data;
+                vm.games.friends = vm.games.friends.slice(0, Math.min(vm.games.friends.length, 12))
             });
 
             DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {
@@ -33,10 +34,16 @@
         function downloadGames() {
             Profile.downloadGames(vm.account.account_id).
                 success(function () {
-                    $rootScope.alerts.push({type: 'success', msg: 'It will start to download your games'});
+                    $rootScope.alerts.push({
+                        type: 'success',
+                        msg: 'It will start to download your games'
+                    });
                 }).
                 error(function () {
-                    $rootScope.alerts.push({type: 'danger', msg: 'It was not possible to download your games due to an internal error.'});
+                    $rootScope.alerts.push({
+                        type: 'danger',
+                        msg: 'It was not possible to download your games due to an internal error.'
+                    });
                 });
 
         }
