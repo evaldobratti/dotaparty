@@ -37,6 +37,7 @@ class Account(models.Model):
     persona_state = models.IntegerField(null=True)
     profile_state = models.IntegerField(null=True)
     current_update = models.ForeignKey('AccountUpdate', related_name='current_update', null=True)
+    matches_download_required = models.BooleanField(null=False, default=False)
 
 
 class AccountUpdate(models.Model):

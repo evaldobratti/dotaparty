@@ -24,12 +24,10 @@ def always_execute(x):
     return True
 
 
-@db_task()
 def download_by_seq_num():
     _download_by_seq_num()
 
 
-@db_task()
 def games_skill_setter():
     while True:
         import time
@@ -96,6 +94,14 @@ def _download_by_seq_num():
 
 def _download_games(account_id):
     log.info("requisitando download de " + str(account_id))
+    account = models.Account.objects.get(account_id=int(account_id))
+    if account.matches_download_required:
+        log.info("all matches already downloaded " + str(account_id))
+        return
+
+    account.matches_download_required = True
+    account.save()
+
     last_match_id = None
     heroes = models.Hero.objects.all().order_by('localized_name')
     while True:

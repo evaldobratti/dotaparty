@@ -135,6 +135,15 @@ HUEY = {
 }
 
 import logging
+from logging.handlers import RotatingFileHandler
+
 logging.getLogger("requests").setLevel(logging.WARNING)
 
-
+log_format = ('%(threadName)s %(asctime)s %(name)s '
+              '%(levelname)s %(message)s')
+handler = RotatingFileHandler(
+    'tasks.log', maxBytes=1024 * 1024, backupCount=3)
+handler.setFormatter(logging.Formatter(log_format))
+task_logger = logging.getLogger('pwm_logger')
+task_logger.addHandler(handler)
+task_logger.setLevel('INFO')
