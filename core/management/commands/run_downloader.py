@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
+from core.downloader.matches import execute_download_games
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        from core.tasks import download_by_seq_num
-        download_by_seq_num()
+        execute_download_games()

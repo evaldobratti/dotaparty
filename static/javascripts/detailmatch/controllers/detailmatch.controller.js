@@ -64,10 +64,10 @@
                 });
         }
 
-        function othersRealPlayers(subject) {
+        function othersRealPlayers(currentPlayer) {
             var others_ids = [];
             vm.match.players.forEach(function (p) {
-                if (p.player_account != null && subject != p)
+                if (p.player_account != null && currentPlayer != p)
                     others_ids.push(p.account_id);
             });
             return others_ids;

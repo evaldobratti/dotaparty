@@ -3,6 +3,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
 from core import d2api
 
+PRIVATE_PROFILE_ACCOUNT_ID = 4294967295
+
 
 def get_account(account_id):
     account = Account.objects.filter(account_id=account_id)
@@ -16,73 +18,74 @@ def get_account(account_id):
         return None
 
 
-def load_account(account_id, updated_acc):
-    account, _ = Account.objects.get_or_create(account_id=account_id)
-    account.steam_id = updated_acc.steam_id
-    account.last_logoff = updated_acc.last_logoff
-    account.profile_url = updated_acc.profile_url
-    account.community_visibility_state = updated_acc.community_visibility_state
-    account.time_created = updated_acc.time_created
-    account.persona_state = updated_acc.persona_state
-    account.profile_state = updated_acc.profile_state
-    update, created = account.updates.get_or_create(account=account,
-                                                    persona_name=updated_acc.persona_name,
-                                                    url_avatar=updated_acc.url_avatar,
-                                                    url_avatar_medium=updated_acc.url_avatar_medium,
-                                                    url_avatar_full=updated_acc.url_avatar_full,
-                                                    primary_clan_id=updated_acc.primary_clan_id,
-                                                    persona_state_flags=updated_acc.persona_state_flags)
-    account.current_update = update
-    account.save()
+def load_account(account_id, update):
+    acc, _ = Account.objects.get_or_create(account_id=account_id)
+    acc.steam_id = update.steam_id
+    acc.last_logoff = update.last_logoff
+    acc.profile_url = update.profile_url
+    acc.community_visibility_state = update.community_visibility_state
+    acc.time_created = update.time_created
+    acc.persona_state = update.persona_state
+    acc.profile_state = update.profile_state
+    update, created = acc.updates.get_or_create(account=acc,
+                                                persona_name=update.persona_name,
+                                                url_avatar=update.url_avatar,
+                                                url_avatar_medium=update.url_avatar_medium,
+                                                url_avatar_full=update.url_avatar_full,
+                                                primary_clan_id=update.primary_clan_id,
+                                                persona_state_flags=update.persona_state_flags)
+    acc.current_update = update
+    acc.save()
     if created:
-        update.sequential = len(account.updates.all())
+        update.sequential = len(acc.updates.all())
         update.save()
 
-    return account
+    return acc
 
 
 def load_team(match, players):
     updated_accounts = d2api.get_player_summaries(*[p.account_id for p in players])
-    for player_response in players:
-        hero, _ = Hero.objects.get_or_create(hero_id=player_response.hero.id,
-                                             localized_name=player_response.hero.localized_name,
-                                             name=player_response.hero.name,
-                                             url_small_portrait=player_response.hero.url_small_portrait,
-                                             url_large_portrait=player_response.hero.url_large_portrait,
-                                             url_full_portrait=player_response.hero.url_full_portrait,
-                                             url_vertical_portrait=player_response.hero.url_vertical_portrait)
+    for p in players:
+        hero, _ = Hero.objects.get_or_create(hero_id=p.hero.id,
+                                             localized_name=p.hero.localized_name,
+                                             name=p.hero.name,
+                                             url_small_portrait=p.hero.url_small_portrait,
+                                             url_large_portrait=p.hero.url_large_portrait,
+                                             url_full_portrait=p.hero.url_full_portrait,
+                                             url_vertical_portrait=p.hero.url_vertical_portrait)
 
-        if player_response.account_id != 4294967295 and player_response.account_id != -1:
-            updated_acc = [ua for ua in updated_accounts
-                           if str(ua.steam_id) == str(d2api.convert_to_64_bit(player_response.account_id))][0]
-            account = load_account(player_response.account_id, updated_acc)
+        if p.account_id != PRIVATE_PROFILE_ACCOUNT_ID and p.account_id != -1:
+            update = filter(lambda ua: str(ua.steam_id) == str(d2api.to_64b(p.account_id)),
+                            updated_accounts)
+
+            account = load_account(p.account_id, update)
         else:
             account = None
 
-        if player_response.leaver_status:
-            leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=player_response.leaver_status.id,
-                                                                  name=player_response.leaver_status.name,
-                                                                  description=player_response.leaver_status.description)
+        if p.leaver_status:
+            leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=p.leaver_status.id,
+                                                                  name=p.leaver_status.name,
+                                                                  description=p.leaver_status.description)
         else:
             leaver_status = None
 
         player = DetailMatchPlayer.objects.create(match=match, player_account=account,
-                                                  account_id=player_response.account_id,
-                                                  player_slot=player_response.player_slot,
-                                                  hero_id=hero.hero_id, kills=player_response.kills,
-                                                  deaths=player_response.deaths, assists=player_response.assists,
+                                                  account_id=p.account_id,
+                                                  player_slot=p.player_slot,
+                                                  hero_id=hero.hero_id, kills=p.kills,
+                                                  deaths=p.deaths, assists=p.assists,
                                                   leaver_status=leaver_status,
-                                                  gold=player_response.gold,
-                                                  last_hits=player_response.last_hits, denies=player_response.denies,
-                                                  gold_per_min=player_response.gold_per_min,
-                                                  xp_per_min=player_response.xp_per_min,
-                                                  gold_spent=player_response.gold_spent,
-                                                  hero_damage=player_response.hero_damage,
-                                                  tower_damage=player_response.tower_damage,
-                                                  hero_healing=player_response.hero_healing,
-                                                  level=player_response.level)
+                                                  gold=p.gold,
+                                                  last_hits=p.last_hits, denies=p.denies,
+                                                  gold_per_min=p.gold_per_min,
+                                                  xp_per_min=p.xp_per_min,
+                                                  gold_spent=p.gold_spent,
+                                                  hero_damage=p.hero_damage,
+                                                  tower_damage=p.tower_damage,
+                                                  hero_healing=p.hero_healing,
+                                                  level=p.level)
 
-        for additional_unit in player_response.additional_units:
+        for additional_unit in p.additional_units:
             unit, unit_created = AdditionalUnit.objects.get_or_create(unit_name=additional_unit.unit_name,
                                                                       player=player)
             for index, item_response in enumerate(additional_unit.items):
@@ -97,7 +100,7 @@ def load_team(match, players):
 
                 DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item.item_id)
 
-        for index, item_response in enumerate(player_response.items):
+        for index, item_response in enumerate(p.items):
             item, _ = Item.objects.get_or_create(item_id=item_response.id,
                                                  localized_name=item_response.localized_name,
                                                  name=item_response.name,
@@ -109,7 +112,7 @@ def load_team(match, players):
 
             DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item.item_id)
 
-        for upgrade in player_response.ability_upgrades:
+        for upgrade in p.ability_upgrades:
             ability, _ = Ability.objects.get_or_create(ability_id=upgrade.ability,
                                                        name=upgrade.ability_name)
             DetailMatchAbilityUpgrade.objects.create(player=player,
@@ -118,7 +121,7 @@ def load_team(match, players):
                                                      upgraded_lvl=upgrade.level)
 
 
-def parse_from_details_match(match_details):
+def parse(match_details):
     cluster, _ = Cluster.objects.get_or_create(cluster_id=match_details.cluster,
                                                name=match_details.cluster_name)
 
@@ -160,7 +163,7 @@ def get_details_match(match_id):
         return query[0]
     else:
         details = d2api.get_match_details(match_id)
-        return parse_from_details_match(details)
+        return parse(details)
 
 
 def get_friends_number_matches(account, compared_to=[]):
@@ -214,44 +217,3 @@ def get_friends_matches_details(accounts_ids, page):
         return paginator.page(1)
     except EmptyPage:
         return paginator.page(paginator.num_pages)
-
-
-def accounts_to_download_matches():
-    return eval(_get_interested_accounts_ids_parameter().value)
-
-
-def _get_interested_accounts_ids_parameter():
-    import parameters
-    return Parameter.objects.get(name=parameters.INTERESTED_ACCOUNTS_IDS)
-
-
-def set_last_match_seq(seq_num):
-    parameter = _get_last_match_seq_parameter()
-    parameter.value = str(seq_num)
-    parameter.save()
-
-def last_match_seq():
-    return _get_last_match_seq_parameter().value
-
-def _get_last_match_seq_parameter():
-    import parameters
-    try:
-        return Parameter.objects.get(name=parameters.LAST_MATCH_SEQ_NUM)
-    except Exception, e:
-        return Parameter.objects.create(name=parameters.LAST_MATCH_SEQ_NUM)
-
-def reset_parameters():
-    parameter = _get_last_match_seq_parameter()
-    parameter.value = None
-    parameter.save()
-
-def add_account_to_interested(account_id):
-    value = accounts_to_download_matches()
-    if account_id in value:
-        return
-
-    value.append(account_id)
-
-    accs = _get_interested_accounts_ids_parameter()
-    accs.value = str(value)
-    accs.save()

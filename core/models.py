@@ -1,8 +1,9 @@
 from django.db import models
 
-
-
 items = {}
+heroes = {}
+
+
 def get_item(item_id):
     if item_id in items:
         return items[item_id]
@@ -10,7 +11,7 @@ def get_item(item_id):
         items[item_id] = Item.objects.get(item_id=item_id)
         return items[item_id]
 
-heroes = {}
+
 def get_hero(hero_id):
     if hero_id in heroes:
         return heroes[hero_id]
@@ -184,3 +185,6 @@ class DetailMatchAbilityUpgrade(models.Model):
 class Parameter(models.Model):
     name = models.CharField(max_length=40)
     value = models.CharField(max_length=500, null=True)
+
+    def reset(self):
+        self.value = None

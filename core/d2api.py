@@ -1,6 +1,5 @@
 from dota2api import api
 from dotaparty import secret
-from dota2api.src.exceptions import APITimeoutError
 
 __d2api = api.Initialise(secret.D2_API_KEY)
 
@@ -30,8 +29,9 @@ def get_match_details(match_id):
     return get_until_success(lambda: __d2api.get_match_details(match_id))
 
 
-def convert_to_64_bit(number):
+def to_64b(number):
     return api.convert_to_64_bit(number)
+
 
 def get_matches_seq(last_match_id):
     return get_until_success(lambda: __d2api.get_match_history_by_seq_num(last_match_id))

@@ -1,10 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from views import IndexView
-from rest_framework_nested import routers
 from api import views
-router = routers.SimpleRouter()
-#router.register(r'accounts', DetailMatchViewSet)
 
 urlpatterns = [
     # Examples:

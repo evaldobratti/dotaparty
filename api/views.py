@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -6,9 +5,12 @@ from rest_framework.decorators import api_view
 from core import utils
 from core import tasks
 from core.models import Account, DetailMatch
-from serializers import DetailMatchSerializer, ProfileSerializer, AccountSerializer
+from api.serializers import DetailMatchSerializer
+from api.serializers import ProfileSerializer
+from api.serializers import AccountSerializer
 from django.db import transaction
 # Create your views here.
+
 
 @api_view(['GET'])
 @transaction.atomic()
@@ -50,9 +52,10 @@ def get_accounts_matches(request, accounts_ids):
 
 @api_view(['POST'])
 def download_games(request, account_id):
-
+    from core.parameters import INTERESTED_ACCOUNTS_IDS
     tasks.download_games(account_id)
-    utils.add_account_to_interested(int(account_id))
+    INTERESTED_ACCOUNTS_IDS.add_value(int(account_id))
+
     return Response(status=status.HTTP_200_OK)
 
 

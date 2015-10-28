@@ -1,6 +1,6 @@
 bower_components
 secret.sh
-env
+venv
 .idea
 db.sqlite3
 *.pyc
