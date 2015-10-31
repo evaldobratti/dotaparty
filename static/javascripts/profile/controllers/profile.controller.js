@@ -22,22 +22,23 @@
 
             Profile.get(vm.accountId).then(function (result) {
                 vm.games = result.data;
-                vm.games.friends = vm.games.friends.slice(0, Math.min(vm.games.friends.length, 12))
             });
 
             DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {
                 vm.currentDetailMatchesPage += 1;
-                vm.matches = vm.matches.concat(data.data.results);
+                vm.matches = data.data.results;
+
+                determineVictoryOrLoss(vm.matches);
             });
         }
 
         function downloadGames() {
+            if (vm.account.matches_download_required)
+                return;
+
             Profile.downloadGames(vm.account.account_id).
                 success(function () {
-                    $rootScope.alerts.push({
-                        type: 'success',
-                        msg: 'It will start to download your games'
-                    });
+                    vm.account.matches_download_required = true;
                 }).
                 error(function () {
                     $rootScope.alerts.push({
@@ -46,6 +47,16 @@
                     });
                 });
 
+        }
+
+        function determineVictoryOrLoss(matches) {
+            matches.forEach(function (match) {
+                if (match.is_radiant_win)
+                    match.match_won = match.radiant_team.length > 0;
+                else
+                    match.match_won = match.dire_team.length > 0;
+
+            });
         }
     }
 })();

@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
-from core.models import DetailMatch, DetailMatchPlayer, Hero, Account, Item, DetailMatchAbilityUpgrade, DetailMatchOwnerItem, Cluster, LobbyType, GameMode, AccountUpdate
+from core.models import DetailMatch, DetailMatchPlayer, Hero, Account, Item, DetailMatchAbilityUpgrade, \
+    DetailMatchOwnerItem, Cluster, LobbyType, GameMode, AccountUpdate
 from core.utils import get_friends_number_matches
+from core.parameters import INTERESTED_ACCOUNTS_IDS
+
 
 class ClusterSerialiazer(serializers.ModelSerializer):
     class Meta:
@@ -34,21 +37,27 @@ class DetailMatchOwnerItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailMatchOwnerItem
 
+
 class HeroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hero
 
+
 class AccountUpdateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = AccountUpdate
 
 
 class AccountSerializer(serializers.ModelSerializer):
     current_update = AccountUpdateSerializer()
+    matches_download_required = serializers.SerializerMethodField('_matches_download_required')
 
     class Meta:
         model = Account
 
+    def _matches_download_required(self, instance):
+        return instance.matches_download_required
 
 class PlayerSerializer(serializers.ModelSerializer):
     hero = HeroSerializer()
@@ -95,15 +104,15 @@ class DetailMatchSerializer(serializers.ModelSerializer):
 
 class FriendSerializer(serializers.BaseSerializer):
     def to_representation(self, account):
-        return {'account_id': account.account_id,
-                'persona_name': account.persona_name,
-                'url_avatar': account.url_avatar,
-                'qtd': account.qtd
-                }
+        return {
+            'account_id': account.account_id,
+            'persona_name': account.persona_name,
+            'url_avatar': account.url_avatar,
+            'qtd': account.qtd
+        }
 
 
 class ProfileSerializer(serializers.BaseSerializer):
-
     def __init__(self, instance, others_accounts_ids, **kwargs):
         super(ProfileSerializer, self).__init__(instance, **kwargs)
         self.others_accounts_ids = others_accounts_ids

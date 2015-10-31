@@ -9,7 +9,8 @@ from api.serializers import DetailMatchSerializer
 from api.serializers import ProfileSerializer
 from api.serializers import AccountSerializer
 from django.db import transaction
-# Create your views here.
+from django.contrib.auth import login, authenticate
+import json
 
 
 @api_view(['GET'])
@@ -52,10 +53,10 @@ def get_accounts_matches(request, accounts_ids):
 
 @api_view(['POST'])
 def download_games(request, account_id):
-    from core.parameters import INTERESTED_ACCOUNTS_IDS
-    tasks.download_games(account_id)
-    INTERESTED_ACCOUNTS_IDS.add_value(int(account_id))
-
+    account = Account.objects.get(account_id=int(account_id))
+    tasks.download_games(account)
+    account.matches_download_required = True
+    account.save()
     return Response(status=status.HTTP_200_OK)
 
 
@@ -71,3 +72,31 @@ def find(request, search):
         'accounts': AccountSerializer(accounts, many=True).data,
         'matches': DetailMatchSerializer(matches, many=True).data
     })
+
+
+@api_view(['POST'])
+def login(request):
+    data = json.load(request)
+
+    username = data.get('username', None)
+    password = data.get('password', None)
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+
+            serialized = AccountSerializer(user)
+
+            return Response(serialized.data)
+        else:
+            return Response({
+                'status': 'Unauthorized',
+                'message': 'This account has been disabled.'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        return Response({
+            'status': 'Unauthorized',
+            'message': 'Username/password combination invalid.'
+        }, status=status.HTTP_401_UNAUTHORIZED)

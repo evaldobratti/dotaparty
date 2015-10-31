@@ -1,11 +1,11 @@
-<form ng-submit="vm.find()">
-    <label>Search</label> <input ng-model="vm.searchTxt" type="text"/>
+<form  ng-submit="vm.find()" class="form-group">
+    <input placeholder="Search for account id, match id, nickname" class="form-control" ng-model="vm.searchTxt" type="text"/>
     <br/>
-    <input type="submit" value="Go"/>
+    <input type="submit" class="btn btn-primary" value="Search"/>
 </form>
 
 <div ng-if="vm.accounts.length > 0">
-    <span>accounts</span>
+    <h2>Accounts</h2>
 
     <div ng-repeat="acc in vm.accounts">
         <div>
@@ -17,7 +17,7 @@
 
 
 <div ng-if="vm.matches.length > 0">
-    <span>matches</span>
+    <h2>Matches</h2>
 
     <div ng-repeat="match in vm.matches">
         <div>

@@ -2,6 +2,7 @@ from django.db import models
 
 items = {}
 heroes = {}
+abilities = {}
 
 
 def get_item(item_id):
@@ -19,7 +20,7 @@ def get_hero(hero_id):
         heroes[hero_id] = Hero.objects.get(hero_id=hero_id)
         return heroes[hero_id]
 
-abilities = {}
+
 def get_ability(ability_id):
     if ability_id in abilities:
         return abilities[ability_id]
@@ -38,7 +39,20 @@ class Account(models.Model):
     persona_state = models.IntegerField(null=True)
     profile_state = models.IntegerField(null=True)
     current_update = models.ForeignKey('AccountUpdate', related_name='current_update', null=True)
-    matches_download_required = models.BooleanField(null=False, default=False)
+    _matches_download_required = models.BooleanField(null=False, default=False, db_column='matches_download_required')
+
+    @property
+    def matches_download_required(self):
+        return self._matches_download_required
+
+    @matches_download_required.setter
+    def matches_download_required(self, value):
+        print '1'
+        if value:
+            from core.parameters import INTERESTED_ACCOUNTS_IDS
+            INTERESTED_ACCOUNTS_IDS.add_value(self.account_id)
+
+        self._matches_download_required = value
 
 
 class AccountUpdate(models.Model):
@@ -50,6 +64,7 @@ class AccountUpdate(models.Model):
     url_avatar_full = models.CharField(max_length=500, null=True)
     primary_clan_id = models.BigIntegerField(null=True)
     persona_state_flags = models.BigIntegerField(null=True)
+
 
 class Hero(models.Model):
     hero_id = models.SmallIntegerField()
