@@ -5,8 +5,8 @@ from django.db import models, migrations, connection
 
 def migrate_owner_items(apps, schema_editor):
     cursor = connection.cursor()
-    cursor.execute("""UPDATE core_detailmatchowneritem OI
-      SET citem_id = (SELECT i.item_id FROM core_item i WHERE i.ID = OI.ITEM_ID )""")
+    cursor.execute("""UPDATE core_detailmatchowneritem
+      SET citem_id = (SELECT i.item_id FROM core_item i WHERE i.ID = core_detailmatchowneritem.ITEM_ID )""")
 
 
 class Migration(migrations.Migration):

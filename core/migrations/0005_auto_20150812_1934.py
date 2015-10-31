@@ -5,8 +5,8 @@ from django.db import models, migrations, connection
 
 def migrate_player_heroes(apps, schema_editor):
     cursor = connection.cursor()
-    cursor.execute("""UPDATE core_detailmatchplayer MP
-      SET CHERO_ID = (SELECT H.HERO_ID FROM core_hero H WHERE H.ID = MP.HERO_ID )""")
+    cursor.execute("""UPDATE core_detailmatchplayer
+      SET CHERO_ID = (SELECT H.HERO_ID FROM core_hero H WHERE H.ID = core_detailmatchplayer.HERO_ID )""")
 
 class Migration(migrations.Migration):
 

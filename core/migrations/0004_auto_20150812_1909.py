@@ -6,8 +6,8 @@ from django.db import models, migrations, connection
 
 def migrate_abilities_upgrades(apps, schema_editor):
     cursor = connection.cursor()
-    cursor.execute("""UPDATE core_detailmatchabilityupgrade AU
-      SET CABILITY_ID = (SELECT a.ABILITY_ID FROM core_ability A WHERE A.ID = AU.ABILITY_ID )""")
+    cursor.execute("""UPDATE core_detailmatchabilityupgrade
+      SET CABILITY_ID = (SELECT A.ABILITY_ID FROM core_ability A WHERE A.ID = core_detailmatchabilityupgrade.ABILITY_ID )""")
 
 
 class Migration(migrations.Migration):
