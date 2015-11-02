@@ -3,13 +3,33 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-            data-target="#not-google-plus-nav">
+                    data-target="#not-google-plus-nav">
                 <span class="sr-only">Toggle Navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">Dota Party</a>
+        </div>
+        <div class="collapse navbar-collapse" id="not-google-plus-nav">
+        <script>
+            function formatLoginURL() {
+                window.location = '/login/steam/' + "?next=" + window.location.pathname;
+            }
+
+            function formatLogoutURL() {
+                window.location = '/api/logout/' + "?next=" + window.location.pathname;
+            }
+        </script>
+
+            <ul class="nav navbar-nav pull-right">
+                {% if user.is_authenticated %}
+                    <li><a href="/profiles/{{ user.account_id }}">{{ user.username }}</a></li>
+                    <li><a target="_self" href="" onclick="formatLogoutURL()">Logout</a></li>
+                {% else %}
+                    <li><a target="_self" href="" onclick="formatLoginURL()">Login</a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>

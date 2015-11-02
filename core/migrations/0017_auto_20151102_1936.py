@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='account',
-            name='matches_download_required',
-            field=models.BooleanField(default=False),
+            name='_matches_download_required',
+            field=models.BooleanField(default=False, db_column=b'matches_download_required'),
         ),
     ]

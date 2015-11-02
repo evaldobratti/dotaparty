@@ -47,7 +47,6 @@ class Account(models.Model):
 
     @matches_download_required.setter
     def matches_download_required(self, value):
-        print '1'
         if value:
             from core.parameters import INTERESTED_ACCOUNTS_IDS
             INTERESTED_ACCOUNTS_IDS.add_value(self.account_id)

@@ -9,7 +9,8 @@ from api.serializers import DetailMatchSerializer
 from api.serializers import ProfileSerializer
 from api.serializers import AccountSerializer
 from django.db import transaction
-from django.contrib.auth import login, authenticate
+from django.contrib import auth
+from django.shortcuts import redirect
 import json
 
 
@@ -74,29 +75,9 @@ def find(request, search):
     })
 
 
-@api_view(['POST'])
-def login(request):
-    data = json.load(request)
+@api_view(['GET'])
+def logout(request):
+    auth.logout(request)
 
-    username = data.get('username', None)
-    password = data.get('password', None)
-
-    user = authenticate(username=username, password=password)
-
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-
-            serialized = AccountSerializer(user)
-
-            return Response(serialized.data)
-        else:
-            return Response({
-                'status': 'Unauthorized',
-                'message': 'This account has been disabled.'
-            }, status=status.HTTP_401_UNAUTHORIZED)
-    else:
-        return Response({
-            'status': 'Unauthorized',
-            'message': 'Username/password combination invalid.'
-        }, status=status.HTTP_401_UNAUTHORIZED)
+    from social.apps.django_app.default.models import UserSocialAuth
+    return redirect(request.GET['next'])

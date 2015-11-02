@@ -38,13 +38,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'debug_toolbar',
-    #'debug_panel',
+    'social.apps.django_app.default',
     'huey.djhuey',
     'rest_framework',
     'compressor',
-    'core'
-
+    'core',
+    'community'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,6 +58,7 @@ MIDDLEWARE_CLASSES = (
     #'debug_panel.middleware.DebugPanelMiddleware',
 )
 
+
 ROOT_URLCONF = 'dotaparty.urls'
 
 TEMPLATES = [
@@ -72,6 +72,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -139,6 +141,15 @@ HUEY = {
     'connection': {'host': 'localhost', 'port': 6379},
     'consumer_options': {'workers': 4, 'periodic_task_interval': 3},
 }
+
+SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEY
+
+AUTH_USER_MODEL = 'community.User'
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.steam.SteamOpenId',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 import logging
 from logging.handlers import RotatingFileHandler
