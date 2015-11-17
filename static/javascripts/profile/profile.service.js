@@ -11,7 +11,6 @@
         var Profile = {
             get: get,
             getPlayersMatches: getPlayersMatches,
-            getAccount: getAccount,
             downloadGames: downloadGames
 
         };
@@ -26,12 +25,8 @@
             return $http.get('/api/profiles/' + accountId + '?others=' + others.join(','));
         }
 
-        function getAccount(accountId) {
-            return $http.get("/api/accounts/" + accountId);
-        }
-
         function downloadGames(accountId) {
-            return $http.post("api/accounts/" + accountId + "/download");
+            return $http.post("api/profiles/" + accountId + "/download");
         }
     }
 })();

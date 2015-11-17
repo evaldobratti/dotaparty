@@ -56,7 +56,7 @@ def load_team(match, players):
 
         if p.account_id != PRIVATE_PROFILE_ACCOUNT_ID and p.account_id != -1:
             update = filter(lambda ua: str(ua.steam_id) == str(d2api.to_64b(p.account_id)),
-                            updated_accounts)
+                            updated_accounts)[0]
 
             account = load_account(p.account_id, update)
         else:

@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'huey.djhuey',
-    'rest_framework',
     'compressor',
     'core',
     'community'
@@ -143,8 +142,10 @@ HUEY = {
 }
 
 SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEY
-
+LOGIN_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'community.User'
+
+SOCIAL_AUTH_STORAGE = 'community.models.CommunityStorage'
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.steam.SteamOpenId',

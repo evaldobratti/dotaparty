@@ -2,15 +2,18 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.contrib.auth.models
+import social.apps.django_app.default.fields
 import django.utils.timezone
 import django.core.validators
-import django.contrib.auth.models
+import social.storage.django_orm
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0006_require_contenttypes_0002'),
+        ('core', '0017_auto_20151102_1936'),
     ]
 
     operations = [
@@ -28,6 +31,10 @@ class Migration(migrations.Migration):
                 ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
+                ('provider', models.CharField(max_length=32)),
+                ('uid', models.CharField(max_length=255)),
+                ('extra_data', social.apps.django_app.default.fields.JSONField(default=b'{}')),
+                ('account_id', models.PositiveIntegerField(null=True)),
                 ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions')),
             ],
@@ -36,8 +43,28 @@ class Migration(migrations.Migration):
                 'verbose_name': 'user',
                 'verbose_name_plural': 'users',
             },
+            bases=(models.Model, social.storage.django_orm.DjangoUserMixin),
             managers=[
                 ('objects', django.contrib.auth.models.UserManager()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Post',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('message', models.CharField(max_length=500)),
+                ('receiver', models.ForeignKey(related_name='messages_received', to='core.Account')),
+                ('sender', models.ForeignKey(related_name='messages_made', to='core.Account')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Report',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_created', models.DateTimeField(auto_now_add=True)),
+                ('reason', models.CharField(max_length=500)),
+                ('creator', models.ForeignKey(related_name='reports_created', to='core.Account')),
+                ('reported', models.ForeignKey(related_name='reports', to='core.Account')),
             ],
         ),
     ]

@@ -1,17 +1,16 @@
 {% load compress %}
 {% load staticfiles %}
 
-<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/underscore/underscore-min.js' %}"></script>
-<script type="text/javascript" src="{% static 'charts/Chart.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/angular-route/angular-route.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/angular-cookies/angular-cookies.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'charts/angular-chart.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'angular-ui/ui-bootstrap-tpls-0.13.3.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bower_components/ngDialog/js/ngDialog.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'angular-loading-bar/loading-bar.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/angular.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/angular-route.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/angular-cookies.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/ui-bootstrap-tpls-0.13.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/ngDialog.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/loading-bar.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/ngDialog.min.js' %}"></script>
+
 
 {% compress js %}
     <script type="text/javascript" src="{% static 'javascripts/ng-infinite-scroll.js' %}"></script>
@@ -23,16 +22,20 @@
     <script type="text/javascript" src="{% static 'javascripts/profile/profile.module.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/friends/friends.module.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'javascripts/detailmatch/controllers/detailmatch.controller.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/detailmatch/services/detailmatch.service.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/detailmatch/detailmatch.controller.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/detailmatch/detailmatch.service.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'javascripts/profile/controllers/profile.controller.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/profile/services/profile.service.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/profile/profile.controller.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/profile/profile.service.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'javascripts/friends/services/friends.service.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/friends/controllers/friends.controller.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/friends/friends.service.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/friends/friends.controller.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'javascripts/home/home.module.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/home/controllers/home.controller.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/home/services/home.service.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/home/home.controller.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/home/home.service.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'javascripts/community/community.module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/community/new-report.controller.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/community/community.service.js' %}"></script>
 {% endcompress %}

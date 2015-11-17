@@ -16,12 +16,9 @@
 
         active();
         function active() {
-            Profile.getAccount(vm.accountId).then(function (result) {
-                vm.account = result.data;
-            });
 
             Profile.get(vm.accountId).then(function (result) {
-                vm.games = result.data;
+                vm.account = result.data;
             });
 
             DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {

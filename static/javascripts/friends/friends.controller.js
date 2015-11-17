@@ -28,19 +28,10 @@
         function active() {
 
             vm.accountsIds.forEach(function (accId) {
-                Profile.getAccount(accId).then(function (data) {
+                Profile.get(accId).then(function (data) {
                     vm.accounts.push(data.data);
                 });
             });
-
-        /*Friends.get(vm.accountsIds).then(function (data) {
-                vm.matches = data.data;
-                filterPlayers(vm.matches.results);
-
-                vm.currentPage = data.data.current;
-                vm.totalPages = data.data.total;
-            })*/
-
         }
 
         function getNextPage() {
@@ -66,13 +57,13 @@
             matches.forEach(function (match) {
                 match.playersFiltered = [];
                 match.radiant_team.forEach(function (player) {
-                    if (vm.accountsIds.indexOf(player.account_id) >= 0) {
+                    if (player.player_account != undefined && vm.accountsIds.indexOf(player.player_account.account_id) >= 0) {
                         match.playersFiltered.push(player);
                         match.wereOnRadiant = true;
                     }
                 });
                 match.dire_team.forEach(function (player) {
-                    if (vm.accountsIds.indexOf(player.account_id) >= 0) {
+                    if (player.player_account != undefined && vm.accountsIds.indexOf(player.player_account.account_id) >= 0) {
                         match.playersFiltered.push(player);
                         match.wereOnRadiant = false;
                     }

@@ -1,67 +1,80 @@
-from rest_framework import status
-from rest_framework.response import Response
+import json
 
-from rest_framework.decorators import api_view
 from core import utils
 from core import tasks
 from core.models import Account, DetailMatch
-from api.serializers import DetailMatchSerializer
-from api.serializers import ProfileSerializer
-from api.serializers import AccountSerializer
+from django.http import HttpResponse
 from django.db import transaction
 from django.contrib import auth
 from django.shortcuts import redirect
-import json
+from django.http import JsonResponse
+from community import models as cm
+from core.utils import get_friends_number_matches
 
 
-@api_view(['GET'])
 @transaction.atomic()
 def get_details_match(request, match_id):
-    return Response(DetailMatchSerializer(utils.get_details_match(match_id)).data)
+    match = utils.get_details_match(match_id)
+    return JsonResponse(match.as_dict())
 
 
-@api_view(['GET'])
-@transaction.atomic()
 def get_profile(request, account_id):
     others = request.GET.get('others') and request.GET.get('others').split(',') or []
+
+    def serialize_friend(account):
+        return {
+            'account_id': account.account_id,
+            'persona_name': account.persona_name,
+            'url_avatar': account.url_avatar,
+            'qtd': account.qtd
+        }
+
+    def serializer(account):
+        friends = get_friends_number_matches(account, others)
+        return {
+            'account_id': account.account_id,
+            'persona_name': account.current_update.persona_name,
+            'url_avatar': account.current_update.url_avatar,
+            'friends': map(serialize_friend, friends)
+        }
+
     account = utils.get_account(account_id)
-    return Response(ProfileSerializer(account, others).data)
+    return JsonResponse(serializer(account))
 
 
-@api_view(['GET'])
-@transaction.atomic()
 def get_account(request, account_id):
-    return Response(AccountSerializer(utils.get_account(account_id)).data)
+    account = utils.get_account(account_id)
+    return JsonResponse({
+        'persona_name': account.current_update.persona_name,
+        'url_avatar': account.current_update.url_avatar,
+        'account_id': account.account_id
+    })
 
 
-@api_view(['GET'])
-@transaction.atomic()
 def get_accounts_matches(request, accounts_ids):
     page = request.GET.get('page')
     accounts = map(int, accounts_ids.split(','))
     matches_page = utils.get_friends_matches_details(accounts, page)
 
-    return Response({
+    return JsonResponse({
         'links': {
             'next': matches_page.has_next() and matches_page.next_page_number() or None,
             'previous': matches_page.has_previous() and matches_page.previous_page_number() or None
         },
         'current': matches_page.number,
         'total': matches_page.paginator.num_pages,
-        'results': DetailMatchSerializer(matches_page, many=True, accounts=accounts).data
+        'results': map(DetailMatch.as_dict, matches_page) #filtrar somente as contas que vieram por parametro
     })
 
 
-@api_view(['POST'])
 def download_games(request, account_id):
     account = Account.objects.get(account_id=int(account_id))
     tasks.download_games(account)
     account.matches_download_required = True
     account.save()
-    return Response(status=status.HTTP_200_OK)
+    return HttpResponse()
 
 
-@api_view(['GET'])
 def find(request, search):
     accounts = Account.objects.filter(current_update__persona_name__icontains=search)
     matches = []
@@ -69,15 +82,26 @@ def find(request, search):
         accounts = accounts | Account.objects.filter(account_id=int(search))
         matches = DetailMatch.objects.filter(match_id=int(search))
 
-    return Response({
-        'accounts': AccountSerializer(accounts, many=True).data,
-        'matches': DetailMatchSerializer(matches, many=True).data
+    return JsonResponse({
+        'accounts': map(Account.as_dict, accounts),
+        'matches': map(DetailMatch.as_dict, matches)
     })
 
 
-@api_view(['GET'])
 def logout(request):
     auth.logout(request)
 
-    from social.apps.django_app.default.models import UserSocialAuth
     return redirect(request.GET['next'])
+
+
+def new_report(request):
+    data = json.loads(request.body)
+    creator = cm.Account.objects.get(account_id=request.user.account_id)
+    reported = cm.Account.objects.get(account_id=int(data['reported']))
+    reason = data['reason']
+
+    cm.Report.objects.create(creator=creator,
+                             reported=reported,
+                             reason=reason)
+
+    return HttpResponse()

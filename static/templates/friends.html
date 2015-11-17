@@ -1,6 +1,6 @@
 <div ng-repeat="acc in vm.accounts">
-    <img ng-src="{{ acc.current_update.url_avatar }}">
-    <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
+    <img ng-src="{{ acc.url_avatar }}">
+    <a href="profiles/{{ acc.account_id }}">{{ acc.persona_name }}</a>
 </div>
 
 <div infinite-scroll="vm.getNextPage()"
@@ -38,7 +38,7 @@
                             <img width="50" src="{{ player.hero.url_full_portrait }}">
                         </div>
                         <div class="col-md-10">
-                            <a href="/profiles/{{ player.player_account.account_id }}">{{ player.player_account.current_update.persona_name }}</a>
+                            <a href="/profiles/{{ player.player_account.account_id }}">{{ player.player_account.persona_name }}</a>
                         </div>
                         <div class="col-md-4 text-align-center"><span class="color-green">{{ player.kills }}</span>/<span class="color-red">{{ player.deaths }}</span>/<span class="color-blue">{{ player.assists }}</span> </div>
                     </div>

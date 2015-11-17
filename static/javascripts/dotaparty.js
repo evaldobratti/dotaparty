@@ -6,7 +6,6 @@
         .module('dotaparty', [
             'infinite-scroll',
             'ui.bootstrap',
-            'chart.js',
             'angular-loading-bar',
             'dotaparty.routes',
             'dotaparty.config',
@@ -15,7 +14,9 @@
             'dotaparty.friends',
             'dotaparty.home',
             'dotaparty.filter',
-            'dotaparty.alerts'
+            'dotaparty.alerts',
+            'dotaparty.community',
+            'ngDialog'
         ]);
 
     angular.module('dotaparty.routes', ['ngRoute']);
