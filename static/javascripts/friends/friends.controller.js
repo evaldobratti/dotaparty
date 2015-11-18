@@ -46,29 +46,13 @@
             DetailMatch.getMatchesByAccountsIds(vm.accountsIds, vm.currentPage + 1).then(function (data) {
                 vm.currentPage = data.data.current;
                 vm.totalPages = data.data.total;
-                filterPlayers(data.data.results);
 
                 vm.matches = vm.matches.concat(data.data.results);
+                vm.matches.forEach(function(m) {
+                    m.radiant_team = m.radiant_team || [];
+                    m.dire_team = m.dire_team || [];
+                });
                 vm.evaluating = false;
-            });
-        }
-
-        function filterPlayers(matches) {
-            matches.forEach(function (match) {
-                match.playersFiltered = [];
-                match.radiant_team.forEach(function (player) {
-                    if (player.player_account != undefined && vm.accountsIds.indexOf(player.player_account.account_id) >= 0) {
-                        match.playersFiltered.push(player);
-                        match.wereOnRadiant = true;
-                    }
-                });
-                match.dire_team.forEach(function (player) {
-                    if (player.player_account != undefined && vm.accountsIds.indexOf(player.player_account.account_id) >= 0) {
-                        match.playersFiltered.push(player);
-                        match.wereOnRadiant = false;
-                    }
-                });
-
             });
         }
     }

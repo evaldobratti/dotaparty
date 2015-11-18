@@ -10,12 +10,12 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from community import models as cm
 from core.utils import get_friends_number_matches
-
+import serializers
 
 @transaction.atomic()
 def get_details_match(request, match_id):
     match = utils.get_details_match(match_id)
-    return JsonResponse(match.as_dict())
+    return JsonResponse(serializers.detail_match_serializer(match))
 
 
 def get_profile(request, account_id):
@@ -51,9 +51,9 @@ def get_account(request, account_id):
     })
 
 
-def get_accounts_matches(request, accounts_ids):
+def get_accounts_matches(request, comma_accounts_ids):
     page = request.GET.get('page')
-    accounts = map(int, accounts_ids.split(','))
+    accounts = map(int, comma_accounts_ids.split(','))
     matches_page = utils.get_friends_matches_details(accounts, page)
 
     return JsonResponse({
@@ -63,7 +63,7 @@ def get_accounts_matches(request, accounts_ids):
         },
         'current': matches_page.number,
         'total': matches_page.paginator.num_pages,
-        'results': map(DetailMatch.as_dict, matches_page) #filtrar somente as contas que vieram por parametro
+        'results': map(serializers.details_match_from_players_serializer(accounts), matches_page)
     })
 
 
@@ -72,6 +72,7 @@ def download_games(request, account_id):
     tasks.download_games(account)
     account.matches_download_required = True
     account.save()
+
     return HttpResponse()
 
 
@@ -83,8 +84,8 @@ def find(request, search):
         matches = DetailMatch.objects.filter(match_id=int(search))
 
     return JsonResponse({
-        'accounts': map(Account.as_dict, accounts),
-        'matches': map(DetailMatch.as_dict, matches)
+        'accounts': map(serializers.account_serializer, accounts),
+        'matches': map(serializers.detail_match_serializer, matches)
     })
 
 

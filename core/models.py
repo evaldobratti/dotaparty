@@ -53,14 +53,6 @@ class Account(models.Model):
 
         self._matches_download_required = value
 
-    def as_dict(self):
-        return {
-            'account_id': self.account_id,
-            'steam_id': self.steam_id,
-            'profile_url': self.profile_url,
-            'current_update': self.current_update.as_dict()
-        }
-
 
 class AccountUpdate(models.Model):
     account = models.ForeignKey(Account, null=False, related_name='updates')
@@ -71,14 +63,6 @@ class AccountUpdate(models.Model):
     url_avatar_full = models.CharField(max_length=500, null=True)
     primary_clan_id = models.BigIntegerField(null=True)
     persona_state_flags = models.BigIntegerField(null=True)
-
-    def as_dict(self):
-        return {
-            'persona_name': self.persona_name,
-            'url_avatar': self.url_avatar,
-            'url_avatar_medium': self.url_avatar_medium,
-            'url_avatar_full': self.url_avatar_full
-        }
 
 
 class Hero(models.Model):
@@ -100,11 +84,6 @@ class Item(models.Model):
     cost = models.SmallIntegerField()
     in_side_shop = models.BooleanField()
     url_image = models.CharField(max_length=400)
-
-    def as_dict(self):
-        return {
-            'url_image': self.url_image
-        }
 
 
 class Ability(models.Model):
@@ -153,21 +132,6 @@ class DetailMatch(models.Model):
     def dire_team(self):
         return self.players.filter(player_slot__gt=10).order_by('player_slot')
 
-    def as_dict(self):
-        return {
-            'is_radiant_win': self.is_radiant_win,
-            'match_id': self.match_id,
-            'start_time': self.start_time,
-            'duration': self.duration,
-            'first_blood_time': self.first_blood_time,
-            'lobby_type': self.lobby_type.name,
-            'game_mode': self.game_mode.name,
-            'cluster': self.cluster.name,
-            'skill': self.skill,
-            'radiant_team': map(DetailMatchPlayer.as_dict, self.radiant_team()),
-            'dire_team': map(DetailMatchPlayer.as_dict, self.dire_team())
-        }
-
 
 class ItemOwner(models.Model):
     pass
@@ -210,35 +174,6 @@ class DetailMatchPlayer(ItemOwner):
         :return: Hero
         """
         return get_hero(self.hero_id)
-
-    def as_dict(self):
-        return {
-            'level': self.level,
-            'kills': self.kills,
-            'deaths': self.deaths,
-            'assists': self.assists,
-            'last_hits': self.last_hits,
-            'denies': self.denies,
-            'gold_per_min': self.gold_per_min,
-            'xp_per_min': self.xp_per_min,
-            'gold_spent': self.gold_spent,
-            'gold': self.gold,
-            'tower_damage': self.tower_damage,
-            'hero_damage': self.hero_damage,
-            'hero_healing': self.hero_healing,
-            'items': map(Item.as_dict, [owner.item() for owner in self.items.all()]),
-            'player_account': self.player_account and {
-                'account_id': self.player_account.account_id,
-                'persona_name': self.player_account.current_update.persona_name,
-                'url_avatar': self.player_account.current_update.url_avatar
-            },
-            'hero': {
-                'url_large_portrait': self.hero.url_large_portrait,
-                'url_small_portrait': self.hero.url_small_portrait,
-                'url_full_portrait': self.hero.url_full_portrait,
-                'localized_name': self.hero.localized_name
-            }
-        }
 
 
 class AdditionalUnit(ItemOwner):
