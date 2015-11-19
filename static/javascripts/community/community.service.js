@@ -14,10 +14,11 @@
 
         return Community;
 
-        function submitNewReport(reportedAccountId, reason) {
+        function submitNewReport(reportedAccountId, reason, matchId) {
             return $http.post("api/community/report/", {
                 reported: reportedAccountId,
-                reason: reason
+                reason: reason,
+                matchId: matchId
             });
         }
     }

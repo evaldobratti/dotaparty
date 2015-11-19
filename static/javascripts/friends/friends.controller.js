@@ -52,6 +52,18 @@
                     m.radiant_team = m.radiant_team || [];
                     m.dire_team = m.dire_team || [];
                 });
+
+                vm.matches.forEach(function(m){
+                    m.against = false;
+                   if (m.radiant_team.length != 0 && m.dire_team.length != 0) {
+                       m.against = true;
+                   } else if ((m.radiant_team.length != 0 && m.is_radiant_win) ||
+                              (m.dire_team.length != 0 && !m.is_radiant_win)){
+                       m.match_won = true;
+                   } else {
+                       m.match_won = false;
+                   }
+                });
                 vm.evaluating = false;
             });
         }

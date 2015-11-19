@@ -4,6 +4,7 @@ from social.apps.django_app.default.models import DjangoUserMixin
 from social.storage.django_orm import BaseDjangoStorage
 from social.apps.django_app.default.fields import JSONField
 from core.models import Account
+from core.models import DetailMatch
 
 
 class User(AbstractUser, DjangoUserMixin):
@@ -40,13 +41,15 @@ class User(AbstractUser, DjangoUserMixin):
 
 class Report(models.Model):
     creator = models.ForeignKey(Account, related_name='reports_created')
-    reported = models.ForeignKey(Account, related_name='reports')
+    reported = models.ForeignKey(Account, related_name='reports_received')
+    due_to_match = models.ForeignKey(DetailMatch)
     date_created = models.DateTimeField(auto_now_add=True)
 
     reason = models.CharField(max_length=500)
 
 
 class Post(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(Account, related_name='messages_made')
     receiver = models.ForeignKey(Account, related_name='messages_received')
 

@@ -16,64 +16,73 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-16">
+            <h4 ng-if="vm.matches.length">Matches</h4>
 
-    <div class="col-md-12">
-        <h4>Matches</h4>
+            <div ng-repeat="match in vm.matches">
 
-        <div ng-repeat="match in vm.matches">
+                <div ng-repeat="player in match.radiant_team.concat(match.dire_team)"
+                     ng-if="player.player_account.account_id == vm.accountId">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img ng-src="{{ player.hero.url_small_portrait }}">
+                        </div>
+                        <div class="col-md-4">
+                            <a ng-href="matches/{{ match.match_id }}">
+                                <spam class="h5">{{ player.hero.localized_name }}</spam>
+                            </a><br />
+                            <spam class="h6">{{ match.game_mode.name }}</spam>
 
-            <div ng-repeat="player in match.radiant_team.concat(match.dire_team)"
-                 ng-if="player.player_account.account_id == vm.accountId">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img ng-src="{{ player.hero.url_small_portrait }}">
-                    </div>
-                    <div class="col-md-5">
-                        <a ng-href="matches/{{ match.match_id }}">
-                            <spam class="h5">{{ player.hero.localized_name }}</spam>
-                        </a><br />
-                        <spam class="h6">{{ match.game_mode.name }}</spam>
-
-                    </div>
-                    <div class="col-md-4">
-                        {{ player.kills + '/' + player.deaths + '/' + player.assists }}
-                    </div>
-                    <div class="col-md-4">
-                        <div ng-if="match.match_won" class="color-green">Victory</div>
-                        <div ng-if="!match.match_won" class="color-red">Loss</div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ player.kills + '/' + player.deaths + '/' + player.assists }}
+                        </div>
+                        <div class="col-md-4">
+                            <span ng-if="match.match_won" class="label label-success">Victory</span>
+                            <span ng-if="!match.match_won" class="label label-danger">Loss</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
 
+
+        <div style="overflow: scroll" class="col-md-8">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Friend</td>
+                    <td>Matches</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="f in vm.account.friends">
+                    <td>
+                        <img ng-src="{{ f.url_avatar }}">
+                        <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
+                    </td>
+                    <td>
+                        <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
     </div>
 
 
-    <div style="overflow: scroll" class="col-md-12">
-        <table>
-            <thead>
-            <tr>
-                <td>
-                    <h4>Friend</h4>
-                </td>
-                <td>
-                    <h4>Matches</h4>
-                </td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="f in vm.account.friends">
-                <td>
-                    <img ng-src="{{ f.url_avatar }}">
-                    <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
-                </td>
-                <td>
-                    <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Reports created</h3>
+            <report ng-repeat="report in vm.account.reports_created" report="report" mode="'created'" />
+        </div>
+        <div class="col-md-12">
+            <h3>Reports received</h3>
+            <report ng-repeat="report in vm.account.reports_received" report="report" mode="'received'" />
+        </div>
     </div>
 </div>

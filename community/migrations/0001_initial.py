@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
             name='Post',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('message', models.CharField(max_length=500)),
                 ('receiver', models.ForeignKey(related_name='messages_received', to='core.Account')),
                 ('sender', models.ForeignKey(related_name='messages_made', to='core.Account')),
@@ -64,7 +65,8 @@ class Migration(migrations.Migration):
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('reason', models.CharField(max_length=500)),
                 ('creator', models.ForeignKey(related_name='reports_created', to='core.Account')),
-                ('reported', models.ForeignKey(related_name='reports', to='core.Account')),
+                ('due_to_match', models.ForeignKey(to='core.DetailMatch')),
+                ('reported', models.ForeignKey(related_name='reports_received', to='core.Account')),
             ],
         ),
     ]

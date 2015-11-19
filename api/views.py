@@ -9,8 +9,9 @@ from django.contrib import auth
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from community import models as cm
-from core.utils import get_friends_number_matches
+from profile import community_serializers
 import serializers
+
 
 @transaction.atomic()
 def get_details_match(request, match_id):
@@ -21,25 +22,7 @@ def get_details_match(request, match_id):
 def get_profile(request, account_id):
     others = request.GET.get('others') and request.GET.get('others').split(',') or []
 
-    def serialize_friend(account):
-        return {
-            'account_id': account.account_id,
-            'persona_name': account.persona_name,
-            'url_avatar': account.url_avatar,
-            'qtd': account.qtd
-        }
-
-    def serializer(account):
-        friends = get_friends_number_matches(account, others)
-        return {
-            'account_id': account.account_id,
-            'persona_name': account.current_update.persona_name,
-            'url_avatar': account.current_update.url_avatar,
-            'friends': map(serialize_friend, friends)
-        }
-
-    account = utils.get_account(account_id)
-    return JsonResponse(serializer(account))
+    return JsonResponse(community_serializers.profile_serializer(account_id, others))
 
 
 def get_account(request, account_id):
@@ -99,10 +82,12 @@ def new_report(request):
     data = json.loads(request.body)
     creator = cm.Account.objects.get(account_id=request.user.account_id)
     reported = cm.Account.objects.get(account_id=int(data['reported']))
+    match = DetailMatch.objects.get(match_id=int(data['matchId']))
     reason = data['reason']
 
     cm.Report.objects.create(creator=creator,
                              reported=reported,
-                             reason=reason)
+                             reason=reason,
+                             due_to_match=match)
 
     return HttpResponse()

@@ -63,12 +63,12 @@
         }
 
         function report(player) {
-            console.log("lol");
             ngDialog.open({
                 template: "/static/templates/community/new-report.html",
                 controller: "NewReportController as vm",
                 resolve: {
-                    reportedPlayer: function() { return player; }
+                    reportedPlayer: function() { return player; },
+                    matchId: function() { return vm.match.match_id; }
                 }
             });
 

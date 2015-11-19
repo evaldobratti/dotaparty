@@ -1,0 +1,18 @@
+<div class="col-md-12">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a href="profiles/{{ report.reported.account_id}}" ng-if="mode == 'created'"> {{ report.reported.current_update.persona_name }}</a>
+                    <a href="profiles/{{ report.creator.account_id}}" ng-if="mode == 'received'"> {{ report.creator.current_update.persona_name }}</a>
+                </div>
+            </div>
+            <div class="panel-body">
+                Created : {{ report.created | secondsToDateTime | date:'dd/MM/yyyy mm:ss' }}<br>
+                Reason: {{ report.reason }} <br>
+                Match: <a href="matches/{{ report.due_to_match_id }}">{{ report.due_to_match_id }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
