@@ -2,9 +2,16 @@ Django==1.8.5
 django-appconf==1.0.1
 django-compressor==1.5
 -e git+https://github.com/joshuaduffy/dota2api.git@f5714d565725f610fe93313f3e7af25b16643fb0#egg=dota2api-dev
+httplib2==0.9.2
 huey==0.4.8
+oauth2==1.9.0.post1
+oauthlib==1.0.3
 psycopg2==2.6.1
+PyJWT==1.4.0
+python-openid==2.2.5
+python-social-auth==0.2.13
 redis==2.10.3
 requests==2.8.1
+requests-oauthlib==0.5.0
 six==1.10.0
 wheel==0.24.0
