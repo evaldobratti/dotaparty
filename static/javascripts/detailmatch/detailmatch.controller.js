@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('DetailMatchController', DetailMatchController);
 
-    DetailMatchController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'ngDialog'];
+    DetailMatchController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'ngDialog', 'Authentication'];
 
-    function DetailMatchController($routeParams, DetailMatch, Profile, ngDialog) {
+    function DetailMatchController($routeParams, DetailMatch, Profile, ngDialog, Authentication) {
         var vm = this;
         vm.friendsMatches = friendsMatches;
         vm.report = report;
@@ -27,6 +27,8 @@
         }
 
         function friendsMatches(player) {
+            Authentication.getAuthenticatedAccount();
+
             if (player.player_account == undefined)
                 return;
             if (vm.played_with[player.player_account.account_id.toString()] != undefined) {
