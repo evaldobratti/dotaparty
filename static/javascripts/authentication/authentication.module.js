@@ -7,5 +7,5 @@
         ]);
 
     angular
-        .module('dotaparty.authentication.services', []);
+        .module('dotaparty.authentication.services', [ 'ngCookies' ]);
 })();

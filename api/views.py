@@ -91,3 +91,14 @@ def new_report(request):
                              due_to_match=match)
 
     return HttpResponse()
+
+
+def get_authenticated_user(request):
+    if request.user.is_authenticated():
+        serialized = serializers.account_serializer(request.user.account)
+        serialized['is_authenticated'] = True
+        return JsonResponse(serialized)
+
+    return JsonResponse({
+        'is_authenticated': False
+    })

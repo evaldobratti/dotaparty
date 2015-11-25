@@ -8,7 +8,9 @@
     Authentication.$inject = ['$http'];
 
     function Authentication($http) {
-        this.authenticated = undefined;
+        var vm = this;
+        vm.authenticated = undefined;
+        vm.locked = false;
 
         var Authentication = {
             getAuthenticatedAccount: getAuthenticatedAccount
@@ -17,13 +19,16 @@
         return Authentication;
 
         function getAuthenticatedAccount() {
-            if (this.authenticated == undefined) {
-                console.log('nao tenho informação, vou pegar no servidor');
-                this.authenticated = 'hoho haha';
+            if (vm.authenticated == undefined) {
+                vm.locked = true;
+                $http.get('api/user/').then(function(data) {
+                    vm.authenticated = data.data;
+                    vm.locked = false;
+                });
             }
-
-            console.log('tenho informação, retorno');
-            return this.authenticated;
+            while(vm.locked) {}
+            console.log(vm.authenticated);
+            return vm.authenticated;
         }
     }
 })();

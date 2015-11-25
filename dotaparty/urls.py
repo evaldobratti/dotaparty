@@ -15,7 +15,9 @@ urlpatterns = [
     #url('^api/detailmatches/account/(?P<account_id>[0-9]+)$', views.get_matches),
     url('^api/find/(?P<search>\w+)$', views.find),
     url('^api/logout/$', views.logout),
+    url('^api/user/', views.get_authenticated_user),
     url('^api/community/report/$', views.new_report),
+
 
     url('^.*$', IndexView.as_view(), name='index')
 ]

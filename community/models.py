@@ -38,6 +38,10 @@ class User(AbstractUser, DjangoUserMixin):
     def user(self):
         return self
 
+    @property
+    def account(self):
+        return Account.objects.get(account_id=self.account_id)
+
 
 class Report(models.Model):
     creator = models.ForeignKey(Account, related_name='reports_created')
