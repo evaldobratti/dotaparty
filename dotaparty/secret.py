@@ -1,7 +1,0 @@
-DJANGO_KEY = ''
-D2_API_KEY = ''
-PS_DB_NAME = ''
-PS_DB_USER = ''
-PS_DB_PW = ''
-PS_DB_HOST = ''
-PS_DB_PORT = ''

@@ -27,15 +27,22 @@ def report_serializer(report):
     }
 
 
-def profile_serializer(account_id, others_accounts_ids):
+def profile_serializer(account_id, others_accounts_ids, logged_account):
     account = utils.get_account(account_id)
-
     friends = utils.get_friends_number_matches(account, others_accounts_ids)
+
+    if account != logged_account:
+        reports_received = account.reports_received.filter(creator=logged_account).order_by('-date_created')
+        reports_created = account.reports_created.filter(reported=logged_account).order_by('-date_created')
+    else:
+        reports_created = account.reports_created.all().order_by('-date_created')
+        reports_received = account.reports_received.all().order_by('-date_created')
+
     return {
         'account_id': account.account_id,
         'persona_name': account.current_update.persona_name,
         'url_avatar': account.current_update.url_avatar,
-        'reports_created': map(report_serializer, account.reports_created.all().order_by('-date_created')),
-        'reports_received': map(report_serializer, account.reports_received.all().order_by('-date_created')),
+        'reports_created': map(report_serializer, reports_created),
+        'reports_received': map(report_serializer, reports_received),
         'friends': map(serialize_friend, friends)
     }

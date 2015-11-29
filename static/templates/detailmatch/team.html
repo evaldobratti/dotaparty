@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th class="text-align-center">Hero</th>
-        <th class="col-md-5">Player</th>
+        <th class="col-md-2">Player</th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -49,7 +49,7 @@
         </td>
         <td>
             <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}">{{ p.matches_with }}</a>
-            <a href="" ng-click="vm.report(p.player_account)">R</a>
+            <a ng-if="vm.isAuthenticated && p.player_account != null && p.player_account.account_id != vm.authenticatedAccount.account_id" href="" ng-click="vm.report(p.player_account)">R</a>
         </td>
     </tr>
     </tbody>

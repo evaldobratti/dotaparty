@@ -14,11 +14,15 @@
         vm.matches_with = [];
         vm.current_selected = null;
         vm.played_with = {};
+        vm.authenticated = false;
+        vm.authenticatedAccount = null;
 
         active();
 
         function active() {
             var matchId = $routeParams.matchId;
+            vm.authenticatedAccount = Authentication.getAuthenticatedAccount();
+            vm.isAuthenticated = Authentication.isAuthenticated();
             DetailMatch.get(matchId).then(function (result) {
                 vm.match = result.data;
                 vm.match.players = vm.match.radiant_team.concat(vm.match.dire_team);
@@ -27,7 +31,7 @@
         }
 
         function friendsMatches(player) {
-            Authentication.getAuthenticatedAccount();
+
 
             if (player.player_account == undefined)
                 return;

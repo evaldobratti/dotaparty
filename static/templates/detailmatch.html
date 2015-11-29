@@ -7,28 +7,28 @@
     <h2 ng-if="!vm.match.is_radiant_win">Dire win!</h2>
 </div>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
         <p>Match</p><h4><b>{{ vm.match.match_id }}</b></h4>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <p>Date</p><h4>{{ vm.match.start_time | secondsToDateTime | date:'dd/MM/yyyy' }}</h4>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <p>Duration</p><h4>{{ vm.match.duration | secondsToDateTime | date:'mm:ss' }}</h4>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <p>First Blood</p><h4>{{ vm.match.first_blood_time | secondsToDateTime | date:'mm:ss' }}</h4>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <p>Lobby Type</p><h4>{{ vm.match.lobby_type }}</h4>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <p>Game Mode</p><h4>{{ vm.match.game_mode }}</h4>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <p>Region</p><h4>{{ vm.match.cluster }}</h4>
     </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
         <p>Skill</p><h4>{{ vm.match.skill }}</h4>
     </div>
 </div>

@@ -1,5 +1,3 @@
-bower_components
-secret.sh
 venv
 .idea
 db.sqlite3

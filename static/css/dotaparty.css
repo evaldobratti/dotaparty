@@ -27,3 +27,8 @@
 .color-blue {
     color: #002070;
 }
+
+.friends-matches {
+    max-height: 300px;
+    overflow-y: auto;
+}
