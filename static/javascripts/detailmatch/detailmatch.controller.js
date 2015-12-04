@@ -16,6 +16,7 @@
         vm.played_with = {};
         vm.authenticated = false;
         vm.authenticatedAccount = null;
+        vm.enableReportPlayer = enableReportPlayer;
 
         active();
 
@@ -77,7 +78,10 @@
                     matchId: function() { return vm.match.match_id; }
                 }
             });
+        }
 
+        function enableReportPlayer(p) {
+            return vm.isAuthenticated && p.player_account != null && p.player_account.account_id != vm.authenticatedAccount.account_id;
         }
 
 

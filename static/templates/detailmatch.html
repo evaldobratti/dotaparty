@@ -1,42 +1,74 @@
 <div ng-show="vm.match != undefined">
 
-<a href="#">{{ vm.match.vm.match_id }}</a>
+    <a href="#">{{ vm.match.vm.match_id }}</a>
 
-<div style="text-align: center">
-    <h2 ng-if="vm.match.is_radiant_win">Radiant win!</h2>
-    <h2 ng-if="!vm.match.is_radiant_win">Dire win!</h2>
-</div>
-<div class="row">
-    <div class="col-md-1">
-        <p>Match</p><h4><b>{{ vm.match.match_id }}</b></h4>
+    <div class="row text-align-center">
+        <div class="col-md-12">
+        <span class="h2" ng-if="vm.match.is_radiant_win">Radiant Victory!</span>
+        <span class="h2" ng-if="!vm.match.is_radiant_win">Dire Victory!</span>
+        </div>
     </div>
-    <div class="col-md-1">
-        <p>Date</p><h4>{{ vm.match.start_time | secondsToDateTime | date:'dd/MM/yyyy' }}</h4>
-    </div>
-    <div class="col-md-1">
-        <p>Duration</p><h4>{{ vm.match.duration | secondsToDateTime | date:'mm:ss' }}</h4>
-    </div>
-    <div class="col-md-1">
-        <p>First Blood</p><h4>{{ vm.match.first_blood_time | secondsToDateTime | date:'mm:ss' }}</h4>
-    </div>
-    <div class="col-md-2">
-        <p>Lobby Type</p><h4>{{ vm.match.lobby_type }}</h4>
-    </div>
-    <div class="col-md-1">
-        <p>Game Mode</p><h4>{{ vm.match.game_mode }}</h4>
-    </div>
-    <div class="col-md-2">
-        <p>Region</p><h4>{{ vm.match.cluster }}</h4>
-    </div>
+    <div class="row text-align-center">
         <div class="col-md-2">
-        <p>Skill</p><h4>{{ vm.match.skill }}</h4>
+            <h4><b>{{ vm.match.match_id }}</b><br>
+                <small>Match ID</small>
+            </h4>
+        </div>
+        <div class="col-md-1">
+            <h5>{{ vm.match.start_time | secondsToDateTime | date:'dd/MM/yyyy' }}<br>
+                <small>Date</small>
+            </h5>
+        </div>
+        <div class="col-md-1">
+            <h5>{{ vm.match.duration | secondsToDateTime | date:'mm:ss' }}<br>
+                <small>Duration</small>
+            </h5>
+        </div>
+        <div class="col-md-1">
+            <h5>{{ vm.match.first_blood_time | secondsToDateTime | date:'mm:ss' }}<br>
+                <small>First Blood</small>
+            </h5>
+        </div>
+        <div class="col-md-2">
+            <h5>{{ vm.match.lobby_type }}<br>
+                <small>Lobby Type</small>
+            </h5>
+        </div>
+        <div class="col-md-2">
+            <h5>{{ vm.match.game_mode }}<br>
+                <small>Game Mode</small>
+            </h5>
+        </div>
+        <div class="col-md-2">
+            <h5>{{ vm.match.cluster }}<br>
+                <small>Region</small>
+            </h5>
+        </div>
+        <div class="col-md-1">
+            <h5>{{ vm.match.skill }}Very High<br>
+                <small>Skill</small>
+            </h5>
+        </div>
     </div>
-</div>
 
-<h3>Radiant</h3>
-<detailmatchteam team="vm.match.radiant_team" controller="vm" />
-
-
-<h3>Dire</h3>
-<detailmatchteam team="vm.match.dire_team" controller="vm" />
+    <div class="row text-align-center color-green">
+        <div class="col-md-12">
+            <span class="h3">Radiant</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <detailmatchteam team="vm.match.radiant_team" controller="vm"/>
+        </div>
+    </div>
+    <div class="row text-align-center color-red">
+        <div class="col-md-12">
+            <span class="h3">Dire</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <detailmatchteam team="vm.match.dire_team" controller="vm"/>
+        </div>
+    </div>
 </div>

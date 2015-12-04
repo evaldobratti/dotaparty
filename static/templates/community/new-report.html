@@ -1,17 +1,21 @@
 <form role="form" ng-submit="vm.submit()">
-  <div class="form-group">
-    <label for="post__content">Reporting player {{ vm.reportedPlayer.persona_name }}</label>
-    <textarea class="form-control" 
-              id="post__content" 
-              rows="3" 
+    <div class="form-group">
+        <label for="post__content">Reporting player {{ vm.reportedPlayer.persona_name }}</label>
+    <textarea class="form-control"
+              id="post__content"
+              rows="3"
               placeholder="Type your reason here."
               ng-model="vm.reason">
     </textarea>
-  </div>
+    </div>
 
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">
-      Submit
-    </button>
-  </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-inverse btn-raised pull-right">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
 </form>

@@ -31,7 +31,7 @@
                     <div class="row" ng-repeat="player in match.radiant_team.concat(match.dire_team)">
                         <div class="col-md-1" ng-if="player.player_slot < 5">Radiant</div>
                         <div class="col-md-1" ng-if="player.player_slot > 5">Dire</div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <img width="50" src="{{ player.hero.url_full_portrait }}">
                         </div>
                         <div class="col-md-5">
@@ -41,15 +41,15 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <h6>Duration</h6><h5> {{ match.duration | secondsToDateTime | date:'mm:ss' }}</h5>
                         </div>
-                        <div class="col-md-2">
-                            <h6>Game mode</h6><h5>{{ match.game_mode.name }}</h5>
+                        <div class="col-md-3">
+                            <h6>Game mode</h6><h5>{{ match.game_mode }}</h5>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <h6>Date</h6><h5>{{ match.start_time | secondsToDateTime | date:'dd/MM/yyyy' }}</h5>
                         </div>
                     </div>

@@ -21,8 +21,8 @@ def get_details_match(request, match_id):
 
 def get_profile(request, account_id):
     others = request.GET.get('others') and request.GET.get('others').split(',') or []
-    logged_user = request.user;
-    return JsonResponse(community_serializers.profile_serializer(account_id, others, logged_user.account))
+    logged_user = request.user.account if request.user.is_authenticated() else None
+    return JsonResponse(community_serializers.profile_serializer(account_id, others, logged_user))
 
 
 def get_account(request, account_id):

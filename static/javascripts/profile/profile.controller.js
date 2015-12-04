@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch'];
+    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch', 'Bootstrap'];
 
-    function ProfileController($rootScope, $routeParams, Profile, DetailMatch) {
+    function ProfileController($rootScope, $routeParams, Profile, DetailMatch, Bootstrap) {
         var vm = this;
         vm.accountId = $routeParams.accountId;
         vm.currentDetailMatchesPage = 1;
@@ -16,7 +16,6 @@
 
         active();
         function active() {
-
             Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
             });
@@ -27,6 +26,8 @@
 
                 determineVictoryOrLoss(vm.matches);
             });
+
+            Bootstrap.init();
         }
 
         function downloadGames() {

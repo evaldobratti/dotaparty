@@ -7,11 +7,14 @@
             <img ng-src="{{ vm.account.url_avatar }}">
         </div>
         <div class="col-md-6" ng-show=" vm.account.matches_download_required ">
-            <alert type="success">The games are being downloaded automatically!</alert>
+            <div class="alert alert-dismissible alert-success">
+                The games are being downloaded automatically!
+                 <button type="button" class="close" data-dismiss="alert">×</button>
+            </div>
         </div>
         <div class="col-md-6" ng-show="!vm.account.matches_download_required ">
             <form ng-if="!vm.account.matches_download_required" ng-submit="vm.downloadGames()">
-                <button type="submit" class="btn btn-primary">Download games</button>
+                <button type="submit" class="btn btn-inverse btn-raised">Download games</button>
             </form>
         </div>
     </div>
@@ -30,7 +33,7 @@
                         </div>
                         <div class="col-md-2">
                             <a ng-href="matches/{{ match.match_id }}">
-                                <spam class="h5">{{ player.hero.localized_name }}</spam>
+                                {{ player.hero.localized_name }}
                             </a><br />
                             <spam class="h6">{{ match.game_mode.name }}</spam>
 
@@ -77,12 +80,23 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h3>Reports created</h3>
+            <h3>
+                Reports created
+                <small data-toggle="tooltip" data-placement="right" title="" data-original-title="Number of reports this player created">
+                    {{ vm.account.number_reports_created }}
+                </small>
+            </h3>
             <report ng-repeat="report in vm.account.reports_created" report="report" mode="'created'" />
         </div>
         <div class="col-md-6">
-            <h3>Reports received</h3>
+            <h3>
+                Reports received
+                <small data-toggle="tooltip" data-placement="right" title="" data-original-title="Number of reports this player received">
+                    {{ vm.account.number_reports_received }}
+                </small>
+            </h3>
             <report ng-repeat="report in vm.account.reports_received" report="report" mode="'received'" />
         </div>
     </div>
 </div>
+

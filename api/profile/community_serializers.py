@@ -44,5 +44,7 @@ def profile_serializer(account_id, others_accounts_ids, logged_account):
         'url_avatar': account.current_update.url_avatar,
         'reports_created': map(report_serializer, reports_created),
         'reports_received': map(report_serializer, reports_received),
-        'friends': map(serialize_friend, friends)
+        'friends': map(serialize_friend, friends),
+        'number_reports_created': len(account.reports_created.all()),
+        'number_reports_received': len(account.reports_received.all())
     }

@@ -14,6 +14,8 @@
         $locationProvider.hashPrefix('!');
 
         cfpLoadingBarProvider.includeSpinner = false;
+
+
     }
 
     function run($http) {

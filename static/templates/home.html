@@ -1,7 +1,7 @@
 <form  ng-submit="vm.find()" class="form-group">
-    <input placeholder="Search for account id, match id, nickname" class="form-control" ng-model="vm.searchTxt" type="text"/>
+    <input placeholder="Search for account id, match id, nickname" class="form-control btn-inverse" ng-model="vm.searchTxt" type="text"/>
     <br/>
-    <input type="submit" class="btn btn-primary" value="Search"/>
+    <input type="submit" class="btn btn-inverse btn-raised" value="Search"/>
 </form>
 
 <div ng-if="vm.accounts.length > 0">
@@ -9,19 +9,21 @@
 
     <div ng-repeat="acc in vm.accounts">
         <div>
-            <img ng-src="{{ acc.current_update.url_avatar }}">
-            <a href="profiles/{{ acc.account_id }}">{{ acc.current_update.persona_name }}</a>
+
+            <a class="btn btn-inverse btn-raised" href="profiles/{{ acc.account_id }}">
+                <img ng-src="{{ acc.current_update.url_avatar }}">
+                {{ acc.current_update.persona_name }}
+            </a>
         </div>
     </div>
 </div>
-
 
 <div ng-if="vm.matches.length > 0">
     <h2>Matches</h2>
 
     <div ng-repeat="match in vm.matches">
         <div>
-            <a href="matches/{{ match.match_id}}">{{ match.match_id }}</a>
+            <a class="btn btn-inverse btn-raised" href="matches/{{ match.match_id}}">{{ match.match_id }}</a>
         </div>
     </div>
 </div>
