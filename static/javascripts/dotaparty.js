@@ -33,3 +33,10 @@
         };
     });
 })();
+
+
+$(document).arrive('[data-toggle="tooltip"]', function() {
+    $(this).tooltip();
+});
+
+$.material.init();

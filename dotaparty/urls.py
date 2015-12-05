@@ -7,6 +7,8 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'dotaparty.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     url('^api/matches/(?P<match_id>[0-9]+)$', views.get_details_match),
     url('^api/profiles/(?P<account_id>[0-9]+)$', views.get_profile),

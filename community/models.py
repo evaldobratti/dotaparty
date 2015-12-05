@@ -51,6 +51,9 @@ class Report(models.Model):
 
     reason = models.CharField(max_length=500)
 
+    def __unicode__(self):
+        return "Creator: {} Reported: {} Match: {}".format(self.creator, self.reported, self.due_to_match)
+
 
 class Post(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)

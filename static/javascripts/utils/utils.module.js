@@ -3,9 +3,9 @@
 
     angular
         .module('dotaparty.utils', [
-            'dotaparty.utils.bootstrap'
+            'dotaparty.utils.services'
         ]);
 
     angular
-        .module('dotaparty.utils.bootstrap', []);
+        .module('dotaparty.utils.services', []);
 })();

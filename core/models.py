@@ -53,6 +53,9 @@ class Account(models.Model):
 
         self._matches_download_required = value
 
+    def __unicode__(self):
+        return self.current_update.persona_name
+
 
 class AccountUpdate(models.Model):
     account = models.ForeignKey(Account, null=False, related_name='updates')
@@ -131,6 +134,9 @@ class DetailMatch(models.Model):
 
     def dire_team(self):
         return self.players.filter(player_slot__gt=10).order_by('player_slot')
+
+    def __unicode__(self):
+        return str(self.match_id)
 
 
 class ItemOwner(models.Model):

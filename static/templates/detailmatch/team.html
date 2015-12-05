@@ -15,7 +15,8 @@
         <th class="text-align-center">HD</th>
         <th class="text-align-center">HH</th>
         <th>Items</th>
-        <th>Matches with</th>
+        <th></th>
+
     </tr>
     </thead>
     <tbody>
@@ -48,24 +49,30 @@
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
         </td>
         <td>
-
-            <div class="dropdown" style="display: inline;" >
-                <button style="margin: 0px;" class="btn btn-xs btn-default dropdown-toggle" type="button" id="menu" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="true">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="menu">
-                    <li><button class="btn btn-primary btn-block"
-                           ng-disabled="!vm.enableReportPlayer(p)"
-                           href=""
-                           ng-click="vm.report(p.player_account)">Report</button></li>
-                </ul>
+            <div ng-show="p.player_account != null">
+                <div class="dropdown" style="display: inline;">
+                    <a class="btn btn-xs btn-default  dropdown-toggle" id="menu"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="true">
+                        Action
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="menu">
+                        <li>
+                            <button class="btn btn-primary btn-block btn-xs"
+                                    ng-disabled="!vm.enableReportPlayer(p)"
+                                    href=""
+                                    ng-click="vm.report(p.player_account)">Report
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
+                   data-toggle="tooltip"
+                   data-placement="right"
+                   title=""
+                   data-original-title="{{ p.player_account.persona_name }} has {{ p.matches_with }} matches with {{ vm.current_selected.player_account.persona_name }}">{{ p.matches_with }}</a>
             </div>
-            <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
-               data-toggle="tooltip"
-               data-placement="right"
-               title=""
-               data-original-title="blah">{{ p.matches_with }}</a>
 
         </td>
     </tr>

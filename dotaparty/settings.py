@@ -165,3 +165,9 @@ handler.setFormatter(logging.Formatter(log_format))
 task_logger = logging.getLogger('pwm_logger')
 task_logger.addHandler(handler)
 task_logger.setLevel('INFO')
+
+
+
+from django.contrib import admin
+from community.models import *
+admin.site.register(Report)

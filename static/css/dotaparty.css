@@ -7,7 +7,7 @@
     width: 40px;
 }
 
-.detail-match-profile-img{
+.detail-match-profile-img {
     width: 30px;
     float: right;
 }
@@ -35,4 +35,17 @@
 
 a, a:hover, a:focus {
     color: #3F51B5;
+}
+
+#loading-bar .bar {
+    background-color: #3F51B5;
+}
+
+#snackbar-container {
+    top: 65px;
+    right: 0;
+}
+
+.btn {
+    margin: 0px;
 }

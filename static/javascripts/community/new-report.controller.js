@@ -5,9 +5,9 @@
         .module('dotaparty.community.controllers')
         .controller('NewReportController', NewReportController);
 
-    NewReportController.$inject = ['$rootScope', '$scope', 'Community', 'reportedPlayer', 'matchId'];
+    NewReportController.$inject = ['$rootScope', '$scope', 'Community', 'Snackbar', 'reportedPlayer', 'matchId'];
 
-    function NewReportController($rootScope, $scope, Community, reportedPlayer, matchId) {
+    function NewReportController($rootScope, $scope, Community, Snackbar, reportedPlayer, matchId) {
         var vm = this;
         vm.reportedPlayer = reportedPlayer;
         vm.matchId = matchId;
@@ -15,15 +15,17 @@
 
         function submit() {
             Community.submitNewReport(reportedPlayer.account_id, vm.reason, vm.matchId)
-                .error(function () {
-                    $rootScope.alerts.push({
-                        type: 'danger',
-                        msg: 'It was not possible to download your games due to an internal error.'
-                    });
+                .then(onSuccess, onError);
 
-                });
             $scope.closeThisDialog();
+        }
 
+        function onSuccess(data){
+            Snackbar.show('Report created successfully');
+        }
+
+        function onError(data){
+            Snackbar.error('An error has occurred.' + data.data.error);
         }
 
     }
