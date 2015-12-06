@@ -13,11 +13,22 @@
         vm.currentDetailMatchesPage = 1;
         vm.downloadGames = downloadGames;
         vm.matches = [];
+        vm.reportsReceived = [];
+        vm.reportsCreated = [];
 
         active();
+
         function active() {
             Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
+            });
+
+            Profile.getReportsCreated(vm.accountId).then(function (result){
+               vm.reportsCreated = result.data;
+            });
+
+            Profile.getReportsReceived(vm.accountId).then(function (result){
+               vm.reportsReceived = result.data;
             });
 
             DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {

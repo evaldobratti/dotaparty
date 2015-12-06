@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <div class="row">
         <div class="panel panel-inverse">
-            <div class="panel-heading">
+            <div class="panel-heading" ng-if="showHeader(report)">
                 <div class="panel-title">
                     <a style="color: inherit;" href="profiles/{{ report.reported.account_id}}" ng-if="mode == 'created'"> {{ report.reported.current_update.persona_name }}</a>
                     <a style="color: inherit;" href="profiles/{{ report.creator.account_id}}" ng-if="mode == 'received'"> {{ report.creator.current_update.persona_name }}</a>

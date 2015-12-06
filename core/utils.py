@@ -198,7 +198,7 @@ def get_friends_number_matches(account, compared_to=[]):
     return raw
 
 
-def get_friends_matches_details(accounts_ids, page):
+def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
     query = DetailMatch.objects.distinct()
     query = query.select_related("cluster")
     query = query.select_related("lobby_type")
@@ -210,7 +210,7 @@ def get_friends_matches_details(accounts_ids, page):
     for account_id in accounts_ids:
         query = query.filter(players__player_account__account_id=account_id)
 
-    paginator = Paginator(query, 10)
+    paginator = Paginator(query, elements_per_page)
     try:
         return paginator.page(page)
     except PageNotAnInteger:

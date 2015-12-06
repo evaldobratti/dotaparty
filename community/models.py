@@ -51,6 +51,15 @@ class Report(models.Model):
 
     reason = models.CharField(max_length=500)
 
+    class Meta:
+        unique_together = ('creator', 'reported', 'due_to_match')
+
+    def unique_error_message(self, model_class, unique_check):
+        if model_class == type(self) and unique_check == ('field1', 'field2'):
+            return 'Your custom error message.'
+        else:
+            return super(Report, self).unique_error_message(model_class, unique_check)
+
     def __unicode__(self):
         return "Creator: {} Reported: {} Match: {}".format(self.creator, self.reported, self.due_to_match)
 

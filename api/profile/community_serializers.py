@@ -1,5 +1,4 @@
 import functools
-import datetime
 import time
 from core import utils
 from api.serializers import account_serializer
@@ -36,23 +35,51 @@ def profile_serializer(account_id, others_accounts_ids, logged_account):
     account = utils.get_account(account_id)
     friends = utils.get_friends_number_matches(account, others_accounts_ids)
 
-    own_profile = account == logged_account
-    if own_profile:
-        reports_created = account.reports_created.all().order_by('-date_created')
-        reports_received = account.reports_received.all().order_by('-date_created')
-    else:
-        reports_received = account.reports_received.filter(creator=logged_account).order_by('-date_created')
-        reports_created = []
-
-    show_report_creator = functools.partial(report_serializer, show_creator_info=not own_profile)
-
     return {
         'account_id': account.account_id,
         'persona_name': account.current_update.persona_name,
         'url_avatar': account.current_update.url_avatar,
-        'reports_created': map(report_serializer, reports_created),
-        'reports_received': map(show_report_creator, reports_received),
-        'friends': map(serialize_friend, friends),
-        'number_reports_created': len(account.reports_created.all()),
-        'number_reports_received': len(account.reports_received.all())
+        'friends': map(serialize_friend, friends)
     }
+
+
+class ReportsView(object):
+
+    def __init__(self, account_id, logged_account, elements_per_page=5, page=1):
+        self.account = utils.get_account(account_id)
+        self.logged_account = logged_account
+
+        self.own_profile = self.account == self.logged_account
+        self.elements_per_page = elements_per_page
+        self.page = page
+
+    def get_reports_created(self):
+        if self.own_profile:
+            reports_created = self.account.reports_created.all().order_by('-date_created')
+        else:
+            reports_created = []
+
+        return self.serialize(reports_created, report_serializer, len(self.account.reports_created.all()))
+
+    def get_reports_received(self):
+        if self.own_profile:
+            reports_received = self.account.reports_received.all().order_by('-date_created')
+        else:
+            reports_received = self.account.reports_received.filter(creator=self.logged_account).order_by('-date_created')
+
+        show_report_creator = functools.partial(report_serializer, show_creator_info=not self.own_profile)
+
+        return self.serialize(reports_received, show_report_creator, len(self.account.reports_received.all()))
+
+    def serialize(self, query, serializer_function, total):
+        from django.core.paginator import Paginator
+        paginator = Paginator(query, self.elements_per_page)
+        page = paginator.page(self.page)
+
+        return {
+            'reports': map(serializer_function, page),
+            'current_page': page.number,
+            'has_next': page.has_next(),
+            'has_previous': page.has_previous(),
+            'total': total
+        }

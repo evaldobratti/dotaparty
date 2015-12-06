@@ -12,7 +12,19 @@
                 report: '=',
                 mode: '='
             },
-            templateUrl: '/static/templates/community/report.html'
+            templateUrl: '/static/templates/community/report.html',
+            controller: ['$scope', function($scope) {
+                    $scope.showHeader = function(report) {
+                        if ($scope.mode == 'created' && report.creator != null)
+                            return true;
+
+                        if ($scope.mode == 'received' && report.reported != null)
+                            return true;
+
+                        return false;
+                    }
+                }]
+
         };
 
         return directive;

@@ -11,8 +11,9 @@
         var Profile = {
             get: get,
             getPlayersMatches: getPlayersMatches,
-            downloadGames: downloadGames
-
+            downloadGames: downloadGames,
+            getReportsCreated: getReportsCreated,
+            getReportsReceived: getReportsReceived
         };
 
         return Profile;
@@ -27,6 +28,20 @@
 
         function downloadGames(accountId) {
             return $http.post("api/profiles/" + accountId + "/download");
+        }
+
+        function getReportsCreated(accountId, elements_per_page, page) {
+            var e = elements_per_page == undefined ? 4 : elements_per_page;
+            var p = page == undefined ? 1 : elements_per_page;
+
+            return $http.get('/api/profiles/' + accountId + '/reports/created?elements_per_page='+e+'&page='+p);
+        }
+
+        function getReportsReceived(accountId, elements_per_page, page) {
+            var e = elements_per_page == undefined ? 4 : elements_per_page;
+            var p = page == undefined ? 1 : elements_per_page;
+
+            return $http.get('/api/profiles/' + accountId + '/reports/received?elements_per_page='+e+'&page='+p);
         }
     }
 })();

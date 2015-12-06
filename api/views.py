@@ -3,6 +3,7 @@ import json
 from core import utils
 from core import tasks
 from core.models import Account, DetailMatch
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.db import transaction
 from django.contrib import auth
@@ -85,12 +86,43 @@ def new_report(request):
     match = DetailMatch.objects.get(match_id=int(data['matchId']))
     reason = data['reason']
 
-    cm.Report.objects.create(creator=creator,
-                             reported=reported,
-                             reason=reason,
-                             due_to_match=match)
+    report = cm.Report()
+    report.creator = creator
+    report.reported = reported
+    report.due_to_match = match
+    report.reason = reason
 
+    try:
+        report.full_clean()
+    except ValidationError, exc:
+        return JsonResponse({
+            'error': exc.messages
+        }, status=400)
+
+    report.save()
     return HttpResponse()
+
+
+def get_reports_received(request, account_id):
+    logged_user = request.user.account if request.user.is_authenticated() else None
+    elements_per_page = request.GET['elements_per_page']
+    page = request.GET['page']
+
+    view = community_serializers.ReportsView(account_id, logged_user, elements_per_page, page)
+
+    reports = view.get_reports_received()
+    return JsonResponse(reports)
+
+
+def get_reports_created(request, account_id):
+    logged_user = request.user.account if request.user.is_authenticated() else None
+    elements_per_page = request.GET['elements_per_page']
+    page = request.GET['page']
+
+    view = community_serializers.ReportsView(account_id, logged_user, elements_per_page, page)
+
+    reports = view.get_reports_created()
+    return JsonResponse(reports)
 
 
 def get_authenticated_user(request):
