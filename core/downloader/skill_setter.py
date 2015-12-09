@@ -2,7 +2,8 @@ from core import d2api
 from core import models
 import logging
 
-log = logging.getLogger('DownloaderGameSkill')
+LOGGER_NAME = 'DownloaderGameSkill'
+log = logging.getLogger(LOGGER_NAME)
 
 
 def _define_if_skill(match, hero, skill_lvl):

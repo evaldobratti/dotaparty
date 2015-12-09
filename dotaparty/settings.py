@@ -138,7 +138,10 @@ HUEY = {
     'backend': 'huey.backends.redis_backend',
     'name': 'dotaparty',
     'connection': {'host': 'localhost', 'port': 6379},
-    'consumer_options': {'workers': 4, 'periodic_task_interval': 3},
+    'consumer_options': {'workers': 4,
+                         'periodic_task_interval': 3,
+                         'logfile': secret.TASKS_LOGGER_FILE
+                         },
 }
 
 SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEY
@@ -151,20 +154,11 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.steam.SteamOpenId',
     'django.contrib.auth.backends.ModelBackend',
 )
-
 import logging
-from logging.handlers import RotatingFileHandler
-
+from core import logger, tasks
 logging.getLogger("requests").setLevel(logging.WARNING)
+logger.configure_logger(tasks.LOGGER_NAME, secret.TASKS_LOGGER_FILE, 'NOTSET')
 
-log_format = ('%(threadName)s %(asctime)s %(name)s '
-              '%(levelname)s %(message)s')
-handler = RotatingFileHandler(
-    'tasks.log', maxBytes=1024 * 1024, backupCount=3)
-handler.setFormatter(logging.Formatter(log_format))
-task_logger = logging.getLogger('pwm_logger')
-task_logger.addHandler(handler)
-task_logger.setLevel('INFO')
 
 
 

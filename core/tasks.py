@@ -4,7 +4,8 @@ from core.downloader.matches import download_match
 import logging
 import models
 
-log = log = logging.getLogger('DownloaderByPlayer')
+LOGGER_NAME = 'DownloaderByPlayer'
+log = logging.getLogger(LOGGER_NAME)
 
 
 @db_task()
@@ -15,9 +16,9 @@ def download_games(account_id):
 def _download_games(account):
     log.info("requiring download de " + str(account.account_id))
     account = models.Account.objects.get(account_id=int(account.account_id))
-    if account.matches_download_required:
-        log.info("all matches already downloaded " + str(account.account_id))
-        return
+    # if account.matches_download_required:
+    #     log.info("all matches already downloaded " + str(account.account_id))
+    #     return
 
     last_match_id = None
     heroes = models.Hero.objects.all().order_by('localized_name')
@@ -33,7 +34,7 @@ def _download_games(account):
                                                                          matches.results_remaining))
 
                 for match in matches.matches:
-                    detail_match = download_match(account.account_id, match)
+                    detail_match = download_match(account.account_id, match, log)
                     detail_match.skill = 4
                     detail_match.save()
 
@@ -42,7 +43,7 @@ def _download_games(account):
                 if matches.results_remaining <= 0:
                     last_match_id = None
                     log.info("acc: {} finished parsing hero {}".format(account.account_id, hero.localized_name))
-                    if hero == heroes.reverse()[0]:
+                    if hero.localized_name.lower().startswith('z'):
                         log.info("acc: {} finished parsing ALL".format(account.account_id))
                         return
 

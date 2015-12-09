@@ -6,12 +6,12 @@ from core.parameters import INTERESTED_ACCOUNTS_IDS
 from core.parameters import LAST_MATCH_SEQ_NUM
 
 import logging
+LOGGER_NAME = 'DownloaderGamesBySeqNum'
+log = logging.getLogger(LOGGER_NAME)
 
-log = logging.getLogger('DownloaderGamesBySeqNum')
 
-
-def download_match(message, match):
-    log.info("from: {} parsing: {}".format(message, match.match_id))
+def download_match(message, match, logger=log):
+    logger.info("from: {} parsing: {}".format(message, match.match_id))
     exist = models.DetailMatch.objects.filter(match_id=match.match_id)
     if exist:
         log.info("from: {} already parsed: {}".format(message, match.match_id))
@@ -19,7 +19,7 @@ def download_match(message, match):
     else:
         with transaction.atomic():
             match = utils.get_details_match(match.match_id)
-        log.info("from: {} parsed: {}".format(message, match.match_id))
+        logger.info("from: {} parsed: {}".format(message, match.match_id))
         return match
 
 

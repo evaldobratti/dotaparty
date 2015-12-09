@@ -31,7 +31,7 @@ def report_serializer(report, show_creator_info=True):
     return serialized
 
 
-def profile_serializer(account_id, others_accounts_ids, logged_account):
+def profile_serializer(account_id, others_accounts_ids):
     account = utils.get_account(account_id)
     friends = utils.get_friends_number_matches(account, others_accounts_ids)
 
@@ -39,6 +39,7 @@ def profile_serializer(account_id, others_accounts_ids, logged_account):
         'account_id': account.account_id,
         'persona_name': account.current_update.persona_name,
         'url_avatar': account.current_update.url_avatar,
+        'matches_download_required': account.matches_download_required,
         'friends': map(serialize_friend, friends)
     }
 
