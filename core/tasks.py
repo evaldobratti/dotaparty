@@ -35,7 +35,7 @@ def _download_games(account):
                                                                          matches.results_remaining))
 
                 for match in matches.matches:
-                    schedule_download_match(match.match_id, False)
+                    schedule_download_match(match.match_id, True)
 
                     last_match_id = match.match_id
 
