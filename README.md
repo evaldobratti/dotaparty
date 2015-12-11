@@ -1,5 +1,1 @@
-- pip install -r requirements-dev.txt
-- python manager.py migrate
-- python manager.py runserver
-
-http://localhost:800
+The source code home of http://www.dotaparty.me/
