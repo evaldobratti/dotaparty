@@ -1,9 +1,9 @@
 Django==1.8.5
 django-appconf==1.0.1
 django-compressor==1.5
--e git+https://github.com/joshuaduffy/dota2api.git@f5714d565725f610fe93313f3e7af25b16643fb0#egg=dota2api-dev
+-e git+https://github.com/joshuaduffy/dota2api.git@a1e579605b2faf52a800cb7ec18253e18637d8be#egg=dota2api-dev
+-e git+https://github.com/evaldobratti/huey.git@2c6eba3cd564827ed23a6b13b865a6aa35df2bf3#egg=huey-dev
 httplib2==0.9.2
-huey==0.4.8
 oauth2==1.9.0.post1
 oauthlib==1.0.3
 psycopg2==2.6.1

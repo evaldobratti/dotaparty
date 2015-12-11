@@ -139,9 +139,7 @@ HUEY = {
     'name': 'dotaparty',
     'connection': {'host': 'localhost', 'port': 6379},
     'consumer_options': {'workers': 4,
-                         'periodic_task_interval': 3,
-                         'logfile': secret.TASKS_LOGGER_FILE
-                         },
+                         'periodic_task_interval': 3 },
 }
 
 SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEY
@@ -157,10 +155,6 @@ AUTHENTICATION_BACKENDS = (
 import logging
 from core import logger, tasks
 logging.getLogger("requests").setLevel(logging.WARNING)
-logger.configure_logger(tasks.LOGGER_NAME, secret.TASKS_LOGGER_FILE, 'NOTSET')
-
-
-
 
 from django.contrib import admin
 from community.models import *

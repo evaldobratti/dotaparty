@@ -1,10 +1,11 @@
 from huey.djhuey import db_task
+from django.db import transaction
 from core import d2api
-from core.downloader.matches import download_match
+from core import utils
 import logging
 import models
 
-LOGGER_NAME = 'DownloaderByPlayer'
+LOGGER_NAME = 'tasks'
 log = logging.getLogger(LOGGER_NAME)
 
 
@@ -34,9 +35,7 @@ def _download_games(account):
                                                                          matches.results_remaining))
 
                 for match in matches.matches:
-                    detail_match = download_match(account.account_id, match, log)
-                    detail_match.skill = 4
-                    detail_match.save()
+                    schedule_download_match(match.match_id, False)
 
                     last_match_id = match.match_id
 
@@ -51,4 +50,22 @@ def _download_games(account):
                 log.exception(e)
 
 
+@db_task()
+def schedule_download_match(match_id, set_skill):
+    download_match(match_id, set_skill)
 
+
+def download_match(match_id, set_skill):
+    log.info("parsing: {}".format(match_id))
+    exist = models.DetailMatch.objects.filter(match_id=match_id)
+    if exist:
+        log.info("already parsed, skipping: {}".format(match_id))
+        return exist[0]
+    else:
+        with transaction.atomic():
+            match = utils.get_details_match(match_id)
+            if set_skill:
+                match.skill = 4
+                match.save()
+        log.info("parsed: {}".format(match.match_id))
+        return match

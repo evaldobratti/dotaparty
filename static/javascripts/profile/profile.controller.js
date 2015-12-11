@@ -40,8 +40,8 @@
         }
 
         function downloadGames() {
-            if (vm.account.matches_download_required)
-                return;
+            //if (vm.account.matches_download_required)
+            //    return;
 
             Profile.downloadGames(vm.account.account_id).
                 success(function () {
