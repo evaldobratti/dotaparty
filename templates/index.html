@@ -9,14 +9,31 @@
 </head>
 
 <body>
-{% include 'navbar.html' %}
-<div class="container">
-    <div class="row" >
-        <div class="col-md-12 ng-view"></div>
+
+<div id="wrap">
+    {% include 'navbar.html' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ng-view"></div>
+        </div>
     </div>
-    {% include 'javascripts.html' %}
+    <div id="push"></div>
 </div>
 
-<iframe src="https://ghbtns.com/github-btn.html?user=evaldobratti&repo=dotaparty&type=fork&count=true&size=large" frameborder="0" scrolling="0" width="158px" height="30px"></iframe>
+<div id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <span class="h6" class="text-muted">Dota 2 and all Dota 2 related images belong to Valve.</span>
+                <div>
+                    <iframe src="https://ghbtns.com/github-btn.html?user=evaldobratti&repo=dotaparty&type=star&count=true" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'javascripts.html' %}
+<!--<iframe src="https://ghbtns.com/github-btn.html?user=evaldobratti&repo=dotaparty&type=fork&count=true&size=large" frameborder="0" scrolling="0" width="158px" height="30px"></iframe>-->
 </body>
 </html>
