@@ -60,6 +60,10 @@ class Report(models.Model):
         else:
             return super(Report, self).unique_error_message(model_class, unique_check)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.full_clean()
+        super(Report, self).save(force_insert, force_update, using, update_fields)
+
     def __unicode__(self):
         return "Creator: {} Reported: {} Match: {}".format(self.creator, self.reported, self.due_to_match)
 

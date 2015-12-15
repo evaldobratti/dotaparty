@@ -59,14 +59,26 @@ class Account(models.Model):
 
 class AccountUpdate(models.Model):
     account = models.ForeignKey(Account, null=False, related_name='updates')
-    sequential = models.IntegerField(null=True)
+    sequential = models.IntegerField(null=True, blank=True)
     persona_name = models.CharField(max_length=500, null=True)
     url_avatar = models.CharField(max_length=500, null=True)
     url_avatar_medium = models.CharField(max_length=500, null=True)
     url_avatar_full = models.CharField(max_length=500, null=True)
-    primary_clan_id = models.BigIntegerField(null=True)
-    persona_state_flags = models.BigIntegerField(null=True)
+    primary_clan_id = models.BigIntegerField(null=True, blank=True)
+    persona_state_flags = models.BigIntegerField(null=True, blank=True)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.full_clean()
+        super(AccountUpdate, self).save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        unique_together = ('account',
+                           'persona_name',
+                           'url_avatar',
+                           'url_avatar_medium',
+                           'url_avatar_full',
+                           'primary_clan_id',
+                           'persona_state_flags')
 
 class Hero(models.Model):
     hero_id = models.SmallIntegerField()

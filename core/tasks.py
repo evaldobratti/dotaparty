@@ -50,7 +50,7 @@ def _download_games(account):
                 log.exception(e)
 
 
-@db_task()
+@db_task(retries=3)
 def schedule_download_match(match_id, set_skill):
     download_match(match_id, set_skill)
 

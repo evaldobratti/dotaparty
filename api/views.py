@@ -92,13 +92,12 @@ def new_report(request):
     report.reason = reason
 
     try:
-        report.full_clean()
+        report.save()
     except ValidationError, exc:
         return JsonResponse({
             'error': exc.messages
         }, status=400)
 
-    report.save()
     return HttpResponse()
 
 
