@@ -69,7 +69,7 @@ def detail_match_serializer(match, accounts_ids=[]):
         'lobby_type': match.lobby_type.name,
         'game_mode': match.game_mode.name,
         'cluster': match.cluster.name,
-        'skill': match.skill,
+        'skill': match.get_skill_display(),
         'radiant_team': map(player_serializer, radiant_team),
         'dire_team': map(player_serializer, dire_team)
     }

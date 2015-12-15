@@ -80,6 +80,7 @@ class AccountUpdate(models.Model):
                            'primary_clan_id',
                            'persona_state_flags')
 
+
 class Hero(models.Model):
     hero_id = models.SmallIntegerField()
     localized_name = models.CharField(max_length=50)
@@ -122,6 +123,12 @@ class GameMode(models.Model):
 
 
 class DetailMatch(models.Model):
+    SKILL_LEVEL_CHOICE = ((None, "To be determined"),
+                          (1, "Normal"),
+                          (2, "High"),
+                          (3, "Very High"),
+                          (4, "Not determined"))
+
     is_radiant_win = models.BooleanField()
     duration = models.BigIntegerField()
     start_time = models.BigIntegerField()
@@ -139,7 +146,7 @@ class DetailMatch(models.Model):
     positive_votes = models.IntegerField()
     negative_votes = models.IntegerField()
     game_mode = models.ForeignKey(GameMode)
-    skill = models.PositiveIntegerField(null=True)
+    skill = models.PositiveIntegerField(null=True, choices=SKILL_LEVEL_CHOICE)
 
     def radiant_team(self):
         return self.players.filter(player_slot__lt=10).order_by('player_slot')
