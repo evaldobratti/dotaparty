@@ -22,6 +22,12 @@ def item_serializer(item):
     }
 
 
+def additional_unit_serializer(additional_unit):
+    return {
+        'items': map(item_serializer, [owner.item() for owner in additional_unit.items.all()])
+    }
+
+
 def player_serializer(player):
     return {
         'level': player.level,
@@ -48,7 +54,8 @@ def player_serializer(player):
             'url_small_portrait': player.hero.url_small_portrait,
             'url_full_portrait': player.hero.url_full_portrait,
             'localized_name': player.hero.localized_name
-        }
+        },
+        'additional_units': map(additional_unit_serializer, player.additional_units.all())
     }
 
 

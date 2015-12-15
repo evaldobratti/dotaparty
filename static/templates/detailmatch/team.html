@@ -47,6 +47,9 @@
         <td class="text-align-center">{{ p.hero_healing | abbreviate }}</td>
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
+            <div ng-repeat="unit in p.additional_units">
+                <img style="width: 32px"  ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
+            </div>
         </td>
         <td>
             <div ng-show="p.player_account != null">
