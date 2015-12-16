@@ -47,7 +47,7 @@
         <td class="text-align-center">{{ p.hero_healing | abbreviate }}</td>
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
-            <div ng-repeat="unit in p.additional_units">
+            <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
                 <img style="width: 32px"  ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
             </div>
         </td>

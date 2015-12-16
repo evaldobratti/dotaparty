@@ -24,6 +24,7 @@ def item_serializer(item):
 
 def additional_unit_serializer(additional_unit):
     return {
+        'unit_name': additional_unit.unit_name,
         'items': map(item_serializer, [owner.item() for owner in additional_unit.items.all()])
     }
 
