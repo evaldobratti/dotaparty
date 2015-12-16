@@ -89,26 +89,12 @@ def load_team(match, players):
             unit, unit_created = AdditionalUnit.objects.get_or_create(unit_name=additional_unit.unit_name,
                                                                       player=player)
             for index, item_response in enumerate(additional_unit.items):
-                item, _ = Item.objects.get_or_create(item_id=item_response.id,
-                                                     localized_name=item_response.localized_name,
-                                                     name=item_response.name,
-                                                     is_recipe=bool(item_response.is_recipe),
-                                                     in_secret_shop=item_response.in_secret_shop,
-                                                     cost=item_response.cost,
-                                                     in_side_shop=item_response.in_side_shop,
-                                                     url_image=item_response.url_image)
+                item = get_or_create_item(item_response)
 
                 DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item.item_id)
 
         for index, item_response in enumerate(p.items):
-            item, _ = Item.objects.get_or_create(item_id=item_response.id,
-                                                 localized_name=item_response.localized_name,
-                                                 name=item_response.name,
-                                                 is_recipe=bool(item_response.is_recipe),
-                                                 in_secret_shop=item_response.in_secret_shop,
-                                                 cost=item_response.cost,
-                                                 in_side_shop=item_response.in_side_shop,
-                                                 url_image=item_response.url_image)
+            item = get_or_create_item(item_response)
 
             DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item.item_id)
 
@@ -119,6 +105,20 @@ def load_team(match, players):
                                                      ability_id=ability.ability_id,
                                                      time=upgrade.time,
                                                      upgraded_lvl=upgrade.level)
+
+
+def get_or_create_item(item_response):
+    try:
+        return Item.objects.get(item_id=item_response.id)
+    except Item.DoesNotExist:
+        return Item.objects.get_or_create(item_id=item_response.id,
+                                          localized_name=item_response.localized_name,
+                                          name=item_response.name,
+                                          is_recipe=bool(item_response.is_recipe),
+                                          in_secret_shop=item_response.in_secret_shop,
+                                          cost=item_response.cost,
+                                          in_side_shop=item_response.in_side_shop,
+                                          url_image=item_response.url_image)[0]
 
 
 def parse(match_details):
