@@ -217,3 +217,20 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
         return paginator.page(1)
     except EmptyPage:
         return paginator.page(paginator.num_pages)
+
+
+def update_items():
+    for item_response in d2api.get_items():
+        try:
+            my_item = Item.objects.get(item_id=item_response.id)
+            my_item.localized_name = item_response.localized_name
+            my_item.name = item_response.name
+            my_item.is_recipe = bool(item_response.is_recipe)
+            my_item.in_secret_shop = bool(item_response.in_secret_shop)
+            my_item.cost = item_response.cost
+            my_item.in_side_shop = bool(item_response.in_side_shop)
+            my_item.url_image = item_response.url_image
+            my_item.save()
+            print my_item.localized_name
+        except Item.DoesNotExist:
+            pass
