@@ -19,5 +19,6 @@
             return milhares.toString() + '.' + centenas.toString()[0] + 'k  ';
 
         }
-    }])
+    }]);
+
 })();

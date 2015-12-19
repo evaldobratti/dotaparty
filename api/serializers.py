@@ -32,6 +32,7 @@ def additional_unit_serializer(additional_unit):
 def player_serializer(player):
     return {
         'level': player.level,
+        'player_slot': player.player_slot,
         'kills': player.kills,
         'deaths': player.deaths,
         'assists': player.assists,
@@ -55,6 +56,10 @@ def player_serializer(player):
             'url_small_portrait': player.hero.url_small_portrait,
             'url_full_portrait': player.hero.url_full_portrait,
             'localized_name': player.hero.localized_name
+        },
+        'leaver_status': {
+            'id': player.leaver_status.leaver_id,
+            'name': player.leaver_status.name
         },
         'additional_units': map(additional_unit_serializer, player.additional_units.all())
     }

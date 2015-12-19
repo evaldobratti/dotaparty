@@ -6,50 +6,47 @@
             <spam class="h2">{{ vm.account.persona_name }}</spam>
             <img ng-src="{{ vm.account.url_avatar }}">
         </div>
-        <div class="col-md-6" ng-show=" vm.account.matches_download_required ">
-            <div class="alert alert-dismissible alert-success">
+        <div class="col-md-6">
+            <div class="alert alert-dismissible alert-success" ng-show="vm.account.matches_download_required ">
                 The games are being downloaded automatically!
                  <button type="button" class="close" data-dismiss="alert">×</button>
             </div>
-        </div>
-        <div class="col-md-6" >
-            <form ng-submit="vm.downloadGames()">
-                <button type="submit" class="btn btn-inverse btn-raised">Download games</button>
-            </form>
+            <button ng-click="vm.downloadGames()" class="btn btn-inverse btn-raised">Download games</button>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <h4 ng-if="vm.matches.length">Matches</h4>
 
             <div ng-repeat="match in vm.matches">
-
                 <div ng-repeat="player in match.radiant_team.concat(match.dire_team)"
-                     ng-if="player.player_account.account_id == vm.accountId">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <img ng-src="{{ player.hero.url_small_portrait }}">
-                        </div>
-                        <div class="col-md-2">
-                            <a ng-href="matches/{{ match.match_id }}">
-                                {{ player.hero.localized_name }}
-                            </a><br />
-                            <spam class="h6">{{ match.game_mode.name }}</spam>
+                     ng-if="player.player_account.account_id == vm.accountId"
+                        class="row">
+                    <div class="col-md-2">
+                        <img ng-src="{{ player.hero.url_small_portrait }}">
+                    </div>
+                    <div class="col-md-3">
+                        <a ng-href="matches/{{ match.match_id }}">
+                            {{ player.hero.localized_name }}
+                        </a><br />
+                        <spam class="h6">{{ match.game_mode }}</spam>
 
-                        </div>
-                        <div class="col-md-2">
-                            {{ player.kills + '/' + player.deaths + '/' + player.assists }}
-                        </div>
-                        <div class="col-md-2 text-align-center">
+                    </div>
+                    <div class="col-md-2">
+                        {{ player.kills + '/' + player.deaths + '/' + player.assists }}
+                    </div>
+                    <div class="col-md-2 text-align-center">
+                        <div ng-show="player.leaver_status.id < 2">
                             <span ng-if="match.match_won" class="label label-success">Victory</span>
                             <span ng-if="!match.match_won" class="label label-danger">Loss</span>
                         </div>
+                        <span ng-show="player.leaver_status.id >= 2" class="label label-warning">
+                            {{ player.leaver_status.name }}
+                        </span>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
 

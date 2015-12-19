@@ -1,8 +1,17 @@
 <table class="table table-striped table-condensed">
     <thead>
     <tr>
-        <th class="text-align-center">Hero</th>
-        <th class="col-md-2">Player</th>
+        <th class="text-align-center">
+            Hero
+        </th>
+        <th class="col-md-2">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Click on nickname cell to load number of matches that player have with each other">
+                Player
+            </abbr>
+        </th>
         <th class="text-align-center">LVL</th>
         <th class="text-align-center">K</th>
         <th class="text-align-center">D</th>
@@ -27,11 +36,16 @@
 
         <td ng-click="vm.friendsMatches(p)">
             <div ng-if="p.player_account != null">
-                <a href="profiles/{{ p.player_account.account_id }}"
-                        >{{ p.player_account.persona_name }}</a>
+                <a href="profiles/{{ p.player_account.account_id }}">
+                    {{ p.player_account.persona_name | limitTo:15 }}
+                    <span ng-show="p.player_account.persona_name.length > 15">...</span>
+                </a>
                 <img style="float: right" ng-src="{{ p.player_account.url_avatar }}">
             </div>
             <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
+            <span ng-show="p.leaver_status.id >= 2" class="label label-warning">
+                {{ p.leaver_status.name }}
+            </span>
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
@@ -47,17 +61,25 @@
         <td class="text-align-center">{{ p.hero_healing | abbreviate }}</td>
         <td>
             <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
+
             <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
-                <img style="width: 32px"  ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
+                <img style="width: 32px" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
             </div>
         </td>
         <td>
             <div ng-show="p.player_account != null">
                 <div class="dropdown" style="display: inline;">
                     <a class="btn btn-xs btn-default  dropdown-toggle" id="menu"
-                            data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="true">
-                        Action
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="true">
+                        <span ng-show="!vm.isAuthenticated" data-toggle="tooltip"
+                              data-placement="left"
+                              data-original-title="You must be logged in to do some actions">
+                            Action
+                        </span>
+                        <span ng-show="vm.isAuthenticated">
+                            Action
+                        </span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="menu">
@@ -65,12 +87,14 @@
                             <button class="btn btn-primary btn-block btn-xs"
                                     ng-disabled="!vm.enableReportPlayer(p)"
                                     href=""
-                                    ng-click="vm.report(p.player_account)">Report
+                                    ng-click="vm.report(p.player_account)">
+                                Report
                             </button>
                         </li>
                     </ul>
                 </div>
-                <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
+                <a href="friends/
+                        {{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
                    data-toggle="tooltip"
                    data-placement="right"
                    title=""
