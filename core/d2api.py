@@ -36,6 +36,8 @@ def to_64b(number):
 def get_matches_seq(last_match_id):
     return get_until_success(lambda: __d2api.get_match_history_by_seq_num(last_match_id))
 
-
 def get_items():
     return get_until_success(lambda: __d2api.get_game_items())
+
+def get_heroes():
+    return get_until_success(lambda: __d2api.get_heroes())

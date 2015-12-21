@@ -82,7 +82,7 @@ class AccountUpdate(models.Model):
 
 
 class Hero(models.Model):
-    hero_id = models.SmallIntegerField()
+    hero_id = models.SmallIntegerField(unique=True)
     localized_name = models.CharField(max_length=50)
     name = models.CharField(max_length=50, unique=True)
     url_small_portrait = models.CharField(max_length=300)
@@ -103,22 +103,22 @@ class Item(models.Model):
 
 
 class Ability(models.Model):
-    ability_id = models.SmallIntegerField()
+    ability_id = models.SmallIntegerField(unique=True)
     name = models.CharField(max_length=100)
 
 
 class Cluster(models.Model):
-    cluster_id = models.IntegerField()
+    cluster_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=30)
 
 
 class LobbyType(models.Model):
-    lobby_type_id = models.IntegerField()
+    lobby_type_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=30)
 
 
 class GameMode(models.Model):
-    game_mode_id = models.IntegerField()
+    game_mode_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=30)
 
 

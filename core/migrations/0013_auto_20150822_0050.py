@@ -5,13 +5,7 @@ from django.db import models, migrations
 from core import parameters
 
 def create_parameters(apps, schema_editor):
-    Parameter = apps.get_model("core", "Parameter")
-
-    if len(Parameter.objects.filter(name=parameters.INTERESTED_ACCOUNTS_IDS)) == 0:
-        Parameter.objects.create(name=parameters.INTERESTED_ACCOUNTS_IDS, value='[]')
-
-    if len(Parameter.objects.filter(name=parameters.LAST_MATCH_SEQ_NUM)) == 0:
-        Parameter.objects.create(name=parameters.LAST_MATCH_SEQ_NUM, value=None)
+    pass
 
 
 class Migration(migrations.Migration):

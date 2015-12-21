@@ -234,3 +234,26 @@ def update_items():
             print my_item.localized_name
         except Item.DoesNotExist:
             pass
+
+
+def update_heroes():
+    for hero_response in d2api.get_heroes():
+        print hero_response.localized_name
+        try:
+            hero = Hero.objects.get(hero_id=hero_response.id)
+            hero.hero_id = hero_response.id
+            hero.localized_name = hero_response.localized_name
+            hero.name = hero_response.name
+            hero.hero.url_small_portrait = hero_response.url_small_portrait
+            hero.url_large_portrait = hero_response.url_large_portrait
+            hero.url_full_portrait = hero_response.url_full_portrait
+            hero.url_vertical_portrait = hero_response.url_vertical_portrait
+            hero.save()
+        except Hero.DoesNotExist:
+            Hero.objects.get_or_create(hero_id=hero_response.id,
+                                       localized_name=hero_response.localized_name,
+                                       name=hero_response.name,
+                                       url_small_portrait=hero_response.url_small_portrait,
+                                       url_large_portrait=hero_response.url_large_portrait,
+                                       url_full_portrait=hero_response.url_full_portrait,
+                                       url_vertical_portrait=hero_response.url_vertical_portrait)
