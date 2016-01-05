@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 items = {}
 heroes = {}
 abilities = {}
@@ -31,6 +31,7 @@ def get_ability(ability_id):
 
 class Account(models.Model):
     account_id = models.BigIntegerField(unique=True)
+    datetime_created = models.DateTimeField(auto_now_add=True)
     steam_id = models.BigIntegerField(null=True)
     last_logoff = models.BigIntegerField(null=True)
     profile_url = models.CharField(max_length=500, null=True)
@@ -130,6 +131,7 @@ class DetailMatch(models.Model):
                           (4, "Not determined"))
 
     is_radiant_win = models.BooleanField()
+    datetime_created = models.DateTimeField(auto_now_add=True)
     duration = models.BigIntegerField()
     start_time = models.BigIntegerField()
     match_id = models.BigIntegerField(unique=True)

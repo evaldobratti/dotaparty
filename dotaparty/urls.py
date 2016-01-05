@@ -23,6 +23,6 @@ urlpatterns = [
     url('^api/user/', views.get_authenticated_user),
     url('^api/community/report/$', views.new_report),
 
-
+    url('^api/statistics/', views.get_statistics),
     url('^.*$', IndexView.as_view(), name='index')
 ]

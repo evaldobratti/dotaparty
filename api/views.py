@@ -12,7 +12,8 @@ from django.http import JsonResponse
 from community import models as cm
 from profile import community_serializers
 import serializers
-
+import datetime
+from core import parameters
 
 @transaction.atomic()
 def get_details_match(request, match_id):
@@ -131,4 +132,19 @@ def get_authenticated_user(request):
 
     return JsonResponse({
         'is_authenticated': False
+    })
+
+def get_statistics(request):
+    return JsonResponse({
+        'total': {
+            'matches': len(DetailMatch.objects.all()),
+            'players': len(Account.objects.all()),
+            'tracked': len(parameters.INTERESTED_ACCOUNTS_IDS.value())
+        },
+        'last_hour': {
+            'matches': len(DetailMatch.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1))),
+            'players': len(Account.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1)))
+        },
+        'lasts_matches_ids': [m.match_id for m in DetailMatch.objects.order_by('-datetime_created')[:10]]
+
     })
