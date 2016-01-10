@@ -134,7 +134,23 @@ def get_authenticated_user(request):
         'is_authenticated': False
     })
 
+
 def get_statistics(request):
+    matches = DetailMatch.objects.order_by('-datetime_created')[:10]
+    last_matches = []
+
+    for match in matches:
+        players = []
+        for player in match.players.filter(account_id__in=parameters.INTERESTED_ACCOUNTS_IDS.value()):
+            players.append({
+                'account_id': player.account_id,
+                'persona_name': player.player_account.current_update.persona_name
+            })
+        last_matches.append({
+            'match_id': match.match_id,
+            'players': players
+        })
+
     return JsonResponse({
         'total': {
             'matches': len(DetailMatch.objects.all()),
@@ -145,6 +161,6 @@ def get_statistics(request):
             'matches': len(DetailMatch.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1))),
             'players': len(Account.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1)))
         },
-        'lasts_matches_ids': [m.match_id for m in DetailMatch.objects.order_by('-datetime_created')[:10]]
+        'lasts_matches': last_matches
 
     })

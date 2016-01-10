@@ -6,17 +6,17 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <h4><b>2010151881</b><br>
+        <h4><b>{{ vm.statistics.total.matches }}</b><br>
             <small>matches</small>
         </h4>
     </div>
     <div class="col-md-4">
-        <h4><b>2010151881</b><br>
+        <h4><b>{{ vm.statistics.total.players }}</b><br>
             <small>players</small>
         </h4>
     </div>
     <div class="col-md-4">
-        <h4><b>2010151881</b><br>
+        <h4><b>{{ vm.statistics.total.tracked }}</b><br>
             <small>Tracked players</small>
         </h4>
     </div>
@@ -29,12 +29,12 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        <h4><b>2010151881</b><br>
+        <h4><b>{{ vm.statistics.last_hour.matches }}</b><br>
             <small>matches</small>
         </h4>
     </div>
     <div class="col-md-6">
-        <h4><b>2010151881</b><br>
+        <h4><b>{{ vm.statistics.last_hour.players }}</b><br>
             <small>players</small>
         </h4>
     </div>
@@ -57,7 +57,7 @@
         </div>
     </div>
 </div>
-<div class="row" ng-repeat="m in vm.elements">
+<div class="row" ng-repeat="m in vm.statistics.lasts_matches">
     <div class="col-md-6 text-right">
         <a href="/matches/{{ m.match_id }}">{{ m.match_id }}</a>
     </div>

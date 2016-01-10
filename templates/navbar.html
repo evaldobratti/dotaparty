@@ -10,26 +10,36 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">Dota Party</a>
+
         </div>
-        <div class="collapse navbar-collapse" id="not-google-plus-nav">
-        <script>
-            function formatLoginURL() {
-                window.location = '/login/steam/' + "?next=" + window.location.pathname;
-            }
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/status/">Status</a></li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group is-empty">
+                    <input type="text" class="form-control col-sm-8" placeholder="Search"/>
+                </div>
+            </form>
 
-            function formatLogoutURL() {
-                window.location = '/api/logout/' + "?next=" + window.location.pathname;
-            }
-        </script>
+            <script>
+                function formatLoginURL() {
+                    window.location = '/login/steam/' + "?next=" + window.location.pathname;
+                }
 
-            <ul class="nav navbar-nav pull-right">
+                function formatLogoutURL() {
+                    window.location = '/api/logout/' + "?next=" + window.location.pathname;
+                }
+            </script>
+
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                     <li><a href="/profiles/{{ user.account_id }}">{{ user.username }}</a></li>
                     <li><a target="_self" href="" onclick="formatLogoutURL()">Logout</a></li>
                 {% else %}
 
                     <li><a target="_self" href="" onclick="formatLoginURL()">
-                        <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png" />
+                        <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png"/>
 
                     </a></li>
                 {% endif %}

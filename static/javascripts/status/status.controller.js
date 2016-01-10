@@ -5,17 +5,21 @@
         .module('dotaparty.status.controllers')
         .controller('StatusController', StatusController);
 
-    StatusController.$inject = ['$location', 'Home'];
+    StatusController.$inject = ['$location', 'Status'];
 
-    function StatusController($location, Home) {
+    function StatusController($location, Status) {
         var vm = this;
         vm.searchTxt = '';
         vm.find = find;
-
+        vm.statistics = null;
         active();
 
         function active() {
-            vm.elements = [mock(1),mock(2),mock(3),mock(4)];
+            Status.get().then(function (data) {
+                vm.statistics = data.data;
+                console.log(vm.statistics);
+            });
+            vm.elements = [mock(1), mock(2), mock(3), mock(4)];
         }
 
         function mock(index) {
