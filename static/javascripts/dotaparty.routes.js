@@ -24,6 +24,10 @@
             controller: 'HomeController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/home.html'
+        }).when('/status', {
+            controller: 'StatusController',
+            controllerAs: 'vm',
+            templateUrl: 'static/templates/status.html'
         }).otherwise('/');
     }
 })();

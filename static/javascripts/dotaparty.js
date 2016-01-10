@@ -18,6 +18,7 @@
             'dotaparty.community',
             'dotaparty.authentication',
             'dotaparty.utils',
+            'dotaparty.status',
             'ngDialog'
         ]);
 
