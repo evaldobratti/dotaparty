@@ -18,7 +18,7 @@ urlpatterns = [
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/created$', views.get_reports_created),
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/received$', views.get_reports_received),
 
-    url('^api/find/(?P<search>\w+)$', views.find),
+    url('^api/find$', views.find),
     url('^api/logout/$', views.logout),
     url('^api/user/', views.get_authenticated_user),
     url('^api/community/report/$', views.new_report),

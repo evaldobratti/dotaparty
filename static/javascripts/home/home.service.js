@@ -14,8 +14,8 @@
 
         return Home;
 
-        function find(search) {
-            return $http.get('api/find/' + search);
+        function find(query) {
+            return $http.get('api/find?query=' + query);
         }
     }
 })();

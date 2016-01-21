@@ -60,7 +60,9 @@ def download_games(request, account_id):
     return HttpResponse()
 
 
-def find(request, search):
+def find(request):
+    search = request.GET['query']
+
     accounts = Account.objects.filter(current_update__persona_name__icontains=search)
     matches = []
     if search.isdigit():
