@@ -138,7 +138,7 @@ def get_authenticated_user(request):
 
 
 def get_statistics(request):
-    matches = DetailMatch.objects.order_by('-datetime_created')[:10]
+    matches = DetailMatch.objects.order_by('-created_at')[:10]
     last_matches = []
 
     for match in matches:
@@ -160,8 +160,8 @@ def get_statistics(request):
             'tracked': len(parameters.INTERESTED_ACCOUNTS_IDS.value())
         },
         'last_hour': {
-            'matches': len(DetailMatch.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1))),
-            'players': len(Account.objects.filter(datetime_created__gt=datetime.datetime.now() - datetime.timedelta(hours=1)))
+            'matches': len(DetailMatch.objects.filter(created_at__gt=datetime.datetime.now() - datetime.timedelta(hours=1))),
+            'players': len(Account.objects.filter(created_at__gt=datetime.datetime.now() - datetime.timedelta(hours=1)))
         },
         'lasts_matches': last_matches
 
