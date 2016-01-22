@@ -13,6 +13,7 @@
         vm.find = find;
         $rootScope.query = vm.searchTxt ;
         vm.buscaFeita = false;
+        vm.setSearch = setSearch;
 
         active();
 
@@ -33,6 +34,14 @@
                 }
                 vm.buscaFeita = true;
             });
+        }
+
+        function setSearch() {
+            $location.path('/');
+            $location.search({
+                q: $rootScope.query
+            });
+            $location.replace();
         }
     }
 })();
