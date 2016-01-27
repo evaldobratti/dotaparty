@@ -19,7 +19,7 @@
         active();
 
         function active() {
-            Profile.get(vm.accountId).then(function (result) {
+            Profile.get(vm.accountId, true).then(function (result) {
                 vm.account = result.data;
             });
 

@@ -7,6 +7,7 @@ def account_serializer(account):
         'account_id': account.account_id,
         'steam_id': account.steam_id,
         'profile_url': account.profile_url,
+        'matches_download_required': account.matches_download_required,
         'current_update': {
             'persona_name': current_update.persona_name,
             'url_avatar': current_update.url_avatar,

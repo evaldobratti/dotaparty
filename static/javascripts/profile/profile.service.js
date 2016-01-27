@@ -18,8 +18,12 @@
 
         return Profile;
 
-        function get(accountId) {
-            return $http.get('/api/profiles/' + accountId);
+        function get(accountId, includeFriends) {
+            var parameters = '?';
+
+            if (includeFriends)
+                parameters += 'includeFriends=true';
+            return $http.get('/api/profiles/' + accountId + parameters);
         }
 
         function getPlayersMatches(accountId, others) {

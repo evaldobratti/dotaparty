@@ -3,8 +3,8 @@
 <div ng-show="vm.account">
     <div class="row">
         <div class="col-md-6">
-            <spam class="h2">{{ vm.account.persona_name }}</spam>
-            <img ng-src="{{ vm.account.url_avatar }}">
+            <spam class="h2">{{ vm.account.current_update.persona_name }}</spam>
+            <img ng-src="{{ vm.account.current_update.url_avatar }}">
         </div>
         <div class="col-md-6">
             <div class="alert alert-dismissible alert-success" ng-show="vm.account.matches_download_required ">
@@ -61,8 +61,8 @@
                 <tbody>
                 <tr ng-repeat="f in vm.account.friends">
                     <td>
-                        <img ng-src="{{ f.url_avatar }}">
-                        <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
+                        <img ng-src="{{ f.current_update.url_avatar }}">
+                        <a href="profiles/{{ f.account_id }}">{{ f.current_update.persona_name }}</a>
                     </td>
                     <td>
                         <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>
