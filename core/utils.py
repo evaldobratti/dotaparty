@@ -221,6 +221,7 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
 
 def update_items():
     for item_response in d2api.get_items():
+        print item_response.localized_name
         try:
             my_item = Item.objects.get(item_id=item_response.id)
             my_item.localized_name = item_response.localized_name
@@ -244,7 +245,7 @@ def update_heroes():
             hero.hero_id = hero_response.id
             hero.localized_name = hero_response.localized_name
             hero.name = hero_response.name
-            hero.hero.url_small_portrait = hero_response.url_small_portrait
+            hero.url_small_portrait = hero_response.url_small_portrait
             hero.url_large_portrait = hero_response.url_large_portrait
             hero.url_full_portrait = hero_response.url_full_portrait
             hero.url_vertical_portrait = hero_response.url_vertical_portrait
