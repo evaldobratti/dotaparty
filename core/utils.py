@@ -20,133 +20,133 @@ def get_account(account_id):
 
 def load_account(account_id, update):
     acc, _ = Account.objects.get_or_create(account_id=account_id)
-    acc.steam_id = update.steam_id
-    acc.last_logoff = update.last_logoff
-    acc.profile_url = update.profile_url
-    acc.community_visibility_state = update.community_visibility_state
-    acc.time_created = update.time_created
-    acc.persona_state = update.persona_state
-    acc.profile_state = update.profile_state
-    update, created = acc.updates.get_or_create(account=acc,
-                                                persona_name=update.persona_name,
-                                                url_avatar=update.url_avatar,
-                                                url_avatar_medium=update.url_avatar_medium,
-                                                url_avatar_full=update.url_avatar_full,
-                                                primary_clan_id=update.primary_clan_id,
-                                                persona_state_flags=update.persona_state_flags)
-    acc.current_update = update
+    acc.steam_id = update['steamid']
+    acc.last_logoff = update['lastlogoff']
+    acc.profile_url = update['profileurl']
+    acc.community_visibility_state = update['communityvisibilitystate']
+    acc.time_created = update.get('timecreated')
+    acc.persona_state = update['personastate']
+    acc.profile_state = update['profilestate']
+    current_update, created = acc.updates.get_or_create(account=acc,
+                                                        persona_name=update['personaname'],
+                                                        url_avatar=update['avatar'],
+                                                        url_avatar_medium=update['avatarmedium'],
+                                                        url_avatar_full=update['avatarfull'],
+                                                        primary_clan_id=update.get('primaryclanid'),
+                                                        persona_state_flags=update.get('personastateflags'))
+    acc.current_update = current_update
     acc.save()
     if created:
-        update.sequential = len(acc.updates.all())
-        update.save()
+        current_update.sequential = len(acc.updates.all())
+        current_update.save()
 
     return acc
 
 
 def load_team(match, players):
-    updated_accounts = d2api.get_player_summaries(*[p.account_id for p in players])
+    updated_accounts = d2api.get_player_summaries(*[p['account_id'] for p in players])['players']
     for p in players:
-        hero, _ = Hero.objects.get_or_create(hero_id=p.hero.id,
-                                             localized_name=p.hero.localized_name,
-                                             name=p.hero.name,
-                                             url_small_portrait=p.hero.url_small_portrait,
-                                             url_large_portrait=p.hero.url_large_portrait,
-                                             url_full_portrait=p.hero.url_full_portrait,
-                                             url_vertical_portrait=p.hero.url_vertical_portrait)
+        if p['account_id'] != PRIVATE_PROFILE_ACCOUNT_ID and p['account_id'] != -1:
+            def filtro(ua):
+                return str(ua['steamid']) == str(d2api.to_64b(p['account_id']))
 
-        if p.account_id != PRIVATE_PROFILE_ACCOUNT_ID and p.account_id != -1:
-            update = filter(lambda ua: str(ua.steam_id) == str(d2api.to_64b(p.account_id)),
-                            updated_accounts)[0]
+            update = filter(filtro, updated_accounts)[0]
 
-            account = load_account(p.account_id, update)
+            account = load_account(p['account_id'], update)
         else:
             account = None
 
-        if p.leaver_status:
-            leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=p.leaver_status.id,
-                                                                  name=p.leaver_status.name,
-                                                                  description=p.leaver_status.description)
-        else:
+        if p.get('leaver_status') is None:
             leaver_status = None
+        else:
+            leaver_status, _ = LeaverStatus.objects.get_or_create(leaver_id=p['leaver_status'],
+                                                                  name=p['leaver_status_name'],
+                                                                  description=p['leaver_status_description'])
 
-        player = DetailMatchPlayer.objects.create(match=match, player_account=account,
-                                                  account_id=p.account_id,
-                                                  player_slot=p.player_slot,
-                                                  hero_id=hero.hero_id, kills=p.kills,
-                                                  deaths=p.deaths, assists=p.assists,
+        player = DetailMatchPlayer.objects.create(match=match,
+                                                  player_account=account,
+                                                  account_id=p['account_id'],
+                                                  player_slot=p['player_slot'],
+                                                  hero_id=p['hero_id'],
+                                                  kills=p['kills'],
+                                                  deaths=p.get("deaths", p.get('death')),
+                                                  assists=p['assists'],
                                                   leaver_status=leaver_status,
-                                                  gold=p.gold,
-                                                  last_hits=p.last_hits, denies=p.denies,
-                                                  gold_per_min=p.gold_per_min,
-                                                  xp_per_min=p.xp_per_min,
-                                                  gold_spent=p.gold_spent,
-                                                  hero_damage=p.hero_damage,
-                                                  tower_damage=p.tower_damage,
-                                                  hero_healing=p.hero_healing,
-                                                  level=p.level)
+                                                  gold=p['gold'],
+                                                  last_hits=p['last_hits'],
+                                                  denies=p['denies'],
+                                                  gold_per_min=p['gold_per_min'],
+                                                  xp_per_min=p['xp_per_min'],
+                                                  gold_spent=p['gold_spent'],
+                                                  hero_damage=p['hero_damage'],
+                                                  tower_damage=p['tower_damage'],
+                                                  hero_healing=p['hero_healing'],
+                                                  level=p['level'])
 
-        for additional_unit in p.additional_units:
-            unit, unit_created = AdditionalUnit.objects.get_or_create(unit_name=additional_unit.unit_name,
-                                                                      player=player)
-            for index, item_response in enumerate(additional_unit.items):
+        for additional_unit in p.get('additional_units', []):
+            unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unit_name'],
+                                                           player=player)
+            for index, item_response in enumerate(additional_unit['items']):
                 item = get_or_create_item(item_response)
 
-                DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item.item_id)
+                DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item['item_id'])
 
-        for index, item_response in enumerate(p.items):
-            item = get_or_create_item(item_response)
+        for i in range(0, 5):
+            DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=p['item_' + str(i)])
+        #for index, item_response in enumerate(p['items']):
+        #    item = get_or_create_item(item_response)
 
-            DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item.item_id)
+        #    DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item['item_id'])
 
-        for upgrade in p.ability_upgrades:
-            ability, _ = Ability.objects.get_or_create(ability_id=upgrade.ability,
-                                                       name=upgrade.ability_name)
+        for upgrade in p['ability_upgrades']:
+            #ability, _ = Ability.objects.get_or_create(ability_id=upgrade['ability'],
+            #                                           name=upgrade['ability_name'])
             DetailMatchAbilityUpgrade.objects.create(player=player,
-                                                     ability_id=ability.ability_id,
-                                                     time=upgrade.time,
-                                                     upgraded_lvl=upgrade.level)
+                                                     ability_id=upgrade['ability'],
+                                                     time=upgrade['time'],
+                                                     upgraded_lvl=upgrade['level'])
 
 
 def get_or_create_item(item_response):
     try:
-        return Item.objects.get(item_id=item_response.id)
+        return Item.objects.get(item_id=item_response['id'])
     except Item.DoesNotExist:
-        return Item.objects.get_or_create(item_id=item_response.id,
-                                          localized_name=item_response.localized_name,
-                                          name=item_response.name,
-                                          is_recipe=bool(item_response.is_recipe),
-                                          in_secret_shop=item_response.in_secret_shop,
-                                          cost=item_response.cost,
-                                          in_side_shop=item_response.in_side_shop,
-                                          url_image=item_response.url_image)[0]
+        return Item.objects.get_or_create(item_id=item_response['id'],
+                                          localized_name=item_response['localized_name'],
+                                          name=item_response['name'],
+                                          is_recipe=bool(item_response['is_recipe']),
+                                          in_secret_shop=item_response['in_secret_shop'],
+                                          cost=item_response['cost'],
+                                          in_side_shop=item_response['in_side_shop'],
+                                          url_image=item_response['url_image'])[0]
 
 
 def parse(match_details):
-    cluster, _ = Cluster.objects.get_or_create(cluster_id=match_details.cluster,
-                                               name=match_details.cluster_name)
+    cluster, _ = Cluster.objects.get_or_create(cluster_id=match_details['cluster'],
+                                               name=match_details['cluster_name'])
 
-    game_mode, _ = GameMode.objects.get_or_create(game_mode_id=match_details.game_mode,
-                                                  name=match_details.game_mode_name)
+    game_mode, _ = GameMode.objects.get_or_create(game_mode_id=match_details['game_mode'],
+                                                  name=match_details['game_mode_name'])
 
-    lobby_type, _ = LobbyType.objects.get_or_create(lobby_type_id=match_details.lobby_type,
-                                                    name=match_details.lobby_name)
+    lobby_type, _ = LobbyType.objects.get_or_create(lobby_type_id=match_details['lobby_type'],
+                                                    name=match_details['lobby_name'])
 
-    match = DetailMatch.objects.create(is_radiant_win=match_details.is_radiant_win, duration=match_details.duration,
-                                       start_time=match_details.start_time, match_id=match_details.match_id,
-                                       match_seq_num=match_details.match_seq_num,
-                                       tower_status_radiant=match_details.tower_status_radiant,
-                                       tower_status_dire=match_details.tower_status_dire,
-                                       barracks_status_radiant=match_details.barracks_status_radiant,
-                                       barracks_status_dire=match_details.barracks_status_dire,
+    match = DetailMatch.objects.create(is_radiant_win=match_details['radiant_win'], duration=match_details['duration'],
+                                       start_time=match_details['start_time'], match_id=match_details['match_id'],
+                                       match_seq_num=match_details['match_seq_num'],
+                                       tower_status_radiant=match_details['tower_status_radiant'],
+                                       tower_status_dire=match_details['tower_status_dire'],
+                                       barracks_status_radiant=match_details['barracks_status_radiant'],
+                                       barracks_status_dire=match_details['barracks_status_dire'],
                                        cluster=cluster,
-                                       first_blood_time=match_details.first_blood_time,
+                                       first_blood_time=match_details['first_blood_time'],
                                        lobby_type=lobby_type,
-                                       human_players=match_details.human_players, league_id=match_details.league_id,
-                                       positive_votes=match_details.positive_votes,
-                                       negative_votes=match_details.negative_votes,
+                                       human_players=match_details['human_players'], league_id=match_details['leagueid'],
+                                       positive_votes=match_details['positive_votes'],
+                                       negative_votes=match_details['negative_votes'],
                                        game_mode=game_mode)
 
-    load_team(match, match_details.players)
+    load_team(match, match_details['players'])
 
     return match
 
@@ -220,17 +220,17 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
 
 
 def update_items():
-    for item_response in d2api.get_items():
+    for item_response in d2api.get_items()['items']:
         print item_response.localized_name
         try:
             my_item = Item.objects.get(item_id=item_response.id)
-            my_item.localized_name = item_response.localized_name
-            my_item.name = item_response.name
-            my_item.is_recipe = bool(item_response.is_recipe)
-            my_item.in_secret_shop = bool(item_response.in_secret_shop)
-            my_item.cost = item_response.cost
-            my_item.in_side_shop = bool(item_response.in_side_shop)
-            my_item.url_image = item_response.url_image
+            my_item.localized_name = item_response['localized_name']
+            my_item.name = item_response['name']
+            my_item.is_recipe = bool(item_response['is_recipe'])
+            my_item.in_secret_shop = bool(item_response['in_secret_shop'])
+            my_item.cost = item_response['cost']
+            my_item.in_side_shop = bool(item_response['in_side_shop'])
+            my_item.url_image = item_response['url_image']
             my_item.save()
             print my_item.localized_name
         except Item.DoesNotExist:
@@ -238,7 +238,7 @@ def update_items():
 
 
 def update_heroes():
-    for hero_response in d2api.get_heroes():
+    for hero_response in d2api.get_heroes()['heroes']:
         print hero_response.localized_name
         try:
             hero = Hero.objects.get(hero_id=hero_response.id)

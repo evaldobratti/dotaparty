@@ -159,3 +159,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 from django.contrib import admin
 from community.models import *
 admin.site.register(Report)
+
+from core import utils
+utils.update_items()
+utils.update_heroes()

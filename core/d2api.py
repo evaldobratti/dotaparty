@@ -1,7 +1,7 @@
 from dota2api import api
 from dotaparty import secret
 
-__d2api = api.Initialise(secret.D2_API_KEY)
+__d2api = api.Initialise(secret.D2_API_KEY, logging=True)
 
 
 def get_until_success(get_function):
