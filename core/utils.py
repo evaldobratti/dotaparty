@@ -14,7 +14,7 @@ def get_account(account_id):
         acc = d2api.get_player_summaries(*[int(account_id)])
 
         if acc:
-            return load_account(account_id, acc[0])
+            return load_account(account_id, acc['players'][0])
         return None
 
 
@@ -26,7 +26,7 @@ def load_account(account_id, update):
     acc.community_visibility_state = update['communityvisibilitystate']
     acc.time_created = update.get('timecreated')
     acc.persona_state = update['personastate']
-    acc.profile_state = update['profilestate']
+    acc.profile_state = update.get('profilestate')
     current_update, created = acc.updates.get_or_create(account=acc,
                                                         persona_name=update['personaname'],
                                                         url_avatar=update['avatar'],
@@ -44,9 +44,9 @@ def load_account(account_id, update):
 
 
 def load_team(match, players):
-    updated_accounts = d2api.get_player_summaries(*[p['account_id'] for p in players])['players']
+    updated_accounts = d2api.get_player_summaries(*[p.get('account_id') for p in players])['players']
     for p in players:
-        if p['account_id'] != PRIVATE_PROFILE_ACCOUNT_ID and p['account_id'] != -1:
+        if p.get('account_id', -1) != PRIVATE_PROFILE_ACCOUNT_ID and p.get('account_id', -1) != -1:
             def filtro(ua):
                 return str(ua['steamid']) == str(d2api.to_64b(p['account_id']))
 
@@ -72,35 +72,27 @@ def load_team(match, players):
                                                   deaths=p.get("deaths", p.get('death')),
                                                   assists=p['assists'],
                                                   leaver_status=leaver_status,
-                                                  gold=p['gold'],
+                                                  gold=p.get('gold', 0),
                                                   last_hits=p['last_hits'],
                                                   denies=p['denies'],
                                                   gold_per_min=p['gold_per_min'],
                                                   xp_per_min=p['xp_per_min'],
-                                                  gold_spent=p['gold_spent'],
-                                                  hero_damage=p['hero_damage'],
-                                                  tower_damage=p['tower_damage'],
-                                                  hero_healing=p['hero_healing'],
+                                                  gold_spent=p.get('gold_spent', 0),
+                                                  hero_damage=p.get('hero_damage', 0),
+                                                  tower_damage=p.get('tower_damage', 0),
+                                                  hero_healing=p.get('hero_healing',0),
                                                   level=p['level'])
 
         for additional_unit in p.get('additional_units', []):
-            unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unit_name'],
+            unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unitname'],
                                                            player=player)
-            for index, item_response in enumerate(additional_unit['items']):
-                item = get_or_create_item(item_response)
-
-                DetailMatchOwnerItem.objects.create(owner=unit, slot=index, item_id=item['item_id'])
+            for i in range(0, 5):
+                DetailMatchOwnerItem.objects.create(owner=unit, slot=i, item_id=additional_unit['item_' + str(i)])
 
         for i in range(0, 5):
             DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=p['item_' + str(i)])
-        #for index, item_response in enumerate(p['items']):
-        #    item = get_or_create_item(item_response)
 
-        #    DetailMatchOwnerItem.objects.create(owner=player, slot=index, item_id=item['item_id'])
-
-        for upgrade in p['ability_upgrades']:
-            #ability, _ = Ability.objects.get_or_create(ability_id=upgrade['ability'],
-            #                                           name=upgrade['ability_name'])
+        for upgrade in p.get('ability_upgrades', []):
             DetailMatchAbilityUpgrade.objects.create(player=player,
                                                      ability_id=upgrade['ability'],
                                                      time=upgrade['time'],
@@ -221,15 +213,15 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
 
 def update_items():
     for item_response in d2api.get_items()['items']:
-        print item_response.localized_name
+        print item_response['localized_name']
         try:
-            my_item = Item.objects.get(item_id=item_response.id)
+            my_item = Item.objects.get(item_id=item_response['id'])
             my_item.localized_name = item_response['localized_name']
             my_item.name = item_response['name']
-            my_item.is_recipe = bool(item_response['is_recipe'])
-            my_item.in_secret_shop = bool(item_response['in_secret_shop'])
+            my_item.is_recipe = bool(item_response['recipe'])
+            my_item.in_secret_shop = bool(item_response['secret_shop'])
             my_item.cost = item_response['cost']
-            my_item.in_side_shop = bool(item_response['in_side_shop'])
+            my_item.in_side_shop = bool(item_response['side_shop'])
             my_item.url_image = item_response['url_image']
             my_item.save()
             print my_item.localized_name
@@ -239,22 +231,22 @@ def update_items():
 
 def update_heroes():
     for hero_response in d2api.get_heroes()['heroes']:
-        print hero_response.localized_name
+        print hero_response['localized_name']
         try:
-            hero = Hero.objects.get(hero_id=hero_response.id)
-            hero.hero_id = hero_response.id
-            hero.localized_name = hero_response.localized_name
-            hero.name = hero_response.name
-            hero.url_small_portrait = hero_response.url_small_portrait
-            hero.url_large_portrait = hero_response.url_large_portrait
-            hero.url_full_portrait = hero_response.url_full_portrait
-            hero.url_vertical_portrait = hero_response.url_vertical_portrait
+            hero = Hero.objects.get(hero_id=hero_response['id'])
+            hero.hero_id = hero_response['id']
+            hero.localized_name = hero_response['localized_name']
+            hero.name = hero_response['name']
+            hero.url_small_portrait = hero_response['url_small_portrait']
+            hero.url_large_portrait = hero_response['url_large_portrait']
+            hero.url_full_portrait = hero_response['url_full_portrait']
+            hero.url_vertical_portrait = hero_response['url_vertical_portrait']
             hero.save()
         except Hero.DoesNotExist:
-            Hero.objects.get_or_create(hero_id=hero_response.id,
-                                       localized_name=hero_response.localized_name,
-                                       name=hero_response.name,
-                                       url_small_portrait=hero_response.url_small_portrait,
-                                       url_large_portrait=hero_response.url_large_portrait,
-                                       url_full_portrait=hero_response.url_full_portrait,
-                                       url_vertical_portrait=hero_response.url_vertical_portrait)
+            Hero.objects.get_or_create(hero_id=hero_response['id'],
+                                       localized_name=hero_response['localized_name'],
+                                       name=hero_response['name'],
+                                       url_small_portrait=hero_response['url_small_portrait'],
+                                       url_large_portrait=hero_response['url_large_portrait'],
+                                       url_full_portrait=hero_response['url_full_portrait'],
+                                       url_vertical_portrait=hero_response['url_vertical_portrait'])

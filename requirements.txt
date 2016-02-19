@@ -1,7 +1,7 @@
 Django==1.8.5
 django-appconf==1.0.1
 django-compressor==1.5
--e git+https://github.com/evaldobratti/dotaparty.git@4fd7e552a6b4ba15b4223790756cb6e8856e8335#egg=dota2api-dev
+-e git+https://github.com/evaldobratti/dota2api.git@aec1bbb36373d102d5f401e22d4a25257133b4d2#egg=dota2api-dev
 -e git+https://github.com/evaldobratti/huey.git@2c6eba3cd564827ed23a6b13b865a6aa35df2bf3#egg=huey-dev
 httplib2==0.9.2
 oauth2==1.9.0.post1
