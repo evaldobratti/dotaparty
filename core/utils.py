@@ -11,7 +11,7 @@ def get_account(account_id):
     if account:
         return account[0]
     else:
-        acc = d2api.get_player_summaries(*[int(account_id)])
+        acc = d2api.get_player_summaries([int(account_id)])
 
         if acc:
             return load_account(account_id, acc['players'][0])
@@ -44,7 +44,7 @@ def load_account(account_id, update):
 
 
 def load_team(match, players):
-    updated_accounts = d2api.get_player_summaries(*[p.get('account_id') for p in players])['players']
+    updated_accounts = d2api.get_player_summaries([p.get('account_id') for p in players])['players']
     for p in players:
         if p.get('account_id', -1) != PRIVATE_PROFILE_ACCOUNT_ID and p.get('account_id', -1) != -1:
             def filtro(ua):
@@ -65,7 +65,7 @@ def load_team(match, players):
 
         player = DetailMatchPlayer.objects.create(match=match,
                                                   player_account=account,
-                                                  account_id=p['account_id'],
+                                                  account_id=p.get('account_id', -1),
                                                   player_slot=p['player_slot'],
                                                   hero_id=p['hero_id'],
                                                   kills=p['kills'],
@@ -87,10 +87,14 @@ def load_team(match, players):
             unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unitname'],
                                                            player=player)
             for i in range(0, 5):
-                DetailMatchOwnerItem.objects.create(owner=unit, slot=i, item_id=additional_unit['item_' + str(i)])
+                item_id = additional_unit['item_' + str(i)]
+                if item_id:
+                    DetailMatchOwnerItem.objects.create(owner=unit, slot=i, item_id=item_id)
 
         for i in range(0, 5):
-            DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=p['item_' + str(i)])
+            item_id = p['item_' + str(i)]
+            if item_id:
+                DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=item_id)
 
         for upgrade in p.get('ability_upgrades', []):
             DetailMatchAbilityUpgrade.objects.create(player=player,
@@ -226,7 +230,16 @@ def update_items():
             my_item.save()
             print my_item.localized_name
         except Item.DoesNotExist:
-            pass
+            my_item = Item()
+            my_item.item_id = item_response['id']
+            my_item.localized_name = item_response['localized_name']
+            my_item.name = item_response['name']
+            my_item.is_recipe = bool(item_response['recipe'])
+            my_item.in_secret_shop = bool(item_response['secret_shop'])
+            my_item.cost = item_response['cost']
+            my_item.in_side_shop = bool(item_response['side_shop'])
+            my_item.url_image = item_response['url_image']
+            my_item.save()
 
 
 def update_heroes():
