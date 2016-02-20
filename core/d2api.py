@@ -5,18 +5,30 @@ from dotaparty import secret
 __d2api = dota2api.Initialise(secret.D2_API_KEY)
 logger = logging.getLogger('valveapi')
 
+MAX_RETRIES = 200
+
+
+def check_tries(tries, exception):
+    if tries >= MAX_RETRIES:
+        raise exception
+
+
 def get_until_success(get_function):
+    tries = 0
     while True:
         try:
             import time
 
             time.sleep(1)
+            tries += 1
             return get_function()
         except ValueError as e:
             logger.info('Time out on api, sleeping 1 extra second')
             time.sleep(1)
+            check_tries(tries, e)
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
+            check_tries(tries, e)
 
 
 def get_player_summaries(*args):
