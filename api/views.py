@@ -23,25 +23,28 @@ def get_details_match(request, match_id):
 
 
 def get_profile(request, account_id):
-    others = request.GET.get('others') and request.GET.get('others').split(',') or []
     account = utils.get_account(account_id)
-
-    if str(request.GET.get('includeFriends')).lower() == 'true' or others:
-        friends = utils.get_friends_number_matches(account, others)
-    else:
-        friends = []
-
     serialized = serializers.account_serializer(account)
 
+    return JsonResponse(serialized)
+
+
+def get_friends(request, account_id):
+    account = utils.get_account(account_id)
+    others = request.GET.get('others') and request.GET.get('others').split(',') or []
+
+    friends = utils.get_friends_number_matches(account, others)
+    
+    serialized = []
+
     if friends:
-        serialized['friends'] = []
         for f in friends:
             friend = serializers.account_serializer(f)
             friend['qtd'] = f.qtd
 
-            serialized['friends'].append(friend)
+            serialized.append(friend)
 
-    return JsonResponse(serialized)
+    return JsonResponse({'friends': serialized})
 
 
 def get_accounts_matches(request, comma_accounts_ids):

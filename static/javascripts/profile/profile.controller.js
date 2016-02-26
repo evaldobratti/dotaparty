@@ -12,15 +12,21 @@
         vm.accountId = $routeParams.accountId;
         vm.currentDetailMatchesPage = 1;
         vm.downloadGames = downloadGames;
-        vm.matches = [];
+        vm.matches = null;
+        vm.account = null;
+        vm.friends = null;
         vm.reportsReceived = [];
         vm.reportsCreated = [];
 
         active();
 
         function active() {
-            Profile.get(vm.accountId, true).then(function (result) {
+            Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
+            });
+
+            Profile.getFriends(vm.accountId).then(function (result){
+               vm.friends = result.data.friends;
             });
 
             Profile.getReportsCreated(vm.accountId).then(function (result){
@@ -40,9 +46,6 @@
         }
 
         function downloadGames() {
-            //if (vm.account.matches_download_required)
-            //    return;
-
             Profile.downloadGames(vm.account.account_id).
                 success(function () {
                     vm.account.matches_download_required = true;

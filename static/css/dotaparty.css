@@ -1,6 +1,6 @@
 .detail-match-item {
-    width: 30px;
-    float: left;
+    width: 32px;
+    padding-left: 1px;
 }
 
 .detail-match-hero {
@@ -78,4 +78,28 @@ html, body {
         padding-left: 20px;
         padding-right: 20px;
     }
+}
+
+.fundo-cinza {
+    background-color: #EEE;
+}
+
+.row-content {
+    min-height: initial !important;
+}
+
+.stripped {
+    background-color: rgb(238,238,238);
+}
+
+.blank-circle {
+    width: 56px; 
+    height: 56px; 
+    background-color: white; 
+    border-radius: 100%;
+    margin-top: 3px
+}
+
+.loading {
+    margin: 5px;
 }

@@ -39,7 +39,7 @@
             if (vm.played_with[player.player_account.account_id.toString()] != undefined) {
                 loadPlayedWithForPlayerFrom(player, vm.played_with[player.player_account.account_id.toString()]);
             } else {
-                Profile.getPlayersMatches(player.player_account.account_id, othersRealPlayers(player)).then(function (result) {
+                Profile.getFriends(player.player_account.account_id, othersRealPlayers(player)).then(function (result) {
                     loadPlayedWithForPlayerFrom(player, result.data);
                 });
             }

@@ -15,6 +15,7 @@ urlpatterns = [
     url('^api/matches/accounts/(?P<comma_accounts_ids>([0-9]+)(,[0-9]+)*)$', views.get_accounts_matches),
 
     url('^api/profiles/(?P<account_id>[0-9]+)$', views.get_profile),
+    url('^api/profiles/(?P<account_id>[0-9]+)/friends$', views.get_friends),
     url('^api/profiles/(?P<account_id>[0-9]+)/download$', views.download_games),
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/created$', reports.ReportsCreated.as_view()),
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/received$', reports.ReportsReceived.as_view()),

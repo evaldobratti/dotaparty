@@ -5,26 +5,84 @@
             Hero
         </th>
         <th class="col-md-2">
+            Player
+        </th>
+        <th class="text-align-center">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
-                  data-original-title="Click on nickname cell to load number of matches that player have with each other">
-                Player
-            </abbr>
+                  data-original-title="LeVeL">
+                LVL
+            </abbr> 
         </th>
-        <th class="text-align-center">LVL</th>
-        <th class="text-align-center">K</th>
-        <th class="text-align-center">D</th>
-        <th class="text-align-center">A</th>
-        <th class="text-align-center">LH/DN</th>
-        <th class="text-align-center">GPM</th>
-        <th class="text-align-center">XPM</th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Kills/Deaths/Assists">
+                K/D/A
+            </abbr> 
+        </th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Last Hits/DeNies">
+                LH/DN
+            </abbr> 
+        </th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Gold Per Minute">
+                GPM
+            </abbr> 
+        </th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="eXperience Per Minute">
+                XPM
+            </abbr> 
+        </th>
         <th class="text-align-center">Gold</th>
-        <th class="text-align-center">TD</th>
-        <th class="text-align-center">HD</th>
-        <th class="text-align-center">HH</th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Tower Damage">
+                TD
+            </abbr> 
+        </th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Hero Damage">
+                HD
+            </abbr> 
+        </th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Hero Healing">
+                HH
+            </abbr> 
+        </th>
         <th>Items</th>
         <th></th>
+        <th></th>
+        <th class="text-align-center">
+            <abbr data-toggle="tooltip"
+                  data-placement="top"
+                  title=""
+                  data-original-title="Times players have faced each other, click on radio to load it">
+                #
+            </abbr> 
+        </th>
 
     </tr>
     </thead>
@@ -34,7 +92,7 @@
             <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
         </td>
 
-        <td ng-click="vm.friendsMatches(p)">
+        <td>
             <div ng-if="p.player_account != null">
                 <a href="profiles/{{ p.player_account.account_id }}">
                     {{ p.player_account.persona_name | limitTo:15 }}
@@ -42,16 +100,18 @@
                 </a>
                 <img style="float: right" ng-src="{{ p.player_account.url_avatar }}">
             </div>
-            <div ng-if="p.player_account == null"> {{ 'private profile' }} </div>
+            <div ng-if="p.player_account == null">Private</div>
             <span ng-show="p.leaver_status.id >= 2" class="label label-warning">
                 {{ p.leaver_status.name }}
             </span>
         </td>
 
         <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center color-green">{{ p.kills }}</td>
-        <td class="text-align-center color-red">{{ p.deaths }}</td>
-        <td class="text-align-center color-blue">{{ p.assists }}</td>
+        <td class="text-align-center">
+            <span class="color-green">{{ p.kills }} </span>/
+            <span class="color-red">{{ p.deaths }} </span>/
+            <span class="color-blue">{{ p.assists }}</span>
+        </td>
         <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
         <td class="text-align-center">{{ p.gold_per_min | abbreviate }}</td>
         <td class="text-align-center">{{ p.xp_per_min | abbreviate }}</td>
@@ -60,10 +120,9 @@
         <td class="text-align-center">{{ p.hero_damage | abbreviate }}</td>
         <td class="text-align-center">{{ p.hero_healing | abbreviate }}</td>
         <td>
-            <img style="width: 32px" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
-
+            <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
             <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
-                <img style="width: 32px" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
+                <img class="detail-match-item" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
             </div>
         </td>
         <td>
@@ -74,7 +133,7 @@
                        aria-haspopup="true" aria-expanded="true">
                         <span ng-show="!vm.isAuthenticated" data-toggle="tooltip"
                               data-placement="left"
-                              data-original-title="You must be logged in to do some actions">
+                              data-original-title="You must be logged in to perform some actions">
                             Action
                         </span>
                         <span ng-show="vm.isAuthenticated">
@@ -93,14 +152,22 @@
                         </li>
                     </ul>
                 </div>
-                <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
+            </div>
+
+        </td>
+        <td>
+            <input type="radio" ng-if="p.player_account != null" ng-checked="p == vm.current_selected" ng-click="vm.friendsMatches(p)"/>
+            
+        </td>
+        <td style="min-width: 15px">
+            <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
                    data-toggle="tooltip"
                    data-placement="right"
                    title=""
                    data-original-title="{{ vm.current_selected.player_account.persona_name }} has {{ p.matches_with }} matches with {{ p.player_account.persona_name }}">{{ p.matches_with }}</a>
-            </div>
 
         </td>
+
     </tr>
     </tbody>
 </table>
