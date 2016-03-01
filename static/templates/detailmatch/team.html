@@ -1,173 +1,177 @@
-<table class="table table-striped table-condensed">
-    <thead>
-    <tr>
-        <th class="text-align-center">
+<div class="panel panel-inverse detail-match">
+
+    <div class="panel-heading detail-match-row" style="display: flex">
+        <div class="text-align-center col-hero">
             Hero
-        </th>
-        <th class="col-md-2">
+        </div>
+        <div class="col-player">
             Player
-        </th>
-        <th class="text-align-center">
+        </div>
+        <div class="text-align-center col-lvl">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="LeVeL">
                 LVL
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-kda">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Kills/Deaths/Assists">
                 K/D/A
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-lhdn">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Last Hits/DeNies">
                 LH/DN
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-gpm">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Gold Per Minute">
                 GPM
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-xpm">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="eXperience Per Minute">
                 XPM
-            </abbr> 
-        </th>
-        <th class="text-align-center">Gold</th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-gold">Gold</div>
+        <div class="text-align-center col-td">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Tower Damage">
                 TD
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-hd">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Hero Damage">
                 HD
-            </abbr> 
-        </th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="text-align-center col-hh">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Hero Healing">
                 HH
-            </abbr> 
-        </th>
-        <th>Items</th>
-        <th></th>
-        <th></th>
-        <th class="text-align-center">
+            </abbr>
+        </div>
+        <div class="col-items">Items</div>
+        <div class="col-action"></div>
+        <div class="col-radio"></div>
+        <div class="text-align-center col-matches">
             <abbr data-toggle="tooltip"
                   data-placement="top"
                   title=""
                   data-original-title="Times players have faced each other, click on radio to load it">
                 #
-            </abbr> 
-        </th>
+            </abbr>
+        </div>
+    </div>
 
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="p in team" ng-class="{info: p == vm.current_selected }">
-        <td class="text-align-center">
-            <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
-        </td>
-
-        <td>
-            <div ng-if="p.player_account != null">
-                <a href="profiles/{{ p.player_account.account_id }}">
-                    {{ p.player_account.persona_name | limitTo:15 }}
-                    <span ng-show="p.player_account.persona_name.length > 15">...</span>
-                </a>
-                <img style="float: right" ng-src="{{ p.player_account.url_avatar }}">
+    <div class="panel-body">
+        <div ng-repeat="p in team" ng-class="{info: p == vm.current_selected }" ng-class-odd="'stripped'"
+             class="detail-match-row">
+            <div class="text-align-center col-hero">
+                <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
             </div>
-            <div ng-if="p.player_account == null">Private</div>
-            <span ng-show="p.leaver_status.id >= 2" class="label label-warning">
-                {{ p.leaver_status.name }}
-            </span>
-        </td>
 
-        <td class="text-align-center">{{ p.level }}</td>
-        <td class="text-align-center">
-            <span class="color-green">{{ p.kills }} </span>/
-            <span class="color-red">{{ p.deaths }} </span>/
-            <span class="color-blue">{{ p.assists }}</span>
-        </td>
-        <td class="text-align-center">{{ p.last_hits }} / {{ p.denies }}</td>
-        <td class="text-align-center">{{ p.gold_per_min | abbreviate }}</td>
-        <td class="text-align-center">{{ p.xp_per_min | abbreviate }}</td>
-        <td class="text-align-center">{{ (p.gold_spent + p.gold)  | abbreviate }}</td>
-        <td class="text-align-center">{{ p.tower_damage  | abbreviate }}</td>
-        <td class="text-align-center">{{ p.hero_damage | abbreviate }}</td>
-        <td class="text-align-center">{{ p.hero_healing | abbreviate }}</td>
-        <td>
-            <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
-            <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
-                <img class="detail-match-item" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
-            </div>
-        </td>
-        <td>
-            <div ng-show="p.player_account != null">
-                <div class="dropdown" style="display: inline;">
-                    <a class="btn btn-xs btn-default  dropdown-toggle" id="menu"
-                       data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="true">
-                        <span ng-show="!vm.isAuthenticated" data-toggle="tooltip"
-                              data-placement="left"
-                              data-original-title="You must be logged in to perform some actions">
-                            Action
-                        </span>
-                        <span ng-show="vm.isAuthenticated">
-                            Action
-                        </span>
-                        <span class="caret"></span>
+            <div class="col-player">
+                <div ng-if="p.player_account != null" style="width: 100%">
+                    <a href="profiles/{{ p.player_account.account_id }}">
+                        {{ p.player_account.persona_name | limitTo:15 }}
+                        <span ng-show="p.player_account.persona_name.length > 15">...</span>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="menu">
-                        <li>
-                            <button class="btn btn-primary btn-block btn-xs"
-                                    ng-disabled="!vm.enableReportPlayer(p)"
-                                    href=""
-                                    ng-click="vm.report(p.player_account)">
-                                Report
-                            </button>
-                        </li>
-                    </ul>
+                    <img style="float: right" ng-src="{{ p.player_account.url_avatar }}">
+                </div>
+                <div ng-if="p.player_account == null">Private</div>
+                    <span ng-show="p.leaver_status.id >= 2" class="label label-warning">
+                        {{ p.leaver_status.name }}
+                    </span>
+            </div>
+
+            <div class="text-align-center col-lvl">{{ p.level }}</div>
+            <div class="text-align-center col-kda">
+                <span class="color-green">{{ p.kills }} </span>/
+                <span class="color-red">{{ p.deaths }} </span>/
+                <span class="color-blue">{{ p.assists }}</span>
+            </div>
+            <div class="text-align-center col-lhdn">{{ p.last_hits }} / {{ p.denies }}</div>
+            <div class="text-align-center col-gpm">{{ p.gold_per_min | abbreviate }}</div>
+            <div class="text-align-center col-xpm">{{ p.xp_per_min | abbreviate }}</div>
+            <div class="text-align-center col-gold">{{ (p.gold_spent + p.gold)  | abbreviate }}</div>
+            <div class="text-align-center col-td">{{ p.tower_damage  | abbreviate }}</div>
+            <div class="text-align-center col-hd">{{ p.hero_damage | abbreviate }}</div>
+            <div class="text-align-center col-hh">{{ p.hero_healing | abbreviate }}</div>
+            <div class="col-items">
+                <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
+
+                <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
+                    <img class="detail-match-item" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
                 </div>
             </div>
+            <div class="col-action">
+                <div ng-show="p.player_account != null">
+                    <div class="dropdown" style="display: inline;">
+                        <a class="btn btn-xs btn-default  dropdown-toggle" id="menu"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="true">
+                                <span ng-show="!vm.isAuthenticated" data-toggle="tooltip"
+                                      data-placement="left"
+                                      data-original-title="You must be logged in to perform some actions">
+                                    Action
+                                </span>
+                                <span ng-show="vm.isAuthenticated">
+                                    Action
+                                </span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="menu">
+                            <li>
+                                <button class="btn btn-primary btn-block btn-xs"
+                                        ng-disabled="!vm.enableReportPlayer(p)"
+                                        href=""
+                                        ng-click="vm.report(p.player_account)">
+                                    Report
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-        </td>
-        <td>
-            <input type="radio" ng-if="p.player_account != null" ng-checked="p == vm.current_selected" ng-click="vm.friendsMatches(p)"/>
-            
-        </td>
-        <td style="min-width: 15px">
-            <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
+            </div>
+            <div class="col-radio">
+                <input type="radio" ng-if="p.player_account != null" ng-checked="p == vm.current_selected"
+                       ng-click="vm.friendsMatches(p)"/>
+
+            </div>
+            <div class="col-matches">
+                <a href="friends/{{ vm.current_selected.player_account.account_id + ',' + p.player_account.account_id }}"
                    data-toggle="tooltip"
                    data-placement="right"
                    title=""
                    data-original-title="{{ vm.current_selected.player_account.persona_name }} has {{ p.matches_with }} matches with {{ p.player_account.persona_name }}">{{ p.matches_with }}</a>
 
-        </td>
+            </div>
 
-    </tr>
-    </tbody>
-</table>
+        </div>
+    </div>
+
+
+</div>  
