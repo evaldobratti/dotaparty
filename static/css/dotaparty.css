@@ -227,7 +227,7 @@ html, body {
     padding-top: 6px;
 }
 
-.detail-match .panel-heading,.panel-body {
+.detail-match .panel-heading{
     display: flex;
     padding-left: 0px;
 }
@@ -298,8 +298,4 @@ html, body {
 
 .detail-match .col-matches {
     min-width: 30px;
-}
-
-.detail-match div[class*="col-"] {
-    display: table-column;
 }

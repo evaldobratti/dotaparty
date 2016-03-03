@@ -44,7 +44,7 @@ class ReportsView(View):
         if self.show_creator():
             serialized['creator'] = account_serializer(report.creator)
 
-        serialized['reported'] = account_serializer(report.reported)
+            serialized['reported'] = account_serializer(report.reported)
 
         return serialized
 
