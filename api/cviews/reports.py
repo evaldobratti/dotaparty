@@ -41,9 +41,10 @@ class ReportsView(View):
             'due_to_match_id': report.due_to_match.match_id
         }
 
-        if self.own_profile:
+        if self.show_creator():
             serialized['creator'] = account_serializer(report.creator)
-            serialized['reported'] = account_serializer(report.reported)
+
+        serialized['reported'] = account_serializer(report.reported)
 
         return serialized
 
@@ -51,13 +52,15 @@ class ReportsView(View):
 class ReportsReceived(ReportsView):
 
     def get(self, request):
-        raise 'reports recebidos quando visita pagina de terceiro nao aparece pessoa como autora'
         if self.own_profile:
             reports_received = self.required_account.reports_received.all().order_by('-date_created')
         else:
             reports_received = self.required_account.reports_received.filter(creator=self.logged_account).order_by('-date_created')
 
         return JsonResponse(self.serialize(reports_received, len(self.required_account.reports_received.all())))
+
+    def show_creator(self):
+        return not self.own_profile
 
 
 class ReportsCreated(ReportsView):
@@ -69,3 +72,6 @@ class ReportsCreated(ReportsView):
             reports_created = []
 
         return JsonResponse(self.serialize(reports_created, len(self.required_account.reports_created.all())))
+
+    def show_creator(self):
+        return self.own_profile
