@@ -1,76 +1,154 @@
 <div ng-include="'/static/templates/alerts.html'"/>
 
-<div ng-show="vm.account">
-    <div class="row">
+<div ng-if="vm.account != null" class="well">
+    <div class="row"> 
         <div class="col-md-6">
-            <spam class="h2">{{ vm.account.persona_name }}</spam>
-            <img ng-src="{{ vm.account.url_avatar }}">
+            <img ng-src="{{ vm.account.current_update.url_avatar_full }}">
+            <spam class="h3">{{ vm.account.current_update.persona_name }}</spam>
         </div>
         <div class="col-md-6">
-            <div class="alert alert-dismissible alert-success" ng-show="vm.account.matches_download_required ">
-                The games are being downloaded automatically!
-                 <button type="button" class="close" data-dismiss="alert">×</button>
+            <div class="row">
+                <button ng-click="vm.downloadGames()" class="btn btn-inverse btn-raised col-md-4">Download games</button>
+                <div class="btn btn-success btn-raised col-md-8" ng-show="vm.account.matches_download_required ">
+                    ALREADY DOWNLOADING!
+                </div>
             </div>
-            <button ng-click="vm.downloadGames()" class="btn btn-inverse btn-raised">Download games</button>
+            
         </div>
     </div>
-
+    <br />
     <div class="row">
-        <div class="col-md-8">
-            <h4 ng-if="vm.matches.length">Matches</h4>
-
-            <div ng-repeat="match in vm.matches">
-                <div ng-repeat="player in match.radiant_team.concat(match.dire_team)"
-                     ng-if="player.player_account.account_id == vm.accountId"
-                        class="row">
-                    <div class="col-md-2">
-                        <img ng-src="{{ player.hero.url_small_portrait }}">
+        <div class="col-md-6">
+        <div class="panel-heading text-align-center">MATCHES</div>
+            <div class="list-group panel panel-inverse">
+                
+                <div class="panel-heading list-group-item">
+                    <div class="row-picture">
+                        <div class="blank-circle" />
                     </div>
-                    <div class="col-md-3">
-                        <a ng-href="matches/{{ match.match_id }}">
-                            {{ player.hero.localized_name }}
-                        </a><br />
-                        <spam class="h6">{{ match.game_mode }}</spam>
-
-                    </div>
-                    <div class="col-md-2">
-                        {{ player.kills + '/' + player.deaths + '/' + player.assists }}
-                    </div>
-                    <div class="col-md-2 text-align-center">
-                        <div ng-show="player.leaver_status.id < 2">
-                            <span ng-if="match.match_won" class="label label-success">Victory</span>
-                            <span ng-if="!match.match_won" class="label label-danger">Loss</span>
+                    <div class="row-content">
+                        <div class="col-md-12">
+                            <div class="list-group-item-heading row">
+                                <div class="col-md-7">
+                                    <span style="color: white">Hero name</span>
+                                </div>
+                                <div class="col-md-5 text-align-center">
+                                    <span style="font-size: 12px" class="label label-default">Result</span>
+                                </div>
+                            </div>
+                            <div class="list-group-item-text row">
+                                <div class="col-md-3 text-align-center">
+                                    <span>K/D/A</span>
+                                </div>
+                                <div class="col-md-4 text-align-center">
+                                    <span class="h6">Game mode</span>
+                                </div>
+                                <div class="col-md-5 text-align-center">
+                                    <span class="h6">Lobby type</span>
+                                </div>
+                            </div>
                         </div>
-                        <span ng-show="player.leaver_status.id >= 2" class="label label-warning">
-                            {{ player.leaver_status.name }}
-                        </span>
+                    </div>
+                </div>
+                <div ng-if="vm.matches == null" class="list-group-item text-align-center row">
+                    <img src="/static/img/ajax-loader.gif" class="loading">
+                </div>
+                <div ng-if="vm.matches != null" ng-repeat="match in vm.matches" ng-class-odd="'stripped'"  >
+                    <div ng-init="player = match.radiant_team.concat(match.dire_team)[0]" class="list-group-item">
+                        <div class="row-picture ">
+                            <img ng-src="{{ player.hero.url_vertical_portrait }}" class="circle">
+                        </div>
+                        <div class="row-content">
+                            <div class="col-md-12">
+                                <div class="list-group-item-heading row">
+                                    <div class="col-md-7 ">
+                                        <a ng-href="matches/{{ match.match_id }}">
+                                            {{ player.hero.localized_name }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-5 text-align-center">
+                                        <span ng-show="player.leaver_status.id < 2">
+                                            <span style="font-size: 12px" ng-if="match.match_won" class="label label-success">Victory</span>
+                                            <span style="font-size: 12px" ng-if="!match.match_won" class="label label-danger">Loss</span>
+                                        </span>
+                                        <span style="font-size: 12px" ng-show="player.leaver_status.id >= 2" class="label label-warning">
+                                            {{ player.leaver_status.name }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-text row">
+                                    <div class="col-md-3 text-align-center">
+                                        <span>{{ player.kills + '/' + player.deaths + '/' + player.assists }}</span>
+                                    </div>
+                                    <div class="col-md-4 text-align-center">
+                                        <span class="h6">{{ match.game_mode }}</span>
+                                    </div>
+                                    <div class="col-md-5 text-align-center">
+                                        <span class="h6">{{ match.lobby_type }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="col-md-6">
+            <div class="panel-heading text-align-center">FRIENDS</div>
+            <div class="list-group panel panel-inverse">
+                <div class="panel-heading list-group-item">
+                    <div class="row-picture">
+                        <div class="blank-circle" />
+                    </div>
+                    <div class="row-content">
+                        <div class="col-md-12">
+                            <div class="list-group-item-heading row">
+                                <div class="col-md-7">
+                                    <span style="color: white">Friend</span>
+                                </div>
+                                <div class="col-md-5 text-align-center">
+                                    <span style="color: white">#</span>
+                                </div>
+                            </div>
+                            <div class="list-group-item-text row">
+                                <div class="col-md-12">
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="col-md-4 friends-matches">
-            <table class="table">
-                <thead>
-                <tr>
-                    <td>Friend</td>
-                    <td>Matches</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="f in vm.account.friends">
-                    <td>
-                        <img ng-src="{{ f.url_avatar }}">
-                        <a href="profiles/{{ f.account_id }}">{{ f.persona_name }}</a>
-                    </td>
-                    <td>
-                        <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
+                <div ng-if="vm.friends != null" ng-repeat="f in vm.friends" ng-class-odd="'stripped'">
+                    <div class="list-group-item">
+                        <div class="row-picture">
+                            <img ng-src="{{ f.current_update.url_avatar_full }}" class="circle">
+                        </div>
+                        <div class="row-content">
+                            <div class="col-md-12">
+                                <div class="list-group-item-heading row">
+                                    <div class="col-md-7">
+                                        <a href="profiles/{{ f.account_id }}">{{ f.current_update.persona_name }}</a>    
+                                    </div> 
+                                    <div class="col-md-5 text-align-center">
+                                        <a href="friends/{{ vm.account.account_id + ',' + f.account_id }}">{{ f.qtd }}</a>  
+                                    </div>
+                                </div>
+                                <div class="list-group-item-text row">
+                                    <div class="col-md-12">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="vm.friends == null" class="list-group-item text-align-center">
+                    <img src="/static/img/ajax-loader.gif">
+                </div>
+            </div>
+            
         </div>
     </div>
 
@@ -96,4 +174,3 @@
         </div>
     </div>
 </div>
-

@@ -5,14 +5,16 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch'];
+    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch', 'Root'];
 
-    function ProfileController($rootScope, $routeParams, Profile, DetailMatch) {
+    function ProfileController($rootScope, $routeParams, Profile, DetailMatch, Root) {
         var vm = this;
         vm.accountId = $routeParams.accountId;
         vm.currentDetailMatchesPage = 1;
         vm.downloadGames = downloadGames;
-        vm.matches = [];
+        vm.matches = null;
+        vm.account = null;
+        vm.friends = null;
         vm.reportsReceived = [];
         vm.reportsCreated = [];
 
@@ -21,6 +23,11 @@
         function active() {
             Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
+                Root.setTitle(vm.account.current_update.persona_name + ' - Profile - Dota Party')
+            });
+
+            Profile.getFriends(vm.accountId).then(function (result){
+               vm.friends = result.data.friends;
             });
 
             Profile.getReportsCreated(vm.accountId).then(function (result){
@@ -40,9 +47,6 @@
         }
 
         function downloadGames() {
-            //if (vm.account.matches_download_required)
-            //    return;
-
             Profile.downloadGames(vm.account.account_id).
                 success(function () {
                     vm.account.matches_download_required = true;

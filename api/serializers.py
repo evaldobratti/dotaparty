@@ -7,6 +7,7 @@ def account_serializer(account):
         'account_id': account.account_id,
         'steam_id': account.steam_id,
         'profile_url': account.profile_url,
+        'matches_download_required': account.matches_download_required,
         'current_update': {
             'persona_name': current_update.persona_name,
             'url_avatar': current_update.url_avatar,
@@ -18,6 +19,7 @@ def account_serializer(account):
 
 def item_serializer(item):
     return {
+        'localized_name': item.localized_name,
         'url_image': item.url_image
     }
 
@@ -49,12 +51,14 @@ def player_serializer(player):
         'player_account': player.player_account and {
             'account_id': player.player_account.account_id,
             'persona_name': player.player_account.current_update.persona_name,
-            'url_avatar': player.player_account.current_update.url_avatar
+            'url_avatar': player.player_account.current_update.url_avatar,
+            'url_avatar_full': player.player_account.current_update.url_avatar_full
         },
         'hero': {
             'url_large_portrait': player.hero.url_large_portrait,
             'url_small_portrait': player.hero.url_small_portrait,
             'url_full_portrait': player.hero.url_full_portrait,
+            'url_vertical_portrait': player.hero.url_vertical_portrait,
             'localized_name': player.hero.localized_name
         },
         'leaver_status': {

@@ -1,6 +1,6 @@
 .detail-match-item {
-    width: 30px;
-    float: left;
+    width: 32px;
+    padding-left: 1px;
 }
 
 .detail-match-hero {
@@ -78,4 +78,224 @@ html, body {
         padding-left: 20px;
         padding-right: 20px;
     }
+}
+
+.fundo-cinza {
+    background-color: #EEE;
+}
+
+.row-content {
+    min-height: initial !important;
+}
+
+.stripped {
+    background-color: rgb(238,238,238);
+}
+
+.blank-circle {
+    width: 56px; 
+    height: 56px; 
+    background-color: white; 
+    border-radius: 100%;
+    margin-top: 3px
+}
+
+.loading {
+    margin: 5px;
+}
+
+.detail-match-item {
+    width: 32px;
+    padding-left: 1px;
+}
+
+.detail-match-hero {
+    width: 40px;
+}
+
+.detail-match-profile-img {
+    width: 30px;
+    float: right;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.color-green {
+    color: #007020;
+}
+
+.color-red {
+    color: #990000;
+}
+
+.color-blue {
+    color: #002070;
+}
+
+.friends-matches {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+a, a:hover, a:focus {
+    color: #3F51B5;
+}
+
+#loading-bar .bar {
+    background-color: #3F51B5;
+}
+
+#snackbar-container {
+    top: 65px;
+    right: 0;
+}
+
+.btn {
+    margin: 0px;
+}
+
+
+/*http://getbootstrap.com/2.3.2/examples/sticky-footer-navbar.html*/
+html, body {
+    height: 100%;
+}
+
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -60px;
+}
+
+#push, #footer {
+    height: 60px;
+}
+
+#footer {
+    background-color: #f5f5f5;
+}
+
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.fundo-cinza {
+    background-color: #EEE;
+}
+
+.row-content {
+    min-height: initial !important;
+}
+
+.stripped {
+    background-color: rgb(238,238,238);
+}
+
+.blank-circle {
+    width: 56px;
+    height: 56px;
+    background-color: white;
+    border-radius: 100%;
+    margin-top: 3px
+}
+
+.loading {
+    margin: 5px;
+}
+
+.detail-match {
+    display: table;
+}
+
+.detail-match .panel-body {
+   display: table;
+   padding: 0;
+}
+
+.detail-match .detail-match-row {
+    display: table-row;
+    min-height: 35px;
+    width: 100%;
+    padding: 0;
+    padding-top: 6px;
+}
+
+.detail-match .panel-heading{
+    display: flex;
+    padding-left: 0px;
+}
+
+.detail-match .panel-heading,.panel-body div {
+    float: left;
+}
+
+.detail-match .info {
+    background-color: #d9edf7;
+}
+
+.detail-match .col-hero {
+    min-width: 61px;
+}
+
+.detail-match .col-player {
+    min-width: 183px;
+}
+
+.detail-match .col-lvl {
+    min-width: 45px;
+}
+
+.detail-match .col-kda {
+    min-width: 80px;
+}
+
+.detail-match .col-lhdn {
+    min-width: 75px;
+}
+
+.detail-match .col-gpm {
+    min-width: 45px;
+}
+
+.detail-match .col-xpm {
+    min-width: 45px;
+}
+
+.detail-match .col-gold {
+    min-width: 40px;
+}
+
+.detail-match .col-td {
+    min-width: 40px;
+}
+
+.detail-match .col-hd {
+    min-width: 40px;
+}
+
+.detail-match .col-hh {
+    min-width: 40px;
+}
+
+.detail-match .col-items {
+    min-width: 212px;
+}
+
+.detail-match .col-action {
+    min-width: 112px;
+}
+
+.detail-match .col-radio {
+    min-width: 29px;
+}
+
+.detail-match .col-matches {
+    min-width: 30px;
 }

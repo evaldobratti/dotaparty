@@ -10,6 +10,7 @@
     function Profile($http) {
         var Profile = {
             get: get,
+            getFriends: getFriends,
             getPlayersMatches: getPlayersMatches,
             downloadGames: downloadGames,
             getReportsCreated: getReportsCreated,
@@ -20,6 +21,15 @@
 
         function get(accountId) {
             return $http.get('/api/profiles/' + accountId);
+        }
+
+        function getFriends(accountId, others) {
+            var othersPar = '';
+            if (others != undefined || others != null) {
+                othersPar = '?others=' + others.join(',');
+            }
+
+            return $http.get('/api/profiles/' + accountId + '/friends' + othersPar);
         }
 
         function getPlayersMatches(accountId, others) {

@@ -5,15 +5,16 @@
         .module('dotaparty.home.controllers')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$location', 'Home', '$rootScope'];
+    HomeController.$inject = ['$location', 'Home', '$rootScope', 'Root'];
 
-    function HomeController($location, Home, $rootScope) {
+    function HomeController($location, Home, $rootScope, Root) {
         var vm = this;
         vm.searchTxt = $location.search().q;
         vm.find = find;
         $rootScope.query = vm.searchTxt ;
         vm.buscaFeita = false;
         vm.setSearch = setSearch;
+        Root.setTitle('Dota Party');
 
         active();
 

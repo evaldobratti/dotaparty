@@ -10,10 +10,11 @@ from django.contrib import auth
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from community import models as cm
-from profile import community_serializers
 import serializers
 import datetime
 from core import parameters
+from core import utils
+
 
 @transaction.atomic()
 def get_details_match(request, match_id):
@@ -22,17 +23,28 @@ def get_details_match(request, match_id):
 
 
 def get_profile(request, account_id):
-    others = request.GET.get('others') and request.GET.get('others').split(',') or []
-    return JsonResponse(community_serializers.profile_serializer(account_id, others))
-
-
-def get_account(request, account_id):
     account = utils.get_account(account_id)
-    return JsonResponse({
-        'persona_name': account.current_update.persona_name,
-        'url_avatar': account.current_update.url_avatar,
-        'account_id': account.account_id
-    })
+    serialized = serializers.account_serializer(account)
+
+    return JsonResponse(serialized)
+
+
+def get_friends(request, account_id):
+    account = utils.get_account(account_id)
+    others = request.GET.get('others') and request.GET.get('others').split(',') or []
+
+    friends = utils.get_friends_number_matches(account, others)
+    
+    serialized = []
+
+    if friends:
+        for f in friends:
+            friend = serializers.account_serializer(f)
+            friend['qtd'] = f.qtd
+
+            serialized.append(friend)
+
+    return JsonResponse({'friends': serialized})
 
 
 def get_accounts_matches(request, comma_accounts_ids):
@@ -102,28 +114,6 @@ def new_report(request):
         }, status=400)
 
     return HttpResponse()
-
-
-def get_reports_received(request, account_id):
-    logged_user = request.user.account if request.user.is_authenticated() else None
-    elements_per_page = request.GET['elements_per_page']
-    page = request.GET['page']
-
-    view = community_serializers.ReportsView(account_id, logged_user, elements_per_page, page)
-
-    reports = view.get_reports_received()
-    return JsonResponse(reports)
-
-
-def get_reports_created(request, account_id):
-    logged_user = request.user.account if request.user.is_authenticated() else None
-    elements_per_page = request.GET['elements_per_page']
-    page = request.GET['page']
-
-    view = community_serializers.ReportsView(account_id, logged_user, elements_per_page, page)
-
-    reports = view.get_reports_created()
-    return JsonResponse(reports)
 
 
 def get_authenticated_user(request):

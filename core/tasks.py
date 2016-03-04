@@ -32,14 +32,14 @@ def _download_games(account):
                                                   start_at_match_id=last_match_id,
                                                   hero_id=hero.hero_id)
                 log.info("acc: {} hero: {} results remaining: {}".format(account.account_id, hero.localized_name,
-                                                                         matches.results_remaining))
+                                                                         matches['results_remaining']))
 
-                for match in matches.matches:
-                    schedule_download_match(match.match_id, True)
+                for match in matches['matches']:
+                    schedule_download_match(match['match_id'], True)
 
-                    last_match_id = match.match_id
+                    last_match_id = match['match_id']
 
-                if matches.results_remaining <= 0:
+                if matches['results_remaining'] <= 0:
                     last_match_id = None
                     log.info("acc: {} finished parsing hero {}".format(account.account_id, hero.localized_name))
                     if hero.localized_name.lower().startswith('z'):

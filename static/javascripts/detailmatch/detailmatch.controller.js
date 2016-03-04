@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('DetailMatchController', DetailMatchController);
 
-    DetailMatchController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'ngDialog', 'Authentication'];
+    DetailMatchController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'ngDialog', 'Authentication', 'Root'];
 
-    function DetailMatchController($routeParams, DetailMatch, Profile, ngDialog, Authentication) {
+    function DetailMatchController($routeParams, DetailMatch, Profile, ngDialog, Authentication, Root) {
         var vm = this;
         vm.friendsMatches = friendsMatches;
         vm.report = report;
@@ -17,6 +17,7 @@
         vm.authenticated = false;
         vm.authenticatedAccount = null;
         vm.enableReportPlayer = enableReportPlayer;
+        Root.setTitle('Match ' + $routeParams.matchId + ' - Dota Party');
 
         active();
 
@@ -39,7 +40,7 @@
             if (vm.played_with[player.player_account.account_id.toString()] != undefined) {
                 loadPlayedWithForPlayerFrom(player, vm.played_with[player.player_account.account_id.toString()]);
             } else {
-                Profile.getPlayersMatches(player.player_account.account_id, othersRealPlayers(player)).then(function (result) {
+                Profile.getFriends(player.player_account.account_id, othersRealPlayers(player)).then(function (result) {
                     loadPlayedWithForPlayerFrom(player, result.data);
                 });
             }
