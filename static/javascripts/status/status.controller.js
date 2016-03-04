@@ -5,13 +5,14 @@
         .module('dotaparty.status.controllers')
         .controller('StatusController', StatusController);
 
-    StatusController.$inject = ['$location', 'Status'];
+    StatusController.$inject = ['$location', 'Status', 'Root'];
 
-    function StatusController($location, Status) {
+    function StatusController($location, Status, Root) {
         var vm = this;
         vm.searchTxt = '';
         vm.find = find;
         vm.statistics = null;
+        Root.setTitle("Status - Dota Party");
         active();
 
         function active() {

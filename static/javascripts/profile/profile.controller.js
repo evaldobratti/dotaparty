@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch'];
+    ProfileController.$inject = ['$rootScope', '$routeParams', 'Profile', 'DetailMatch', 'Root'];
 
-    function ProfileController($rootScope, $routeParams, Profile, DetailMatch) {
+    function ProfileController($rootScope, $routeParams, Profile, DetailMatch, Root) {
         var vm = this;
         vm.accountId = $routeParams.accountId;
         vm.currentDetailMatchesPage = 1;
@@ -23,6 +23,7 @@
         function active() {
             Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
+                Root.setTitle(vm.account.current_update.persona_name + ' - Profile - Dota Party')
             });
 
             Profile.getFriends(vm.accountId).then(function (result){

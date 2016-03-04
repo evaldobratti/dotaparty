@@ -5,9 +5,9 @@
         .module('dotaparty.friends.controllers')
         .controller('FriendsController', FriendsController);
 
-    FriendsController.$inject = ['$routeParams', 'DetailMatch', 'Profile'];
+    FriendsController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'Root'];
 
-    function FriendsController($routeParams, DetailMatch, Profile) {
+    function FriendsController($routeParams, DetailMatch, Profile, Root) {
         var vm = this;
         vm.accountsIds = $routeParams.accountIds.split(",").filter(function (e) {
             return e.length > 3;
@@ -28,8 +28,18 @@
         function active() {
 
             vm.accountsIds.forEach(function (accId) {
+
                 Profile.get(accId).then(function (data) {
                     vm.accounts.push(data.data);
+                    var nicks = '';
+                    vm.accounts.forEach(function(acc) {
+                        if (nicks.length == 0)
+                            nicks += acc.current_update.persona_name;
+                        else
+                            nicks += '/' + acc.current_update.persona_name;
+                    });
+                    Root.setTitle(nicks + ' - Matches - Dota Party')
+
                 });
             });
         }
