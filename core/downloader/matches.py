@@ -31,7 +31,7 @@ class DownloaderGamesBySeqNum(object):
     def __download_match_if_interested(self, match):
         get_logger().info("analysing match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
 
-        if [p for p in match['players'] if p['account_id'] in INTERESTED_ACCOUNTS_IDS.value()]:
+        if [p for p in match['players'] if p.get('account_id', -1) in INTERESTED_ACCOUNTS_IDS.value()]:
             get_logger().info("will download match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
             tasks.schedule_download_match(match['match_id'], False)
 
