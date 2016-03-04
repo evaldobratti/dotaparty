@@ -12,7 +12,7 @@ def _define_if_skill(match, hero, skill_lvl):
                                     matches_requested=1,
                                     hero_id=hero.hero_id)
 
-    if skill.matches and skill.matches[0].match_id == match.match_id:
+    if skill['matches'] and skill['matches'][0]['match_id'] == match.match_id:
         log.info("match: {} IS skill: {}".format(match.match_id, skill_lvl))
         match.skill = skill_lvl
         match.save()
