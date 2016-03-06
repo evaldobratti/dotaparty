@@ -27,6 +27,9 @@ class DownloaderGamesBySeqNum(object):
             except Exception, e:
                 print e
                 get_logger().exception(e)
+                if e.message == 'Error retrieving match data.' or \
+                        (hasattr(e, 'msg') and e.msg == 'Error retrieving match data.'):
+                    LAST_MATCH_SEQ_NUM.set_value(long(last_match_seq_num) + 1)
 
     def __download_match_if_interested(self, match):
         get_logger().info("analysing match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
