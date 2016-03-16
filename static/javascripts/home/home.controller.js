@@ -31,7 +31,6 @@
                 if (vm.matches.length == 1) {
                     $location.path('/matches/' + vm.matches[0].match_id, {});
                     $location.search({});
-                    $location.replace();
                 }
                 vm.buscaFeita = true;
             });
@@ -42,7 +41,6 @@
             $location.search({
                 q: $rootScope.query
             });
-            $location.replace();
         }
     }
 })();

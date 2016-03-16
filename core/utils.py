@@ -186,7 +186,7 @@ def get_friends_number_matches(account, compared_to=[]):
     if not len(compared_to):
         query += 'HAVING count(*) > 1 '
 
-    query += 'ORDER BY count(*) DESC LIMIT 12 '
+    query += 'ORDER BY count(*) DESC LIMIT 10 '
     raw = Account.objects.raw(
         query
     )

@@ -15,7 +15,8 @@
         }).when('/profiles/:accountId', {
             controller: 'ProfileController',
             controllerAs: 'vm',
-            templateUrl: 'static/templates/profile.html'
+            templateUrl: 'static/templates/profile.html',
+            reloadOnSearch: false
         }).when('/friends/:accountIds', {
             controller: 'FriendsController',
             controllerAs: 'vm',
