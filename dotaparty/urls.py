@@ -19,6 +19,8 @@ urlpatterns = [
     url('^api/profiles/(?P<account_id>[0-9]+)/download$', views.download_games),
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/created$', reports.ReportsCreated.as_view()),
     url('^api/profiles/(?P<account_id>[0-9]+)/reports/received$', reports.ReportsReceived.as_view()),
+    url('^api/profiles/(?P<account_id>[0-9]+)/is_available_to_download$', views.is_available_to_download),
+
 
     url('^api/find$', views.find),
     url('^api/logout/$', views.logout),

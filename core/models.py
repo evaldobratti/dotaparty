@@ -150,6 +150,17 @@ class DetailMatch(models.Model):
     game_mode = models.ForeignKey(GameMode)
     skill = models.PositiveIntegerField(null=True, choices=SKILL_LEVEL_CHOICE)
 
+    @classmethod
+    def with_related(cls):
+        query = cls.objects.all()
+        query = query.select_related("cluster")
+        query = query.select_related("lobby_type")
+        query = query.select_related("game_mode")
+        query = query.prefetch_related("players__player_account__current_update")
+        query = query.prefetch_related("players__abilities")
+        query = query.prefetch_related("players__items")
+        return query
+
     def radiant_team(self):
         return self.players.filter(player_slot__lt=10).order_by('player_slot')
 

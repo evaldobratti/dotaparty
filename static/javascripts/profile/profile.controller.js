@@ -21,6 +21,8 @@
         vm.reportsReceived = [];
         vm.reportsCreated = [];
         vm.matchesCache = {};
+        vm.availableToDownload = null;
+        vm.availableToDownloadMessage = null;
 
         vm.matchesPaginationIndexes = [1, 2, 3];
 
@@ -44,6 +46,12 @@
                vm.reportsReceived = result.data;
             });
 
+            Profile.isAvailableToDownload(vm.accountId).then(function(result) {
+                vm.availableToDownload = true
+            }, function (error) {
+                vm.availableToDownload = false;
+                vm.availableToDownloadMessage = error.data.error;
+            });
             loadMatchesPage(vm.currentDetailMatchesPage);
             
         }

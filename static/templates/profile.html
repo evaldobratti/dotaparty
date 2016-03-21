@@ -13,6 +13,14 @@
                     ALREADY DOWNLOADING!
                 </div>
             </div>
+            <div class="row" ng-if="vm.availableToDownload != null">
+                <!--span ng-if="vm.availableToDownload" class="h5 color-green">
+                    This profile is public, matches can be downloaded
+                </span-->
+                <span ng-if="!vm.availableToDownload" class="h5 color-red">
+                    This profile is private. {{ vm.availableToDownloadMessage }}
+                </span>
+            </div>
             
         </div>
     </div>
@@ -21,12 +29,12 @@
         <div class="col-md-6">
             <div class=" panel-heading text-align-center">
                 MATCHES
-                <a href="#" class="btn btn-sm btn-raised btn-inverse" data-toggle="collapse" data-target="#filter">Filter</a>
+                <!--a href="#" class="btn btn-sm btn-raised btn-inverse" data-toggle="collapse" data-target="#filter">Filter</a-->
             </div>
-            <div id="filter" class="collapse">
+            <!--div id="filter" class="collapse">
                 bla bla bla<br>
                 blablabla
-            </div>
+            </div-->
             <div class="list-group panel panel-inverse">
                 
                 <div class="panel-heading list-group-item">

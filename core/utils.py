@@ -2,7 +2,7 @@ from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
 from core import d2api
-
+from dota2api import exceptions
 PRIVATE_PROFILE_ACCOUNT_ID = 4294967295
 
 
@@ -263,3 +263,11 @@ def update_heroes():
                                        url_large_portrait=hero_response['url_large_portrait'],
                                        url_full_portrait=hero_response['url_full_portrait'],
                                        url_vertical_portrait=hero_response['url_vertical_portrait'])
+
+
+def is_public_account(account_id):
+    try:
+        d2api.get_match_history(account_id)
+        return (True,'')
+    except exceptions.APIError as e:
+        return (False, e.msg)

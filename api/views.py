@@ -64,10 +64,11 @@ def get_accounts_matches(request, comma_accounts_ids):
 
 
 def download_games(request, account_id):
+    if not utils.is_public_account(account_id)[0]:
+        return
+
     account = Account.objects.get(account_id=int(account_id))
     tasks.download_games(account)
-    account.matches_download_required = True
-    account.save()
 
     return HttpResponse()
 
@@ -145,8 +146,8 @@ def get_statistics(request):
 
     return JsonResponse({
         'total': {
-            'matches': len(DetailMatch.objects.all()),
-            'players': len(Account.objects.all()),
+            'matches': DetailMatch.objects.count(),
+            'players': Account.objects.count(),
             'tracked': len(parameters.INTERESTED_ACCOUNTS_IDS.value())
         },
         'last_hour': {
@@ -156,3 +157,13 @@ def get_statistics(request):
         'lasts_matches': last_matches
 
     })
+
+
+def is_available_to_download(request, account_id):
+    enabled, error = utils.is_public_account(account_id)
+    if enabled:
+        return JsonResponse({})
+    else:
+        return JsonResponse({
+            'error': error
+        }, status=400, reason=error)
