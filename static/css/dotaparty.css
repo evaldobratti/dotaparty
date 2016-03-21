@@ -299,3 +299,7 @@ html, body {
 .detail-match .col-matches {
     min-width: 30px;
 }
+
+.pagination {
+    margin: 6px 2px 2px 2px;
+}

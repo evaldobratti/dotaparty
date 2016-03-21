@@ -2,7 +2,7 @@ from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
 from core import d2api
-
+from dota2api import exceptions
 PRIVATE_PROFILE_ACCOUNT_ID = 4294967295
 
 
@@ -186,7 +186,7 @@ def get_friends_number_matches(account, compared_to=[]):
     if not len(compared_to):
         query += 'HAVING count(*) > 1 '
 
-    query += 'ORDER BY count(*) DESC LIMIT 12 '
+    query += 'ORDER BY count(*) DESC LIMIT 10 '
     raw = Account.objects.raw(
         query
     )
@@ -263,3 +263,11 @@ def update_heroes():
                                        url_large_portrait=hero_response['url_large_portrait'],
                                        url_full_portrait=hero_response['url_full_portrait'],
                                        url_vertical_portrait=hero_response['url_vertical_portrait'])
+
+
+def is_public_account(account_id):
+    try:
+        d2api.get_match_history(account_id)
+        return (True,'')
+    except exceptions.APIError as e:
+        return (False, e.msg)

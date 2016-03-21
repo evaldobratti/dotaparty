@@ -1,11 +1,12 @@
 import dota2api
 import logging
 from dotaparty import secret
+from dota2api import exceptions
 
 __d2api = dota2api.Initialise(secret.D2_API_KEY)
 logger = logging.getLogger('valveapi')
 
-MAX_RETRIES = 200
+MAX_RETRIES = 100
 
 
 def check_tries(tries, exception):
@@ -23,9 +24,12 @@ def get_until_success(get_function):
             tries += 1
             return get_function()
         except ValueError as e:
-            logger.info('Time out on api, sleeping 1 extra second')
-            time.sleep(1)
+            logger.info('Time out on api, sleeping some extra seconds')
+            time.sleep(5)
             check_tries(tries, e)
+        except exceptions.APIError as e:
+            if 'Cannot get match history' in e.msg:
+                raise e
         except Exception as e:
             logger.exception(e)
             check_tries(tries, e)

@@ -17,9 +17,9 @@ def download_games(account_id):
 def _download_games(account):
     log.info("requiring download de " + str(account.account_id))
     account = models.Account.objects.get(account_id=int(account.account_id))
-    # if account.matches_download_required:
-    #     log.info("all matches already downloaded " + str(account.account_id))
-    #     return
+    if account.matches_download_required:
+        log.info("all matches already downloaded " + str(account.account_id))
+        return
 
     last_match_id = None
     heroes = models.Hero.objects.all().order_by('localized_name')
@@ -44,6 +44,8 @@ def _download_games(account):
                     log.info("acc: {} finished parsing hero {}".format(account.account_id, hero.localized_name))
                     if hero.localized_name.lower().startswith('z'):
                         log.info("acc: {} finished parsing ALL".format(account.account_id))
+                        account.matches_download_required = True
+                        account.save()
                         return
 
             except Exception, e:

@@ -13,13 +13,28 @@
                     ALREADY DOWNLOADING!
                 </div>
             </div>
+            <div class="row" ng-if="vm.availableToDownload != null">
+                <!--span ng-if="vm.availableToDownload" class="h5 color-green">
+                    This profile is public, matches can be downloaded
+                </span-->
+                <span ng-if="!vm.availableToDownload" class="h5 color-red">
+                    This profile is private. {{ vm.availableToDownloadMessage }}
+                </span>
+            </div>
             
         </div>
     </div>
     <br />
     <div class="row">
         <div class="col-md-6">
-        <div class="panel-heading text-align-center">MATCHES</div>
+            <div class=" panel-heading text-align-center">
+                MATCHES
+                <!--a href="#" class="btn btn-sm btn-raised btn-inverse" data-toggle="collapse" data-target="#filter">Filter</a-->
+            </div>
+            <!--div id="filter" class="collapse">
+                bla bla bla<br>
+                blablabla
+            </div-->
             <div class="list-group panel panel-inverse">
                 
                 <div class="panel-heading list-group-item">
@@ -91,6 +106,60 @@
                         </div>
                     </div>
                 </div>
+                <div>
+                    <div class="text-center stripped">
+                        <ul class="pagination pagination-sm">
+                            <li ng-class="{'disabled': (1 == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)"
+                                    ng-click="1 != vm.currentDetailMatchesPage && vm.loadMatchesPage(vm.currentDetailMatchesPage - 1)">
+                                    «
+                                </a>
+                            </li>
+                            <li ng-class="{'active': (vm.matchesPaginationIndexes[0] == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)" 
+                                ng-if="vm.matchesPaginationIndexes.length >= 1" 
+                                ng-click="vm.loadMatchesPage(vm.matchesPaginationIndexes[0])">
+                                   {{vm.matchesPaginationIndexes[0]}}
+                                </a>
+                            </li>
+                            <li ng-class="{'active': (vm.matchesPaginationIndexes[1] == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)" 
+                                ng-if="vm.matchesPaginationIndexes.length >= 2" 
+                                ng-click="vm.loadMatchesPage(vm.matchesPaginationIndexes[1])">
+                                   {{vm.matchesPaginationIndexes[1]}}
+                                </a>
+                            </li>
+                            <li ng-class="{'active': (vm.matchesPaginationIndexes[2] == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)" 
+                                ng-if="vm.matchesPaginationIndexes.length >= 3" 
+                                ng-click="vm.loadMatchesPage(vm.matchesPaginationIndexes[2])">
+                                    {{vm.matchesPaginationIndexes[2]}}
+                                </a>
+                            </li>
+                            <li ng-class="{'active': (vm.matchesPaginationIndexes[3] == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)" 
+                                ng-if="vm.matchesPaginationIndexes.length >= 4" 
+                                ng-click="vm.loadMatchesPage(vm.matchesPaginationIndexes[3])">
+                                    {{vm.matchesPaginationIndexes[3]}}
+                                </a>
+                            </li>
+                            <li ng-class="{'active': (vm.matchesPaginationIndexes[4] == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)" 
+                                ng-if="vm.matchesPaginationIndexes.length >= 5" 
+                                ng-click="vm.loadMatchesPage(vm.matchesPaginationIndexes[4])">
+                                    {{vm.matchesPaginationIndexes[4]}}
+                                </a>
+                            </li>
+                            <li ng-class="{'disabled': (vm.totalMatchesPages == vm.currentDetailMatchesPage)}">
+                                <a href="javascript:void(0)"
+                                    ng-click="vm.totalMatchesPages != vm.currentDetailMatchesPage && vm.loadMatchesPage(vm.currentDetailMatchesPage + 1)">
+                                    »
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -146,6 +215,17 @@
                 </div>
                 <div ng-if="vm.friends == null" class="list-group-item text-align-center">
                     <img src="/static/img/ajax-loader.gif">
+                </div>
+                <div>
+                    <div class="text-center stripped">
+                        <ul class="pagination pagination-sm">
+                            <li>
+                                <a>
+                                    No pagination here yet :(
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             

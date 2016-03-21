@@ -14,7 +14,8 @@
             getPlayersMatches: getPlayersMatches,
             downloadGames: downloadGames,
             getReportsCreated: getReportsCreated,
-            getReportsReceived: getReportsReceived
+            getReportsReceived: getReportsReceived,
+            isAvailableToDownload: isAvailableToDownload
         };
 
         return Profile;
@@ -52,6 +53,10 @@
             var p = page == undefined ? 1 : elements_per_page;
 
             return $http.get('/api/profiles/' + accountId + '/reports/received?elements_per_page='+e+'&page='+p);
+        }
+
+        function isAvailableToDownload(accountId) {
+            return $http.get('/api/profiles/' + accountId + '/is_available_to_download');
         }
     }
 })();

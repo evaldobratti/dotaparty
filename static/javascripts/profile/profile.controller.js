@@ -10,13 +10,21 @@
     function ProfileController($rootScope, $routeParams, Profile, DetailMatch, Root) {
         var vm = this;
         vm.accountId = $routeParams.accountId;
-        vm.currentDetailMatchesPage = 1;
+
+        vm.currentDetailMatchesPage = Root.search().matchPage == undefined ? 1 : Root.search().matchPage;
+        vm.totalMatchesPages = -1;
         vm.downloadGames = downloadGames;
+        vm.loadMatchesPage = loadMatchesPage;
         vm.matches = null;
         vm.account = null;
         vm.friends = null;
         vm.reportsReceived = [];
         vm.reportsCreated = [];
+        vm.matchesCache = {};
+        vm.availableToDownload = null;
+        vm.availableToDownloadMessage = null;
+
+        vm.matchesPaginationIndexes = [1, 2, 3];
 
         active();
 
@@ -38,12 +46,53 @@
                vm.reportsReceived = result.data;
             });
 
-            DetailMatch.getMatchesByAccountsIds(vm.accountId, vm.currentDetailMatchesPage).then(function (data) {
-                vm.currentDetailMatchesPage += 1;
-                vm.matches = data.data.results;
-
-                determineVictoryOrLoss(vm.matches);
+            Profile.isAvailableToDownload(vm.accountId).then(function(result) {
+                vm.availableToDownload = true
+            }, function (error) {
+                vm.availableToDownload = false;
+                vm.availableToDownloadMessage = error.data.error;
             });
+            loadMatchesPage(vm.currentDetailMatchesPage);
+            
+        }
+
+        function loadMatchesPage(page) {
+            if (vm.matchesCache['m' + page] != undefined) {
+                 loadMatches(vm.matchesCache['m' + page], page, vm.totalMatchesPages);
+            } else {   
+                DetailMatch.getMatchesByAccountsIds(vm.accountId, page).then(function (data) {
+                    loadMatches(data.data.results, page, data.data.total);
+                    determineVictoryOrLoss(vm.matches);
+                });
+            }
+        }
+
+        function loadMatches(matches, page, totalPages)  {
+            vm.matches = matches;
+            vm.currentDetailMatchesPage = page;
+            vm.matchesCache['m' + page] = matches;
+ 
+            if (page == 1){
+                Root.setLocation({search:{}});
+            } else {
+                Root.setLocation({search:{'matchPage': page}});
+            }
+
+
+            updatePages(totalPages);
+            determineVictoryOrLoss(vm.matches);
+        }
+
+        function updatePages(pagesTotal) {
+            var bottomLimit = Math.max(1, vm.currentDetailMatchesPage - 2);
+            var topLimit = Math.min(pagesTotal, vm.currentDetailMatchesPage + 2);
+            vm.totalMatchesPages = pagesTotal;
+    
+            vm.matchesPaginationIndexes = [];
+            for (var i=bottomLimit; i <= topLimit; i++) {
+                vm.matchesPaginationIndexes.push(i);
+            }
+            
         }
 
         function downloadGames() {
