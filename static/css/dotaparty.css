@@ -303,3 +303,16 @@ html, body {
 .pagination {
     margin: 6px 2px 2px 2px;
 }
+
+.jumbotron img.circle {
+    width: 95px !important;
+    height: 95px !important;
+}
+
+.jumbotron p {
+    font-size: 11.9px;
+}
+
+.jumbotron .row-content {
+    width: calc(100% - 117px) !important;
+}
