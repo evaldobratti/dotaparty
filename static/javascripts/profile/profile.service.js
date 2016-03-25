@@ -41,11 +41,13 @@
             return $http.post("api/profiles/" + accountId + "/download");
         }
 
-        function getReportsCreated(accountId, elements_per_page, page) {
+        function getReportsCreated(accountId, elements_per_page, page, others) {
             var e = elements_per_page == undefined ? 4 : elements_per_page;
             var p = page == undefined ? 1 : elements_per_page;
+            var o = others == undefined ? '': others.join(',');
 
-            return $http.get('/api/profiles/' + accountId + '/reports/created?elements_per_page='+e+'&page='+p);
+            return $http.get('/api/profiles/' + accountId + '/reports/created?elements_per_page='+e+'&page='+p+'&others='+o);
+
         }
 
         function getReportsReceived(accountId, elements_per_page, page) {

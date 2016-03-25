@@ -2,6 +2,7 @@ from django.views.generic import View
 from django.http import JsonResponse
 from api.serializers import account_serializer
 from core import utils
+from core import models
 import time
 
 
@@ -66,8 +67,13 @@ class ReportsReceived(ReportsView):
 class ReportsCreated(ReportsView):
 
     def get(self, request):
+        others = request.GET.get('others', '')
+
         if self.own_profile:
-            reports_created = self.required_account.reports_created.all().order_by('-date_created')
+            reports_created = self.required_account.reports_created.all()
+            if others:
+                reports_created = reports_created.filter(reported__account_id__in=map(int, others.split(',')))
+            reports_created = reports_created.order_by('-date_created')
         else:
             reports_created = []
 
