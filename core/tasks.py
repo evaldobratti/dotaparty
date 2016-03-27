@@ -35,7 +35,7 @@ def _download_games(account):
                                                                          matches['results_remaining']))
 
                 for match in matches['matches']:
-                    schedule_download_match(match['match_id'], True)
+                    schedule_download_match(match['match_id'], False)
 
                     last_match_id = match['match_id']
 
@@ -52,6 +52,41 @@ def _download_games(account):
                 log.exception(e)
 
 
+def define_if_skill(match, hero_id, skill_lvl):
+    skill = d2api.get_match_history(None, start_at_match_id=match.match_id,
+                                    skill=skill_lvl,
+                                    matches_requested=5,
+                                    hero_id=hero_id)
+
+    if skill['matches']:
+        for m in skill['matches']:
+            if m['match_id'] == match.match_id:
+                log.info("match: {} IS skill: {}".format(match.match_id, skill_lvl))
+                match.skill = skill_lvl
+                match.save()
+                return True
+
+    log.info("match: {} is NOT skill: {}".format(match.match_id, skill_lvl))
+    return False
+
+
+@db_task()
+def schedule_determine_skill(match_id, player_index=0, skill=1):
+    match = models.DetailMatch.objects.get(match_id=match_id)
+
+    player = match.players.order_by('player_slot')[player_index]
+    log.info("match: {} will be ranked with {} {}".format(match.match_id, player.hero.localized_name, skill))
+    if not define_if_skill(match, player.hero.hero_id, skill):
+        if skill < 3:
+            schedule_determine_skill(match.match_id, player_index, skill + 1)
+        elif player_index < 9:
+            schedule_determine_skill(match.match_id, player_index + 1, 1)
+        else:
+            log.info("match: {} skill not determined".format(match.match_id))
+            match.skill = 4
+            match.save()
+
+
 @db_task(retries=3)
 def schedule_download_match(match_id, set_skill):
     download_match(match_id, set_skill)
@@ -66,8 +101,11 @@ def download_match(match_id, set_skill):
     else:
         with transaction.atomic():
             match = utils.get_details_match(match_id)
-            if set_skill:
-                match.skill = 4
-                match.save()
+
+        if set_skill:
+            schedule_determine_skill(match.match_id)
+        else:
+            match.skill = 4
+            match.save()
         log.info("parsed: {}".format(match.match_id))
         return match
