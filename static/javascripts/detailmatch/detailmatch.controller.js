@@ -40,6 +40,9 @@
                     othersRealPlayers(undefined)).then(function(result){
                     vm.reports = result.data.reports;
                 });
+            }, function(error) {
+                if (error.status == 404)
+                    Root.redirect404();
             });
         }
 
