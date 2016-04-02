@@ -14,12 +14,20 @@ import serializers
 import datetime
 from core import parameters
 from core import utils
+from dota2api import exceptions
 
 
 @transaction.atomic()
 def get_details_match(request, match_id):
-    match = utils.get_details_match(match_id)
-    return JsonResponse(serializers.detail_match_serializer(match))
+    '''try:
+        match = utils.get_details_match(match_id)
+        return JsonResponse(serializers.detail_match_serializer(match))
+    except exceptions.APIError as e:'''
+    return JsonResponse({
+        'message': 'No match was found',
+        'volvo_message': '',
+        'match_id': ''
+    }, status=404)
 
 
 def get_profile(request, account_id):

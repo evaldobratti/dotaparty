@@ -30,6 +30,8 @@ def get_until_success(get_function):
         except exceptions.APIError as e:
             if 'Cannot get match history' in e.msg:
                 raise e
+            if 'Practice matches' in e.msg:
+                raise e
         except Exception as e:
             logger.exception(e)
             check_tries(tries, e)
