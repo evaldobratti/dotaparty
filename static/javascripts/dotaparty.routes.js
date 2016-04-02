@@ -5,30 +5,41 @@
         .module('dotaparty.routes');
     app.config(config);
 
-    config.$inject = ['$routeProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider'];
 
-    function config($routeProvider) {
-        $routeProvider.when('/matches/:matchId', {
+    function config($stateProvider, $urlRouterProvider) {
+        $stateProvider.state('match ', {
+            url: '/matches/:matchId',
             controller: 'DetailMatchController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/detailmatch.html'
-        }).when('/profiles/:accountId', {
+        }).state('profile', {
+            url: '/profiles/:accountId',
             controller: 'ProfileController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/profile.html',
             reloadOnSearch: false
-        }).when('/friends/:accountIds', {
+        }).state('friends', {
+            url: '/friends/:accountIds',
             controller: 'FriendsController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/friends.html'
-        }).when('/', {
+        }).state('home', {
+            url: '/',
             controller: 'HomeController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/home.html'
-        }).when('/status', {
+        }).state('status', {
+            url: '/status',
             controller: 'StatusController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/status.html'
-        }).otherwise('/');
+        }).state('error', {
+            url: '/error',
+            template: '<div>afff</div>'
+        });
+
+        $urlRouterProvider.otherwise("/");
+
     }
 })();

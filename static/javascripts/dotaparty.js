@@ -22,7 +22,7 @@
             'ngDialog'
         ]);
 
-    angular.module('dotaparty.routes', ['ngRoute']);
+    angular.module('dotaparty.routes', ['ui.router']);
     angular.module('dotaparty.config', []);
     angular.module('dotaparty.filter', []);
 

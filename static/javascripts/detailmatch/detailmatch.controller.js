@@ -5,9 +5,9 @@
         .module('dotaparty.detailmatch.controllers')
         .controller('DetailMatchController', DetailMatchController);
 
-    DetailMatchController.$inject = ['$routeParams', 'DetailMatch', 'Profile', 'ngDialog', 'Authentication', 'Root'];
+    DetailMatchController.$inject = ['$stateParams', '$state', 'DetailMatch', 'Profile', 'ngDialog', 'Authentication', 'Root'];
 
-    function DetailMatchController($routeParams, DetailMatch, Profile, ngDialog, Authentication, Root) {
+    function DetailMatchController($stateParams, $state, DetailMatch, Profile, ngDialog, Authentication, Root) {
         var vm = this;
         vm.friendsMatches = friendsMatches;
         vm.report = report;
@@ -19,12 +19,12 @@
         vm.reports = [];
         vm.enableReportPlayer = enableReportPlayer;
         vm.isPlayerReported = isPlayerReported;
-        Root.setTitle('Match ' + $routeParams.matchId + ' - Dota Party');
+        Root.setTitle('Match ' + $stateParams.matchId + ' - Dota Party');
 
         active();
 
         function active() {
-            var matchId = $routeParams.matchId;
+            var matchId = $stateParams.matchId;
             vm.authenticatedAccount = Authentication.getAuthenticatedAccount();
             vm.isAuthenticated = Authentication.isAuthenticated();
             DetailMatch.get(matchId).then(function (result) {
@@ -40,6 +40,8 @@
                     othersRealPlayers(undefined)).then(function(result){
                     vm.reports = result.data.reports;
                 });
+            }, function(result) {
+                $state.go('error', {}, {location: false});
             });
         }
 
