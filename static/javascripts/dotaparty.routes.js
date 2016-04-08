@@ -29,6 +29,8 @@
             controller: 'StatusController',
             controllerAs: 'vm',
             templateUrl: 'static/templates/status.html'
+        }).when('/404', {
+            templateUrl: 'static/templates/404.html'
         }).otherwise('/');
     }
 })();

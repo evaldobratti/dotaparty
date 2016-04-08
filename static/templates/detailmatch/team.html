@@ -98,7 +98,15 @@
                         {{ p.player_account.persona_name | limitTo:15 }}
                         <span ng-show="p.player_account.persona_name.length > 15">...</span>
                     </a>
-                    <img style="float: right" ng-src="{{ p.player_account.url_avatar }}">
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"
+                              ng-if="vm.isPlayerReported(p.player_account)"
+                              data-toggle="tooltip"
+                              data-placement="right"
+                              title=""
+                              data-original-title="You have already reported this player"></span>
+                        <img ng-src="{{ p.player_account.url_avatar }}">
+                    </div>
                 </div>
                 <div ng-if="p.player_account == null">Private</div>
                     <span ng-show="p.leaver_status.id >= 2" class="label label-warning">
@@ -172,6 +180,5 @@
 
         </div>
     </div>
-
 
 </div>  

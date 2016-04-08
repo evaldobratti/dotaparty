@@ -32,6 +32,9 @@
             Profile.get(vm.accountId).then(function (result) {
                 vm.account = result.data;
                 Root.setTitle(vm.account.current_update.persona_name + ' - Profile - Dota Party')
+            }, function(error) {
+                if (error.status == 404)
+                    Root.redirect404();
             });
 
             Profile.getFriends(vm.accountId).then(function (result){
@@ -77,7 +80,6 @@
             } else {
                 Root.setLocation({search:{'matchPage': page}});
             }
-
 
             updatePages(totalPages);
             determineVictoryOrLoss(vm.matches);
