@@ -19,15 +19,15 @@ from dota2api import exceptions
 
 @transaction.atomic()
 def get_details_match(request, match_id):
-    '''try:
+    try:
         match = utils.get_details_match(match_id)
         return JsonResponse(serializers.detail_match_serializer(match))
-    except exceptions.APIError as e:'''
-    return JsonResponse({
-        'message': 'No match was found',
-        'volvo_message': '',
-        'match_id': ''
-    }, status=404)
+    except exceptions.APIError as e:
+        return JsonResponse({
+            'message': 'No match was found',
+            'volvo_message': e.msg,
+            'match_id': match_id
+        }, status=404)
 
 
 def get_profile(request, account_id):
