@@ -86,12 +86,12 @@ def load_team(match, players):
         for additional_unit in p.get('additional_units', []):
             unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unitname'],
                                                            player=player)
-            for i in range(0, 5):
+            for i in range(0, 6):
                 item_id = additional_unit['item_' + str(i)]
                 if item_id:
                     DetailMatchOwnerItem.objects.create(owner=unit, slot=i, item_id=item_id)
 
-        for i in range(0, 5):
+        for i in range(0, 6):
             item_id = p['item_' + str(i)]
             if item_id:
                 DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=item_id)
