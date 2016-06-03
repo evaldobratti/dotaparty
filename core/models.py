@@ -46,7 +46,7 @@ class Account(models.Model):
         self._matches_download_required = value
 
     def __unicode__(self):
-        return self.current_update.persona_name
+        return self.current_update.persona_name.decode('utf-8')
 
 
 class AccountUpdate(models.Model):
