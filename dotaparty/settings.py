@@ -132,8 +132,6 @@ STATICFILES_FINDERS = (
     'compressor.finders''.CompressorFinder',
 )
 
-COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
-
 HUEY = {
     'backend': 'huey.backends.redis_backend',
     'name': 'dotaparty',
