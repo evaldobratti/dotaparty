@@ -204,7 +204,6 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
     query = query.select_related("lobby_type")
     query = query.select_related("game_mode")
     query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__abilities")
     query = query.prefetch_related("players__items")
     query = query.order_by('-start_time')
     for account_id in accounts_ids:
