@@ -2,36 +2,27 @@ from django.db import models
 
 items = {}
 heroes = {}
-abilities = {}
 
 
 def get_item(item_id):
-    if item_id in items:
-        return items[item_id]
-    else:
-        items[item_id] = Item.objects.get(item_id=item_id)
-        return items[item_id]
+    if len(items) == 0:
+        for item in Item.objects.all():
+            items[item.item_id] = item
+
+    return items[item_id]
 
 
 def get_hero(hero_id):
-    if hero_id in heroes:
-        return heroes[hero_id]
-    else:
-        heroes[hero_id] = Hero.objects.get(hero_id=hero_id)
-        return heroes[hero_id]
+    if len(heroes) == 0:
+        for hero in Hero.objects.all():
+            heroes[hero.hero_id] = hero
 
-
-def get_ability(ability_id):
-    if ability_id in abilities:
-        return abilities[ability_id]
-    else:
-        abilities[ability_id] = Ability.objects.get(ability_id=ability_id)
-        return abilities[ability_id]
+    return heroes[hero_id]
 
 
 class Account(models.Model):
-    account_id = models.BigIntegerField(unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    account_id = models.BigIntegerField(unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     steam_id = models.BigIntegerField(null=True)
     last_logoff = models.BigIntegerField(null=True)
     profile_url = models.CharField(max_length=500, null=True)
@@ -83,7 +74,7 @@ class AccountUpdate(models.Model):
 
 
 class Hero(models.Model):
-    hero_id = models.SmallIntegerField(unique=True)
+    hero_id = models.SmallIntegerField(unique=True, db_index=True)
     localized_name = models.CharField(max_length=50)
     name = models.CharField(max_length=50, unique=True)
     url_small_portrait = models.CharField(max_length=300)
@@ -101,11 +92,6 @@ class Item(models.Model):
     cost = models.SmallIntegerField()
     in_side_shop = models.BooleanField()
     url_image = models.CharField(max_length=400)
-
-
-class Ability(models.Model):
-    ability_id = models.SmallIntegerField(unique=True)
-    name = models.CharField(max_length=100)
 
 
 class Cluster(models.Model):
@@ -131,10 +117,10 @@ class DetailMatch(models.Model):
                           (4, "Not determined"))
 
     is_radiant_win = models.BooleanField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     duration = models.BigIntegerField()
     start_time = models.BigIntegerField()
-    match_id = models.BigIntegerField(unique=True)
+    match_id = models.BigIntegerField(unique=True, db_index=True)
     match_seq_num = models.BigIntegerField()
     tower_status_radiant = models.SmallIntegerField()
     tower_status_dire = models.SmallIntegerField()
@@ -184,7 +170,7 @@ class LeaverStatus(models.Model):
 class DetailMatchPlayer(ItemOwner):
     player_account = models.ForeignKey(Account, null=True, related_name='match_players')
     match = models.ForeignKey(DetailMatch, null=False, related_name='players')
-    account_id = models.BigIntegerField()
+    account_id = models.BigIntegerField(db_index=True)
     player_slot = models.SmallIntegerField()
 
     hero_id = models.PositiveIntegerField(null=False)
@@ -226,16 +212,6 @@ class DetailMatchOwnerItem(models.Model):
 
     def item(self):
         return get_item(self.item_id)
-
-
-class DetailMatchAbilityUpgrade(models.Model):
-    player = models.ForeignKey(DetailMatchPlayer, related_name='abilities')
-    ability_id = models.PositiveIntegerField(null=False)
-    time = models.IntegerField()
-    upgraded_lvl = models.SmallIntegerField()
-
-    def ability(self):
-        return get_ability(self.ability_id)
 
 
 class Parameter(models.Model):

@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dotaparty import secret
 from core import d2api
 from dota2api import exceptions
+
 PRIVATE_PROFILE_ACCOUNT_ID = 4294967295
 
 
@@ -63,61 +64,61 @@ def load_team(match, players):
                                                                   name=p['leaver_status_name'],
                                                                   description=p['leaver_status_description'])
 
-        player = DetailMatchPlayer.objects.create(match=match,
-                                                  player_account=account,
-                                                  account_id=p.get('account_id', -1),
-                                                  player_slot=p['player_slot'],
-                                                  hero_id=p['hero_id'],
-                                                  kills=p['kills'],
-                                                  deaths=p.get("deaths", p.get('death')),
-                                                  assists=p['assists'],
-                                                  leaver_status=leaver_status,
-                                                  gold=p.get('gold', 0),
-                                                  last_hits=p['last_hits'],
-                                                  denies=p['denies'],
-                                                  gold_per_min=p['gold_per_min'],
-                                                  xp_per_min=p['xp_per_min'],
-                                                  gold_spent=p.get('gold_spent', 0),
-                                                  hero_damage=p.get('hero_damage', 0),
-                                                  tower_damage=p.get('tower_damage', 0),
-                                                  hero_healing=p.get('hero_healing',0),
-                                                  level=p['level'])
+        player, _ = DetailMatchPlayer.objects.update_or_create(match=match, player_slot=p['player_slot'], defaults={
+            'player_account': account,
+            'account_id': p.get('account_id', -1),
+            'hero_id': p['hero_id'],
+            'kills': p['kills'],
+            'deaths': p.get("deaths", p.get('death')),
+            'assists': p['assists'],
+            'leaver_status': leaver_status,
+            'gold': p.get('gold', 0),
+            'last_hits': p['last_hits'],
+            'denies': p['denies'],
+            'gold_per_min': p['gold_per_min'],
+            'xp_per_min': p['xp_per_min'],
+            'gold_spent': p.get('gold_spent', 0),
+            'hero_damage': p.get('hero_damage', 0),
+            'tower_damage': p.get('tower_damage', 0),
+            'hero_healing': p.get('hero_healing', 0),
+            'level': p['level']
+        })
+
+        player.save()
 
         for additional_unit in p.get('additional_units', []):
-            unit, _ = AdditionalUnit.objects.get_or_create(unit_name=additional_unit['unitname'],
-                                                           player=player)
+            unit, _ = AdditionalUnit.objects.update_or_create(unit_name=additional_unit['unitname'], player=player)
             for i in range(0, 6):
                 item_id = additional_unit['item_' + str(i)]
                 if item_id:
-                    DetailMatchOwnerItem.objects.create(owner=unit, slot=i, item_id=item_id)
+                    owner, _ = DetailMatchOwnerItem.objects.update_or_create(owner=unit, slot=i,
+                                                                             defaults={
+                                                                                 'item_id': item_id
+                                                                             })
 
         for i in range(0, 6):
             item_id = p['item_' + str(i)]
             if item_id:
-                DetailMatchOwnerItem.objects.create(owner=player, slot=i, item_id=item_id)
-
-        for upgrade in p.get('ability_upgrades', []):
-            DetailMatchAbilityUpgrade.objects.create(player=player,
-                                                     ability_id=upgrade['ability'],
-                                                     time=upgrade['time'],
-                                                     upgraded_lvl=upgrade['level'])
+                owner, _ = DetailMatchOwnerItem.objects.update_or_create(owner=player, slot=i,
+                                                                         defaults={
+                                                                             'item_id': item_id
+                                                                         })
 
 
 def get_or_create_item(item_response):
-    try:
-        return Item.objects.get(item_id=item_response['id'])
-    except Item.DoesNotExist:
-        return Item.objects.get_or_create(item_id=item_response['id'],
-                                          localized_name=item_response['localized_name'],
-                                          name=item_response['name'],
-                                          is_recipe=bool(item_response['is_recipe']),
-                                          in_secret_shop=item_response['in_secret_shop'],
-                                          cost=item_response['cost'],
-                                          in_side_shop=item_response['in_side_shop'],
-                                          url_image=item_response['url_image'])[0]
+    return Item.objects.update_or_create(item_id=item_response['id'], defaults={
+                                      'item_id': item_response['id'],
+                                      'localized_name': item_response['localized_name'],
+                                      'name': item_response['name'],
+                                      'is_recipe': bool(item_response['is_recipe']),
+                                      'in_secret_shop': item_response['in_secret_shop'],
+                                      'cost': item_response['cost'],
+                                      'in_side_shop': item_response['in_side_shop'],
+                                      'url_image': item_response['url_image']
+    })[0]
 
 
-def parse(match_details):
+def parse_create_or_update(match_details):
     cluster, _ = Cluster.objects.get_or_create(cluster_id=match_details['cluster'],
                                                name=match_details['cluster_name'])
 
@@ -127,39 +128,42 @@ def parse(match_details):
     lobby_type, _ = LobbyType.objects.get_or_create(lobby_type_id=match_details['lobby_type'],
                                                     name=match_details['lobby_name'])
 
-    match = DetailMatch.objects.create(is_radiant_win=match_details['radiant_win'], duration=match_details['duration'],
-                                       start_time=match_details['start_time'], match_id=match_details['match_id'],
-                                       match_seq_num=match_details['match_seq_num'],
-                                       tower_status_radiant=match_details['tower_status_radiant'],
-                                       tower_status_dire=match_details['tower_status_dire'],
-                                       barracks_status_radiant=match_details['barracks_status_radiant'],
-                                       barracks_status_dire=match_details['barracks_status_dire'],
-                                       cluster=cluster,
-                                       first_blood_time=match_details['first_blood_time'],
-                                       lobby_type=lobby_type,
-                                       human_players=match_details['human_players'], league_id=match_details['leagueid'],
-                                       positive_votes=match_details['positive_votes'],
-                                       negative_votes=match_details['negative_votes'],
-                                       game_mode=game_mode)
+    match, _ = DetailMatch.objects.update_or_create(match_id=match_details['match_id'], defaults={
+        'is_radiant_win': match_details['radiant_win'],
+        'duration': match_details['duration'],
+        'start_time': match_details['start_time'],
+        'match_seq_num': match_details['match_seq_num'],
+        'tower_status_radiant': match_details['tower_status_radiant'],
+        'tower_status_dire': match_details['tower_status_dire'],
+        'barracks_status_radiant': match_details['barracks_status_radiant'],
+        'barracks_status_dire': match_details['barracks_status_dire'],
+        'cluster': cluster,
+        'first_blood_time': match_details['first_blood_time'],
+        'lobby_type': lobby_type,
+        'human_players': match_details['human_players'],
+        'league_id': match_details['leagueid'],
+        'positive_votes': match_details['positive_votes'],
+        'negative_votes': match_details['negative_votes'],
+        'game_mode': game_mode
+    })
 
     load_team(match, match_details['players'])
-
+    match.save()
     return match
 
 
-def get_details_match(match_id):
+def get_details_match(match_id, force_update=False):
     query = DetailMatch.objects.filter(match_id=match_id)
     query = query.select_related("cluster")
     query = query.select_related("lobby_type")
     query = query.select_related("game_mode")
     query = query.prefetch_related("players__player_account__current_update")
-    query = query.prefetch_related("players__abilities")
     query = query.prefetch_related("players__items")
-    if query:
+    if query and not force_update:
         return query[0]
     else:
         details = d2api.get_match_details(match_id)
-        return parse(details)
+        return parse_create_or_update(details)
 
 
 def get_friends_number_matches(account, compared_to=[]):
@@ -218,56 +222,34 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
 def update_items():
     for item_response in d2api.get_items()['items']:
         print item_response['localized_name']
-        try:
-            my_item = Item.objects.get(item_id=item_response['id'])
-            my_item.localized_name = item_response['localized_name']
-            my_item.name = item_response['name']
-            my_item.is_recipe = bool(item_response['recipe'])
-            my_item.in_secret_shop = bool(item_response['secret_shop'])
-            my_item.cost = item_response['cost']
-            my_item.in_side_shop = bool(item_response['side_shop'])
-            my_item.url_image = item_response['url_image']
-            my_item.save()
-            print my_item.localized_name
-        except Item.DoesNotExist:
-            my_item = Item()
-            my_item.item_id = item_response['id']
-            my_item.localized_name = item_response['localized_name']
-            my_item.name = item_response['name']
-            my_item.is_recipe = bool(item_response['recipe'])
-            my_item.in_secret_shop = bool(item_response['secret_shop'])
-            my_item.cost = item_response['cost']
-            my_item.in_side_shop = bool(item_response['side_shop'])
-            my_item.url_image = item_response['url_image']
-            my_item.save()
+        Item.objects.update_or_create(item_id=item_response['id'], defaults={
+            'localized_name': item_response['localized_name'],
+            'name': item_response['name'],
+            'is_recipe': bool(item_response['recipe']),
+            'in_secret_shop': bool(item_response['secret_shop']),
+            'cost': item_response['cost'],
+            'in_side_shop': bool(item_response['side_shop']),
+            'url_image': item_response['url_image']
+        })
 
 
 def update_heroes():
     for hero_response in d2api.get_heroes()['heroes']:
         print hero_response['localized_name']
-        try:
-            hero = Hero.objects.get(hero_id=hero_response['id'])
-            hero.hero_id = hero_response['id']
-            hero.localized_name = hero_response['localized_name']
-            hero.name = hero_response['name']
-            hero.url_small_portrait = hero_response['url_small_portrait']
-            hero.url_large_portrait = hero_response['url_large_portrait']
-            hero.url_full_portrait = hero_response['url_full_portrait']
-            hero.url_vertical_portrait = hero_response['url_vertical_portrait']
-            hero.save()
-        except Hero.DoesNotExist:
-            Hero.objects.get_or_create(hero_id=hero_response['id'],
-                                       localized_name=hero_response['localized_name'],
-                                       name=hero_response['name'],
-                                       url_small_portrait=hero_response['url_small_portrait'],
-                                       url_large_portrait=hero_response['url_large_portrait'],
-                                       url_full_portrait=hero_response['url_full_portrait'],
-                                       url_vertical_portrait=hero_response['url_vertical_portrait'])
+        Hero.objects.update_or_create(hero_id=hero_response['id'], defaults={
+            'hero_id': hero_response['id'],
+            'localized_name': hero_response['localized_name'],
+            'name': hero_response['name'],
+            'url_small_portrait': hero_response['url_small_portrait'],
+            'url_large_portrait': hero_response['url_large_portrait'],
+            'url_full_portrait': hero_response['url_full_portrait'],
+            'url_vertical_portrait': hero_response['url_vertical_portrait']
+        })
 
 
 def is_public_account(account_id):
     try:
         d2api.get_match_history(account_id)
-        return (True,'')
+        return (True, '')
     except exceptions.APIError as e:
         return (False, e.msg)

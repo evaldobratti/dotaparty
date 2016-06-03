@@ -89,7 +89,11 @@
         <div ng-repeat="p in team" ng-class="{info: p == vm.current_selected }" ng-class-odd="'stripped'"
              class="detail-match-row">
             <div class="text-align-center col-hero">
-                <img width="40" ng-src="{{ p.hero.url_large_portrait }}">
+                <img width="40"
+                     data-toggle="tooltip"
+                     data-placement="top"
+                     data-original-title="{{ p.hero.localized_name }}"
+                     ng-src="{{ p.hero.url_large_portrait }}">
             </div>
 
             <div class="col-player">
@@ -128,10 +132,20 @@
             <div class="text-align-center col-hd">{{ p.hero_damage | abbreviate }}</div>
             <div class="text-align-center col-hh">{{ p.hero_healing | abbreviate }}</div>
             <div class="col-items">
-                <img class="detail-match-item" ng-repeat="item in p.items" ng-src="{{ item.url_image }}">
-
+                <img class="detail-match-item"
+                     data-toggle="tooltip"
+                     data-placement="top"
+                     ng-repeat="i in [0,1,2,3,4,5]"
+                     data-original-title="{{ p.items[i].localized_name }}"
+                     ng-src="{{ p.items[i].url_image }}">
+                <br />
                 <div ng-repeat="unit in p.additional_units" ng-if="unit.unit_name != ''">
-                    <img class="detail-match-item" ng-repeat="item in unit.items" ng-src="{{ item.url_image }}">
+                    <img class="detail-match-item"
+                         data-toggle="tooltip"
+                         data-placement="top"
+                         ng-repeat="i in [0,1,2,3,4,5]"
+                         data-original-title="{{ unit.items[i].localized_name }}"
+                         ng-src="{{ unit.items[i].url_image }}">
                 </div>
             </div>
             <div class="col-action">
