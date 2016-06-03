@@ -41,7 +41,7 @@ class DownloaderGamesBySeqNum(object):
     def __get_last_match_seq_num(self):
         last_match_seq_num = LAST_MATCH_SEQ_NUM.value()
         if last_match_seq_num is None:
-            LAST_MATCH_SEQ_NUM.set_value(d2api.get_match_history(None).matches[0].match_seq_num)
+            LAST_MATCH_SEQ_NUM.set_value(d2api.get_match_history(None)['matches'][0].match_seq_num)
             last_match_seq_num = LAST_MATCH_SEQ_NUM.value()
         return last_match_seq_num
 
