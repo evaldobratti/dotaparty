@@ -193,10 +193,6 @@ class DetailMatchPlayer(ItemOwner):
 
     @property
     def hero(self):
-        """
-
-        :return: Hero
-        """
         return get_hero(self.hero_id)
 
 
@@ -220,3 +216,9 @@ class Parameter(models.Model):
 
     def reset(self):
         self.value = None
+
+
+class Visit(models.Model):
+    host = models.CharField(max_length=400)
+    requested = models.CharField(max_length=400)
+    count = models.PositiveIntegerField(default=0)
