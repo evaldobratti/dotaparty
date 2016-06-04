@@ -225,4 +225,4 @@ class Visit(models.Model):
     count = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
-        return '{} {} {} {}'.format(self.host, self.requested, self.count, self.last_visit)
+        return '{:<15} {:<15} {:<3} {:<30}'.format(self.host, self.requested, self.count, self.last_visit)
