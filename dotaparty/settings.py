@@ -156,4 +156,6 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 
 from django.contrib import admin
 from community.models import *
+from core.models import *
 admin.site.register(Report)
+admin.site.register(Visit)
