@@ -223,3 +223,6 @@ class Visit(models.Model):
     requested = models.CharField(max_length=400)
     last_visit = models.DateTimeField(auto_now=True)
     count = models.PositiveIntegerField(default=0)
+
+    def __unicode__(self):
+        return '%s %s %s %s'.format(self.host, self.request, self.count, self.last_visit)
