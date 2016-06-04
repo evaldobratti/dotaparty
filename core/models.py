@@ -221,4 +221,5 @@ class Parameter(models.Model):
 class Visit(models.Model):
     host = models.CharField(max_length=400)
     requested = models.CharField(max_length=400)
+    last_visit = models.DateTimeField(auto_now=True)
     count = models.PositiveIntegerField(default=0)
