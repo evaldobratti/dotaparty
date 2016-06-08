@@ -21,8 +21,9 @@ class DownloaderGamesBySeqNum(object):
             last_match_seq_num = self.__get_last_match_seq_num()
             try:
                 matches = d2api.get_matches_seq(last_match_seq_num)
+                interested_accounts = set(INTERESTED_ACCOUNTS_IDS.value())
                 for match in matches['matches']:
-                    self.__download_match_if_interested(match)
+                    self.__download_match_if_interested(match, interested_accounts)
                     LAST_MATCH_SEQ_NUM.set_value(match['match_seq_num'])
             except Exception, e:
                 print e
@@ -31,10 +32,11 @@ class DownloaderGamesBySeqNum(object):
                         (hasattr(e, 'msg') and e.msg == 'Error retrieving match data.'):
                     LAST_MATCH_SEQ_NUM.set_value(long(last_match_seq_num) + 1)
 
-    def __download_match_if_interested(self, match):
+    def __download_match_if_interested(self, match, interested_accounts):
         get_logger().info("analysing match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
 
-        if [p for p in match['players'] if p.get('account_id', -1) in INTERESTED_ACCOUNTS_IDS.value()]:
+        accounts_ids = set([p.get('account_id') for p in match['players'] if p.get('account_id', -1)])
+        if accounts_ids.intersection(interested_accounts):
             get_logger().info("will download match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
             tasks.schedule_download_match(match['match_id'], True)
 
