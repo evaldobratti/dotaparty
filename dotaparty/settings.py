@@ -150,12 +150,70 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.steam.SteamOpenId',
     'django.contrib.auth.backends.ModelBackend',
 )
-import logging
-from core import logger, tasks
-logging.getLogger("requests").setLevel(logging.WARNING)
+
+from core import tasks
 
 from django.contrib import admin
 from community.models import *
 from core.models import *
 admin.site.register(Report)
 admin.site.register(Visit)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'normal': {
+            'format': '%(threadName)s %(asctime)s %(name)s %(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'file_downloader': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': secret.LOGGING['file_downloader'],
+            'maxBytes': 1024 * 1024,
+            'backupCount': 30,
+            'formatter': 'normal'
+        },
+        'file_tasks': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': secret.LOGGING['file_tasks'],
+            'maxBytes': 1024 * 1024,
+            'backupCount': 30,
+            'formatter': 'normal'
+        },
+        'file_valve': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': secret.LOGGING['file_valve'],
+            'maxBytes': 1024 * 1024,
+            'backupCount': 30,
+            'formatter': 'normal'
+        },
+    },
+    'loggers': {
+        'dotaparty.downloader': {
+            'handlers': ['file_downloader'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'dotaparty.valve': {
+            'handlers': ['file_valve'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'dotaparty.tasks': {
+            'handlers': ['file_tasks'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'huey.consumer.ConsumerThread': {
+            'handlers': ['file_downloader'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
+    },
+}

@@ -5,8 +5,7 @@ from core import utils
 import logging
 import models
 
-LOGGER_NAME = 'tasks'
-log = logging.getLogger(LOGGER_NAME)
+log = logging.getLogger('dotaparty.tasks')
 
 
 @db_task()

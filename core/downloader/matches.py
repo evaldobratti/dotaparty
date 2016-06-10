@@ -7,11 +7,7 @@ from core.parameters import INTERESTED_ACCOUNTS_IDS
 from core.parameters import LAST_MATCH_SEQ_NUM
 
 import logging
-LOGGER_NAME = 'Downloader'
-
-
-def get_logger():
-    return logging.getLogger(LOGGER_NAME)
+LOGGER = logging.getLogger('dotaparty.downloader')
 
 
 class DownloaderGamesBySeqNum(object):
@@ -27,17 +23,17 @@ class DownloaderGamesBySeqNum(object):
                     LAST_MATCH_SEQ_NUM.set_value(match['match_seq_num'])
             except Exception, e:
                 print e
-                get_logger().exception(e)
+                LOGGER.exception(e)
                 if e.message == 'Error retrieving match data.' or \
                         (hasattr(e, 'msg') and e.msg == 'Error retrieving match data.'):
                     LAST_MATCH_SEQ_NUM.set_value(long(last_match_seq_num) + 1)
 
     def __download_match_if_interested(self, match, interested_accounts):
-        get_logger().info("analysing match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
+        LOGGER.info("analysing match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
 
         accounts_ids = set([p.get('account_id') for p in match['players'] if p.get('account_id', -1)])
         if accounts_ids.intersection(interested_accounts):
-            get_logger().info("will download match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
+            LOGGER.info("will download match_id : {} seq_num: {}".format(match['match_id'], match['match_seq_num']))
             tasks.schedule_download_match(match['match_id'], True)
 
     def __get_last_match_seq_num(self):
