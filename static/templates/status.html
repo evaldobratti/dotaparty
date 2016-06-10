@@ -9,19 +9,24 @@
                 <img src="static/img/ajax-loader.gif">
             </div>
             <div class="row" ng-if="vm.statistics != null">
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-6 col-md-3">
                     <h4><b>{{ vm.statistics.total.matches }}</b><br>
                         <small>matches</small>
                     </h4>
                 </div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-6 col-md-3">
                     <h4><b>{{ vm.statistics.total.players }}</b><br>
                         <small>players</small>
                     </h4>
                 </div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-6 col-md-3">
                     <h4><b>{{ vm.statistics.total.tracked }}</b><br>
                         <small>Tracked players</small>
+                    </h4>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <h4><b>{{ vm.statistics.queue }}</b><br>
+                        <small>queue</small>
                     </h4>
                 </div>
             </div>

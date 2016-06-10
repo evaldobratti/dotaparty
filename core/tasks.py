@@ -4,6 +4,7 @@ from core import d2api
 from core import utils
 import logging
 import models
+import parameters
 
 log = logging.getLogger('dotaparty.tasks')
 
@@ -108,3 +109,10 @@ def download_match(match_id, set_skill):
             match.save()
         log.info("parsed: {}".format(match.match_id))
         return match
+
+
+@db_task()
+def download_match_if_interested(match_id, seq_num, accounts_ids):
+    if set(accounts_ids).intersection(set(parameters.INTERESTED_ACCOUNTS_IDS.value())):
+        log.info("will download match_id : {} seq_num: {}".format(match_id, seq_num))
+        schedule_download_match(match_id, True)

@@ -25,20 +25,19 @@ def get_until_success(name, get_function):
             return get_function()
         except ValueError as e:
             logger.info(name + ' Time out on api, sleeping some extra seconds')
-            time.sleep(30)
             check_tries(tries, e)
+            time.sleep(3)
         except exceptions.APIError as e:
             logger.error(name + ' ' + e.msg)
-            if e.msg == '429':
-                time.sleep(2)
             if 'Cannot get match history' in e.msg:
                 raise e
             if 'Practice matches' in e.msg:
                 raise e
+            time.sleep(3)
         except Exception as e:
             logger.error(name + ' ' + e.message)
-            logger.exception(e)
             check_tries(tries, e)
+            time.sleep(3)
 
 
 def get_player_summaries(*args):

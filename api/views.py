@@ -15,7 +15,7 @@ import datetime
 from core import parameters
 from core import utils
 from dota2api import exceptions
-
+from huey.djhuey import HUEY
 
 @transaction.atomic()
 def get_details_match(request, match_id):
@@ -162,6 +162,7 @@ def get_statistics(request):
             'matches': len(DetailMatch.objects.filter(created_at__gt=datetime.datetime.now() - datetime.timedelta(hours=1))),
             'players': len(Account.objects.filter(created_at__gt=datetime.datetime.now() - datetime.timedelta(hours=1)))
         },
+        'queue': len(HUEY.queue),
         'lasts_matches': last_matches
 
     })
@@ -175,3 +176,7 @@ def is_available_to_download(request, account_id):
         return JsonResponse({
             'error': error
         }, status=400, reason=error)
+
+
+def queue_size(request):
+    pass

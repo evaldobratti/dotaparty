@@ -211,7 +211,7 @@ LOGGING = {
         },
         'huey.consumer.ConsumerThread': {
             'handlers': ['file_downloader'],
-            'level': 'INFO',
+            'level': 'ERROR',
             'propagate': True,
         },
 
