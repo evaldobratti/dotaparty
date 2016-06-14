@@ -1,3 +1,4 @@
+import time
 from django.db import transaction
 from core import d2api
 from core import utils
@@ -20,11 +21,17 @@ class DownloaderGamesBySeqNum(object):
             last_match_seq_num = self.__get_last_match_seq_num()
             try:
                 matches = d2api.get_matches_seq(last_match_seq_num)
+                last_match = None
                 for match in matches['matches']:
                     accounts_ids = [p.get('account_id') for p in match['players'] if p.get('account_id', -1)]
                     tasks.download_match_if_interested(match['match_id'], match['match_seq_num'], accounts_ids)
                     LAST_MATCH_SEQ_NUM.set_value(match['match_seq_num'])
-                LOGGER.info("last seq num: " + str(last_match_seq_num) + ' matches retrieved: ' + str(len(matches['matches'])))
+                    last_match = match
+                len_matches = len(matches['matches'])
+                LOGGER.info('last match id: ' + str(last_match['match_id']) + ' seq num: ' + str(last_match_seq_num) +
+                            ' matches retrieved: ' + str(len_matches))
+                if len_matches < 70:
+                    time.sleep(4)
             except Exception, e:
                 print e
                 LOGGER.exception(e)

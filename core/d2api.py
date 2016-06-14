@@ -3,6 +3,9 @@ import dota2api
 import logging
 from dotaparty import secret
 from dota2api import exceptions
+from threading import Lock
+
+lock = Lock()
 
 __d2api = dota2api.Initialise(secret.D2_API_KEY)
 logger = logging.getLogger('dotaparty.valve')
@@ -19,25 +22,32 @@ def get_until_success(name, get_function):
     tries = 0
     while True:
         try:
-            time.sleep(2)
+            lock.acquire()
+            time.sleep(1)
             tries += 1
             logger.info(name)
-            return get_function()
+            value = get_function()
+            lock.release()
+            logger.info('semaforo: ' + str(id(lock)))
+            return value
         except ValueError as e:
+            lock.release()
             logger.info(name + ' Time out on api, sleeping some extra seconds')
             check_tries(tries, e)
-            time.sleep(3)
+            time.sleep(4)
         except exceptions.APIError as e:
-            logger.error(name + ' ' + e.msg)
+            lock.release()
+            logger.error(name + ' ' + str(type(e)) + ' ' + e.msg)
             if 'Cannot get match history' in e.msg:
                 raise e
             if 'Practice matches' in e.msg:
                 raise e
-            time.sleep(3)
+            time.sleep(4)
         except Exception as e:
-            logger.error(name + ' ' + e.message)
+            lock.release()
+            logger.error(name + ' ' + str(type(e)) + ' ' + e.message)
             check_tries(tries, e)
-            time.sleep(3)
+            time.sleep(4)
 
 
 def get_player_summaries(*args):
