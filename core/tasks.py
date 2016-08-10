@@ -7,6 +7,7 @@ import models
 import parameters
 
 log = logging.getLogger('dotaparty.tasks')
+api = d2api.D2Api()
 
 
 @db_task()
@@ -28,7 +29,7 @@ def _download_games(account):
             try:
                 log.info("acc: {} hero: {} last match: {}".format(account.account_id, hero.localized_name,
                                                                   last_match_id or 'started'))
-                matches = d2api.get_match_history(account.account_id,
+                matches = api.get_match_history(account.account_id,
                                                   start_at_match_id=last_match_id,
                                                   hero_id=hero.hero_id)
                 log.info("acc: {} hero: {} results remaining: {}".format(account.account_id, hero.localized_name,
@@ -53,7 +54,7 @@ def _download_games(account):
 
 
 def define_if_skill(match, hero_id, skill_lvl):
-    skill = d2api.get_match_history(None, start_at_match_id=match.match_id,
+    skill = api.get_match_history(None, start_at_match_id=match.match_id,
                                     skill=skill_lvl,
                                     matches_requested=5,
                                     hero_id=hero_id)

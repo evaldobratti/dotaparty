@@ -6,13 +6,15 @@ from dota2api import exceptions
 
 PRIVATE_PROFILE_ACCOUNT_ID = 4294967295
 
+api = d2api.D2Api()
+
 
 def get_account(account_id):
     account = Account.objects.filter(account_id=account_id)
     if account:
         return account[0]
     else:
-        acc = d2api.get_player_summaries([int(account_id)])
+        acc = api.get_player_summaries([int(account_id)])
 
         if acc:
             return load_account(account_id, acc['players'][0])
@@ -45,11 +47,11 @@ def load_account(account_id, update):
 
 
 def load_team(match, players):
-    updated_accounts = d2api.get_player_summaries([p.get('account_id') for p in players])['players']
+    updated_accounts = api.get_player_summaries([p.get('account_id') for p in players])['players']
     for p in players:
         if p.get('account_id', -1) != PRIVATE_PROFILE_ACCOUNT_ID and p.get('account_id', -1) != -1:
             def filtro(ua):
-                return str(ua['steamid']) == str(d2api.to_64b(p['account_id']))
+                return str(ua['steamid']) == str(d2api.D2Api.to_64b(p['account_id']))
 
             update = filter(filtro, updated_accounts)[0]
 
@@ -162,7 +164,7 @@ def get_details_match(match_id, force_update=False):
     if query and not force_update:
         return query[0]
     else:
-        details = d2api.get_match_details(match_id)
+        details = api.get_match_details(match_id)
         return parse_create_or_update(details)
 
 
@@ -219,7 +221,7 @@ def get_friends_matches_details(accounts_ids, page, elements_per_page=10):
 
 
 def update_items():
-    for item_response in d2api.get_items()['items']:
+    for item_response in api.get_items()['items']:
         print item_response['localized_name']
         Item.objects.update_or_create(item_id=item_response['id'], defaults={
             'localized_name': item_response['localized_name'],
@@ -233,7 +235,7 @@ def update_items():
 
 
 def update_heroes():
-    for hero_response in d2api.get_heroes()['heroes']:
+    for hero_response in api.get_heroes()['heroes']:
         print hero_response['localized_name']
         Hero.objects.update_or_create(hero_id=hero_response['id'], defaults={
             'hero_id': hero_response['id'],
@@ -248,7 +250,7 @@ def update_heroes():
 
 def is_public_account(account_id):
     try:
-        d2api.get_match_history(account_id)
+        api.get_match_history(account_id)
         return (True, '')
     except exceptions.APIError as e:
         return (False, e.msg)

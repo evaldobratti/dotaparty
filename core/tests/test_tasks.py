@@ -51,7 +51,7 @@ class AutoDownloadGamesTest(TestCase):
         self.accounts_to_download_matches = tasks.accounts_to_download_matches = mock.Mock()
         self.last_match_seq = tasks.last_match_seq = mock.Mock()
         self.set_last_match_seq = tasks.set_last_match_seq = mock.Mock()
-        self.d2api = tasks.d2api = mock.Mock()
+        self.d2api = tasks.api = mock.Mock()
         self.d2api.get_match_history = mock.Mock()
         self.d2api.get_matches_seq = mock.Mock()
 

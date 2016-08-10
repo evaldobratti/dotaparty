@@ -140,7 +140,7 @@ HUEY = {
                          'periodic_task_interval': 3 },
 }
 
-SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEY
+SOCIAL_AUTH_STEAM_API_KEY = secret.D2_API_KEYS[0]
 LOGIN_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'community.User'
 

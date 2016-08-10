@@ -11,7 +11,7 @@ from huey.djhuey import db_task
 import logging
 LOGGER = logging.getLogger('dotaparty.downloader')
 
-d2api.logger = LOGGER
+api = d2api.D2Api(LOGGER)
 
 
 class DownloaderGamesBySeqNum(object):
@@ -20,7 +20,7 @@ class DownloaderGamesBySeqNum(object):
         while True:
             last_match_seq_num = self.__get_last_match_seq_num()
             try:
-                matches = d2api.get_matches_seq(last_match_seq_num)
+                matches = api.get_matches_seq(last_match_seq_num)
                 last_match = None
                 for match in matches['matches']:
                     accounts_ids = [p.get('account_id') for p in match['players'] if p.get('account_id', -1)]
@@ -50,7 +50,7 @@ class DownloaderGamesBySeqNum(object):
     def __get_last_match_seq_num(self):
         last_match_seq_num = LAST_MATCH_SEQ_NUM.value()
         if last_match_seq_num is None:
-            LAST_MATCH_SEQ_NUM.set_value(d2api.get_match_history(None)['matches'][0]['match_seq_num'])
+            LAST_MATCH_SEQ_NUM.set_value(api.get_match_history(None)['matches'][0]['match_seq_num'])
             last_match_seq_num = LAST_MATCH_SEQ_NUM.value()
         return last_match_seq_num
 
