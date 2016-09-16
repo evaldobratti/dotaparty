@@ -2,6 +2,7 @@ import time
 import dota2api
 import logging
 import itertools
+import requests
 from dotaparty import secret
 from dota2api import exceptions
 from threading import Lock
@@ -11,7 +12,8 @@ class D2Api(object):
 
     MAX_RETRIES = 100
 
-    def __init__(self, logger=logging.getLogger('dotaparty.valve')):
+    def __init__(self, logger=logging.getLogger('dotaparty.valve'), use_proxy=False):
+        self.use_proxy = use_proxy
         self.keys = itertools.cycle(secret.D2_API_KEYS)
         self.logger = logger
         self.lock = Lock()
@@ -21,14 +23,22 @@ class D2Api(object):
             raise exception
 
     def api(self):
-        return dota2api.Initialise(self.keys.next())
+        def get(url):
+            auth = requests.auth.HTTPProxyAuth(secret.PROXY_USER, secret.PROXY_PW)
+            proxies = {'http': secret.PROXY_URL}
+            return requests.get(url, auth=auth, proxies=proxies)
+
+        if self.use_proxy:
+            return dota2api.Initialise(self.keys.next(), executor=get)
+        else:
+            return dota2api.Initialise(self.keys.next())
 
     def get_until_success(self, name, get_function):
         tries = 0
         while True:
             try:
                 self.lock.acquire()
-                time.sleep(2)
+                time.sleep(1)
                 tries += 1
                 self.logger.info(name)
                 value = get_function()
@@ -38,7 +48,7 @@ class D2Api(object):
                 self.lock.release()
                 self.logger.info(name + ' Time out on api, sleeping some extra seconds')
                 self.check_tries(tries, e)
-                time.sleep(4)
+                time.sleep(1)
             except exceptions.APIError as e:
                 self.lock.release()
                 self.logger.error(name + ' ' + str(type(e)) + ' ' + e.msg)
@@ -46,12 +56,12 @@ class D2Api(object):
                     raise e
                 if 'Practice matches' in e.msg:
                     raise e
-                time.sleep(4)
+                time.sleep(1)
             except Exception as e:
                 self.lock.release()
                 self.logger.error(name + ' ' + str(type(e)) + ' ' + e.message)
                 self.check_tries(tries, e)
-                time.sleep(4)
+                time.sleep(1)
 
     def get_player_summaries(self, *args):
         name = 'get_player_summaries ' + str(args)
