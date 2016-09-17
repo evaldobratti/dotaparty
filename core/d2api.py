@@ -58,7 +58,7 @@ class D2Api(object):
                 self.lock.release()
                 self.logger.info(name + ' Time out on api, sleeping some extra seconds')
                 self.check_tries(tries, e)
-                time.sleep(1)
+                time.sleep(0)
             except exceptions.APIError as e:
                 self.lock.release()
                 self.logger.error(name + ' ' + str(type(e)) + ' ' + e.msg)
@@ -66,12 +66,12 @@ class D2Api(object):
                     raise e
                 if 'Practice matches' in e.msg:
                     raise e
-                time.sleep(1)
+                time.sleep(0)
             except Exception as e:
                 self.lock.release()
                 self.logger.error(name + ' ' + str(type(e)) + ' ' + str(e.message))
                 self.check_tries(tries, e)
-                time.sleep(1)
+                time.sleep(0)
 
     def get_player_summaries(self, *args):
         name = 'get_player_summaries ' + str(args)
