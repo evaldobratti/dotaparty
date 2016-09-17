@@ -246,7 +246,7 @@ class Proxy(models.Model):
 
     def increase_successes(self):
         self.last_success = timezone.now()
-        self.failures = models.F('successes') + 1
+        self.successes = models.F('successes') + 1
 
     def increase_timeouts(self):
         if self.timeouts >= 10:
