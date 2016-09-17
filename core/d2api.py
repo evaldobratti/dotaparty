@@ -6,6 +6,7 @@ import requests
 from dotaparty import secret
 from dota2api import exceptions
 from threading import Lock
+from .models import Proxy
 
 
 class D2Api(object):
@@ -24,9 +25,18 @@ class D2Api(object):
 
     def api(self):
         def get(url):
-            auth = requests.auth.HTTPProxyAuth(secret.PROXY_USER, secret.PROXY_PW)
-            proxies = {'http': secret.PROXY_URL}
-            return requests.get(url, auth=auth, proxies=proxies)
+            proxy = Proxy.objects.filter(active=True).order_by('?').first()
+            address = proxy.address
+            proxies = {'http': address}
+            try:
+                result = requests.get(url, proxies=proxies, timeout=3)
+                proxy.increase_successes()
+                return result
+            except Exception as e:
+                proxy.increase_failures()
+                raise e
+            finally:
+                proxy.save()
 
         if self.use_proxy:
             return dota2api.Initialise(self.keys.next(), executor=get)
@@ -59,7 +69,7 @@ class D2Api(object):
                 time.sleep(1)
             except Exception as e:
                 self.lock.release()
-                self.logger.error(name + ' ' + str(type(e)) + ' ' + e.message)
+                self.logger.error(name + ' ' + str(type(e)) + ' ' + str(e.message))
                 self.check_tries(tries, e)
                 time.sleep(1)
 

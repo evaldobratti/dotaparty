@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 items = {}
 heroes = {}
@@ -226,3 +227,22 @@ class Visit(models.Model):
 
     def __unicode__(self):
         return '{:<15} {:<15} {:<3} {:<30}'.format(self.host, self.requested, self.count, self.last_visit)
+
+
+class Proxy(models.Model):
+    address = models.CharField(max_length=100)
+    successes = models.PositiveIntegerField(default=0)
+    failures = models.PositiveIntegerField(default=0)
+    active = models.BooleanField(default=True)
+    last_success = models.DateTimeField(auto_now_add=True)
+
+    def increase_failures(self):
+        delta = timezone.now() - self.last_success
+        if delta.days >= 2:
+            self.active = False
+
+        self.failures = models.F('failures') + 1
+
+    def increase_successes(self):
+        self.last_success = timezone.now()
+        self.failures = models.F('successes') + 1
