@@ -7,6 +7,8 @@ from dotaparty import secret
 from dota2api import exceptions
 from threading import Lock
 from .models import Proxy
+from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectTimeout
 
 
 class D2Api(object):
@@ -32,6 +34,12 @@ class D2Api(object):
                 result = requests.get(url, proxies=proxies, timeout=3)
                 proxy.increase_successes()
                 return result
+            except ConnectTimeout as e:
+                proxy.increase_timeouts()
+                raise e
+            except ConnectionError as e:
+                proxy.active = False
+                raise e
             except Exception as e:
                 proxy.increase_failures()
                 raise e

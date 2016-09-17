@@ -233,6 +233,7 @@ class Proxy(models.Model):
     address = models.CharField(max_length=100)
     successes = models.PositiveIntegerField(default=0)
     failures = models.PositiveIntegerField(default=0)
+    timeouts = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=True)
     last_success = models.DateTimeField(auto_now_add=True)
 
@@ -246,3 +247,8 @@ class Proxy(models.Model):
     def increase_successes(self):
         self.last_success = timezone.now()
         self.failures = models.F('successes') + 1
+
+    def increase_timeouts(self):
+        if self.timeouts >= 10:
+            self.active = False
+        self.timeouts = models.F('timeouts') + 1
