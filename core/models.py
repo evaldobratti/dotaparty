@@ -238,10 +238,7 @@ class Proxy(models.Model):
     last_success = models.DateTimeField(auto_now_add=True)
 
     def increase_failures(self):
-        delta = timezone.now() - self.last_success
-        if delta.days >= 2:
-            self.active = False
-
+        self.__check_deactive()
         self.failures = models.F('failures') + 1
 
     def increase_successes(self):
@@ -249,6 +246,10 @@ class Proxy(models.Model):
         self.successes = models.F('successes') + 1
 
     def increase_timeouts(self):
-        if self.timeouts >= 10:
-            self.active = False
+        self.__check_deactive()
         self.timeouts = models.F('timeouts') + 1
+
+    def __check_deactive(self):
+        delta = timezone.now() - self.last_success
+        if delta.days >= 2:
+            self.active = False
