@@ -237,19 +237,32 @@ class Proxy(models.Model):
     active = models.BooleanField(default=True)
     last_success = models.DateTimeField(auto_now_add=True)
 
+    history = models.CharField(max_length=30, default='')
+
     def increase_failures(self):
-        self.__check_deactive()
+        self.__history('F')
         self.failures = models.F('failures') + 1
 
     def increase_successes(self):
         self.last_success = timezone.now()
+        self.__history('S')
         self.successes = models.F('successes') + 1
 
     def increase_timeouts(self):
-        self.__check_deactive()
+        self.__history('T')
         self.timeouts = models.F('timeouts') + 1
 
     def __check_deactive(self):
-        delta = timezone.now() - self.last_success
-        if delta.days >= 2:
-            self.active = False
+        last_tries = self.history[-10:]
+        if len(last_tries) == 10:
+            if 'S' not in set(last_tries):
+                self.active = False
+
+    def __history(self, h):
+        if len(self.history) < 30:
+            self.history += h
+        else:
+            self.history = (self.history + h)[1:]
+
+        self.__check_deactive()
+

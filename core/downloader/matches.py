@@ -11,7 +11,7 @@ from huey.djhuey import db_task
 import logging
 LOGGER = logging.getLogger('dotaparty.downloader')
 
-api = d2api.D2Api(LOGGER, use_proxy=True)
+api = d2api.D2Api(LOGGER, use_proxy=True, wait=0)
 
 
 class DownloaderGamesBySeqNum(object):
